@@ -192,28 +192,6 @@ export const constantRoutes = [
     ]
   },
 
-  //人工分析报告管理
-  {
-    path: '/manualanalysisreportmanagement',
-    component: Layout,
-    redirect: '/manualanalysisreportmanagement/analysereportupload',
-    meta: { title: '人工分析报告管理', icon: 'example' },
-    children: [
-      {
-        path: 'analysereportupload',
-        name: 'Analysereportupload',
-        component: () => import('@/views/manualanalysisreportmanagement/analysereportupload'),
-        meta: { title: '分析报告上传' },
-      },
-      {
-        path: 'analysereportexamine',
-        name: 'analysereportexamine',
-        component: () => import('@/views/manualanalysisreportmanagement/analysereportexamine'),
-        meta: { title: '分析报告审核' }
-      }
-    ]
-  },
-
   //分析报告查看
   {
     path: '/manualanalysisreportsearch',
@@ -221,12 +199,6 @@ export const constantRoutes = [
     redirect: '/manualanalysisreportsearch/reporttaskwatch',
     meta: { title: '分析报告查看', icon: 'example' },
     children: [
-      {
-        path: 'reporttaskwatch',
-        name: 'Reporttaskwatch',
-        component: () => import('@/views/manualanalysisreportsearch/reporttaskwatch'),
-        meta: { title: '报告任务监控' },
-      },
       {
         path: 'reportsearch',
         name: 'Reportsearch',

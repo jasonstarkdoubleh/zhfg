@@ -1,15 +1,13 @@
 <template>
 
-    <section class="app-main" style="background: #f2f2f6">
+    <section class="app-main" style="background: #f2f2f6;">
       <!--    <div style="height: 56px;background: rgb(48, 65, 86);">-->
       <!--      <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />-->
       <!--      <breadcrumb class="breadcrumb-container" />-->
       <!--    </div>-->
-      <div style="padding: 24px;background-color: #ffffff; margin: 24px">
-        <transition name="fade-transform" mode="out-in">
-          <router-view :key="key" />
-        </transition>
-      </div>
+      <transition name="fade-transform" mode="out-in">
+        <router-view :key="key" />
+      </transition>
     </section>
 
 </template>
@@ -46,7 +44,7 @@ export default {
 	.app-main {
 		/*50 = navbar  */
 		min-height: 100vh;
-		min-width: 1300px;
+		min-width: 1400px;
 		width: 100%;
 		position: relative;
 		overflow: auto;
@@ -70,7 +68,7 @@ export default {
 	}
 
 	.fixed-header+.app-main {
-		padding: 83px 0 0;
+		padding: 80px 24px 24px;
 	}
 </style>
 

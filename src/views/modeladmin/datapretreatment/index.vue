@@ -1,52 +1,57 @@
 <template>
-    <div style="position: relative">
-      <div style="position: absolute;top: -65px;right: -24px;z-index: 999">
-        <el-button-group>
-          <el-button @click="handleUploadShow" size="small">文件导入</el-button>
+    <div style="margin-top: -10px">
+      <div style="height: 34px">
+        <el-button-group style="float: right">
+          <el-button size="small" @click="handleUploadShow">文件导入</el-button>
           <el-button size="small">数据库导入</el-button>
         </el-button-group>
       </div>
-      <div class="flex bgc">
-        <div>
-          数据集名称:
-          <el-input style="width: 150px;margin-right: 20px" v-model="dataSet"></el-input>
-          类型:
-          <el-select v-model="dataType" style="margin-right: 20px">
-            <el-option
-              v-for="item in dataTypeOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
+      <el-card style="margin-top: 10px">
+        <div class="flex bgc">
+          <div>
+            数据集名称:
+            <el-input style="width: 150px;margin-right: 20px" v-model="dataSet"></el-input>
+            类型:
+            <el-select v-model="dataType" style="margin-right: 20px">
+              <el-option
+                v-for="item in dataTypeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+          <div>
+            <el-button type="primary">查 询</el-button>
+            <el-button type="warning">重 置</el-button>
+          </div>
         </div>
-        <div>
-          <el-button type="primary">查 询</el-button>
-          <el-button type="warning">重 置</el-button>
+        <div style="margin-top: 20px;">
+          <el-tabs v-model="activeName" @tab-click="handleClick">
+            <el-tab-pane label="数据解析" name="first" @click="dataResolveFun"></el-tab-pane>
+            <el-tab-pane label="数据过滤" name="second" @click="dataFilterFun"></el-tab-pane>
+            <el-tab-pane label="数据切分" name="third" @click="dataCutFun"></el-tab-pane>
+          </el-tabs>
+          <!--        <el-link type="primary" style="margin-right: 30px" @click="dataResolveFun">数据解析</el-link>-->
+          <!--        <el-link type="primary" style="margin-right: 30px" @click="dataFilterFun">数据过滤</el-link>-->
+          <!--        <el-link type="primary" style="margin-right: 20px" @click="dataCutFun">数据切分</el-link>-->
         </div>
-      </div>
-      <div style="margin-top: 20px;">
-        <el-tabs v-model="activeName" @tab-click="handleClick">
-          <el-tab-pane label="数据解析" name="first" @click="dataResolveFun"></el-tab-pane>
-          <el-tab-pane label="数据过滤" name="second" @click="dataFilterFun"></el-tab-pane>
-          <el-tab-pane label="数据切分" name="third" @click="dataCutFun"></el-tab-pane>
-        </el-tabs>
-<!--        <el-link type="primary" style="margin-right: 30px" @click="dataResolveFun">数据解析</el-link>-->
-<!--        <el-link type="primary" style="margin-right: 30px" @click="dataFilterFun">数据过滤</el-link>-->
-<!--        <el-link type="primary" style="margin-right: 20px" @click="dataCutFun">数据切分</el-link>-->
-      </div>
-      <jtable  :tableData="tableData"
-               :columnData="columnData"
-               :searchShow="true"
-               :downloadShow="true"
-               :deleteShow="true"
-               :selection="true"
-      @on-detail="handleSearchDetail">
-      </jtable>
+        <jtable  :tableData="tableData"
+                 :columnData="columnData"
+                 :searchShow="true"
+                 :downloadShow="true"
+                 :deleteShow="true"
+                 :selection="true"
+                 @on-detail="handleSearchDetail">
+        </jtable>
+      </el-card>
 
-      <div style="margin-top: 20px">
+
+
+
+      <div style="margin-top: 10px">
         <!--      数据解析-->
-        <div v-if="dataResolveShow">
+        <el-card v-if="dataResolveShow">
           <div style="margin-top: 10px">
             <el-button @click="jibenFun">基本统计</el-button>
             <el-button @click="huizhiFun">绘制趋势图</el-button>
@@ -150,20 +155,24 @@
 
           </div>
 
-        </div>
+        </el-card>
 
         <!--      数据过滤-->
         <div v-if="dataFilterShow">
+          <div style="height: 32px;">
             <el-button-group style="float: right">
               <el-button @click="guiyi">归一化</el-button>
               <el-button @click="biaozhun">标准化</el-button>
               <el-button @click="bianhua">数据变化</el-button>
             </el-button-group>
+          </div>
+
 <!--            <el-link type="primary" style="margin-right: 30px" @click="guiyi">归一化</el-link>-->
 <!--            <el-link type="primary" style="margin-right: 30px" @click="biaozhun">标准化</el-link>-->
 <!--            <el-link type="primary" style="margin-right: 20px" @click="bianhua">数据变化</el-link>-->
-          <div style="margin-top: 20px">
+          <div style="margin-top: 10px">
 
+            <el-card>
             <el-form ref="guiyiForm" :model="form" label-width="80px" v-if="guiyiShow">
               <el-form-item label="数据项">
                 <el-select v-model="form.region" placeholder="请选择活动区域">
@@ -225,10 +234,11 @@
                 <el-input type="textarea" v-model="form.desc"></el-input>
               </el-form-item>
             </el-form>
+            </el-card>
           </div>
         </div>
 
-        <div v-if="dataCutShow">
+        <el-card v-if="dataCutShow">
           <div style="margin-top: 10px">
             <el-form ref="guiyiForm" :model="form" label-width="80px">
               <el-form-item label="数据项">
@@ -266,7 +276,7 @@
             </el-form>
           </div>
 
-        </div>
+        </el-card>
       </div>
 
 <!--数据切分-->

@@ -1,7 +1,7 @@
 <template>
   <div :class="{'has-logo':showLogo}">
     <logo v-if="showLogo" :collapse="isCollapse" class="bgimg"/>
-    <div style="height: 47px;background: #17265a">
+    <div style="height: 40px;background: #17265a">
 <!--      <el-button plain>回到首页</el-button>-->
     </div>
     <el-scrollbar wrap-class="scrollbar-wrapper">

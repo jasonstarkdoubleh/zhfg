@@ -1,82 +1,82 @@
 <template>
   <div>
 
-    <div class="flex bgc">
-      <div>
-        经济数据类型:&nbsp;
-        <el-select v-model="priceType" placeholder="请选择" style="margin-right: 20px">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
-        指标名称:&nbsp;
-        <el-select v-model="priceType" placeholder="请选择" style="margin-right: 20px">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
-        预测时间段:&nbsp;
-        <el-date-picker
-          v-model="timeQuantum"
-          type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          style="margin-right: 20px">
-        </el-date-picker>
+    <el-card>
+      <div class="flex bgc">
+        <div>
+          经济数据类型:&nbsp;
+          <el-select v-model="priceType" placeholder="请选择" style="margin-right: 20px">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          指标名称:&nbsp;
+          <el-select v-model="priceType" placeholder="请选择" style="margin-right: 20px">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          预测时间段:&nbsp;
+          <el-date-picker
+            v-model="timeQuantum"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="margin-right: 20px">
+          </el-date-picker>
+        </div>
+        <div>
+          <el-button type="primary">查询</el-button>
+        </div>
       </div>
-      <div>
-        <el-button type="primary">查询</el-button>
-      </div>
-    </div>
 
-    <div style="margin-top: 10px;">
-      <el-card>
+      <el-card style="margin-top: 14px">
         <div slot="header">
           <span>中国居民消费价格指数</span>
         </div>
         <div id="CPI" style="height: 300px;width: 100%"></div>
       </el-card>
+    </el-card>
 
-      <div style="margin-top: 10px">
-        <el-table id="CPITABLE"
-                  :data="tableData"
-                  height="600"
-                  border
-                  stripe>
+    <el-card style="margin-top: 10px">
+      <el-table id="CPITABLE"
+                :data="tableData"
+                height="600"
+                border
+                stripe>
 
-          <el-table-column label="月份" align="center" prop="date" width="200"></el-table-column>
+        <el-table-column label="月份" align="center" prop="date" width="200"></el-table-column>
 
-          <el-table-column label="全国" align="center">
-            <el-table-column property="qmouth" label="当月" align="center"></el-table-column>
-            <el-table-column property="qyearUp" label="同比增长" align="center"></el-table-column>
-            <el-table-column property="qquarterUp" label="环比增长" align="center"></el-table-column>
-            <el-table-column property="qtotal" label="累计" align="center"></el-table-column>
-          </el-table-column>
+        <el-table-column label="全国" align="center">
+          <el-table-column property="qmouth" label="当月" align="center"></el-table-column>
+          <el-table-column property="qyearUp" label="同比增长" align="center"></el-table-column>
+          <el-table-column property="qquarterUp" label="环比增长" align="center"></el-table-column>
+          <el-table-column property="qtotal" label="累计" align="center"></el-table-column>
+        </el-table-column>
 
-          <el-table-column label="城市" align="center">
-            <el-table-column property="cmouth" label="当月" align="center"></el-table-column>
-            <el-table-column property="cyearUp" label="同比增长" align="center"></el-table-column>
-            <el-table-column property="cquarterUp" label="环比增长" align="center"></el-table-column>
-            <el-table-column property="ctotal" label="累计" align="center"></el-table-column>
-          </el-table-column>
+        <el-table-column label="城市" align="center">
+          <el-table-column property="cmouth" label="当月" align="center"></el-table-column>
+          <el-table-column property="cyearUp" label="同比增长" align="center"></el-table-column>
+          <el-table-column property="cquarterUp" label="环比增长" align="center"></el-table-column>
+          <el-table-column property="ctotal" label="累计" align="center"></el-table-column>
+        </el-table-column>
 
-          <el-table-column label="农村" align="center">
-            <el-table-column property="nmouth" label="当月" align="center"></el-table-column>
-            <el-table-column property="nyearUp" label="同比增长" align="center"></el-table-column>
-            <el-table-column property="nquarterUp" label="环比增长" align="center"></el-table-column>
-            <el-table-column property="ntotal" label="累计" align="center"></el-table-column>
-          </el-table-column>
+        <el-table-column label="农村" align="center">
+          <el-table-column property="nmouth" label="当月" align="center"></el-table-column>
+          <el-table-column property="nyearUp" label="同比增长" align="center"></el-table-column>
+          <el-table-column property="nquarterUp" label="环比增长" align="center"></el-table-column>
+          <el-table-column property="ntotal" label="累计" align="center"></el-table-column>
+        </el-table-column>
 
-        </el-table>
-      </div>
-    </div>
+      </el-table>
+    </el-card>
 
   </div>
 </template>

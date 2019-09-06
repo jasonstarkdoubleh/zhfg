@@ -1,56 +1,66 @@
 <template>
-  <div>
+  <div style="margin-top: -10px">
+
+    <div style="height: 34px">
+      <el-button-group style="float: right">
+        <el-button size="small" @click="handleCreateModel">创建模型</el-button>
+        <el-button size="small" @click="handleContrast">模型对比</el-button>
+      </el-button-group>
+    </div>
+
     <jtable  :tableData="tableData"
              :columnData="columnData"
-             :searchShow="true">
+             :searchShow="true"
+             style="margin-top: 10px">
 
 <!--  模型创建-->
       <div>
 
-        <div>
-          <el-button type="primary" @click="handleCreateModel">创建模型</el-button>
-        </div>
+        <el-card>
+          <div class="flex bgc">
+            <div>
+              <span>商品名称:</span>
+              <el-select v-model="goodsName" placeholder="请选择" size="small">
+                <el-option
+                  v-for="item in goodsNameOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </div>
+          </div>
 
-        <div style="margin-top: 10px">
-          <span>商品名称:</span>
-          <el-select v-model="goodsName" placeholder="请选择" size="small">
-            <el-option
-              v-for="item in goodsNameOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </div>
+          <div class="flex bgc">
+            <div>
+              <span>模型名称:</span>
+              <el-input style="width: 300px;margin-right: 20px" v-model="modelName" size="small"></el-input>
+              <span>算法:</span>
+              <el-select v-model="goodsName" placeholder="请选择" size="small" style="margin-right: 20px">
+                <el-option
+                  v-for="item in goodsNameOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+              <span>预测类型:</span>
+              <el-select v-model="goodsName" placeholder="请选择" size="small" style="margin-right: 30px">
+                <el-option
+                  v-for="item in goodsNameOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </div>
+            <div>
+              <el-button type="primary" style="margin-right: 10px">查 询</el-button>
+              <el-button>重 置</el-button>
+            </div>
+          </div>
+        </el-card>
 
-        <div style="margin-top: 10px">
-          <span>模型名称:</span>
-          <el-input style="width: 300px;margin-right: 20px" v-model="modelName" size="small"></el-input>
-          <span>算法:</span>
-          <el-select v-model="goodsName" placeholder="请选择" size="small" style="margin-right: 20px">
-            <el-option
-              v-for="item in goodsNameOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-          <span>预测类型:</span>
-          <el-select v-model="goodsName" placeholder="请选择" size="small" style="margin-right: 30px">
-            <el-option
-              v-for="item in goodsNameOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-          <el-button type="primary" size="small" style="margin-right: 10px">查 询</el-button>
-          <el-button size="small">重 置</el-button>
-        </div>
-
-        <div style="margin-top: 10px">
-          <el-button @click="handleContrast">模型对比</el-button>
-        </div>
 
       </div>
 

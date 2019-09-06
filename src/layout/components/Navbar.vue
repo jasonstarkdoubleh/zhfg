@@ -1,37 +1,41 @@
 <template>
-  <div class="navbar">
-    <!-- <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+  <div>
+    <div class="navbar">
+      <!-- <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
-    <breadcrumb class="breadcrumb-container" /> -->
-    <div style="color: #ffffff;font-size: 18px;font-weight: bolder;display: flex;align-items: center" @click="toggleSideBar">
-      <img style="width: 30px;height: 30px;margin-right: 2px;margin-top: 2px" src="../../assets/img/headerlogo.png" alt="智慧发改•价格大数据应用系统">
-      <span style="margin-left: 2px">智慧发改•价格大数据应用系统</span>
+      <breadcrumb class="breadcrumb-container" /> -->
+      <div style="color: #ffffff;font-size: 18px;font-weight: bolder;display: flex;align-items: center" @click="toggleSideBar">
+        <img style="width: 30px;height: 30px;margin-right: 2px;margin-top: 2px" src="../../assets/img/headerlogo.png" alt="智慧发改•价格大数据应用系统">
+        <span style="margin-left: 2px">智慧发改•价格大数据应用系统</span>
+      </div>
+      <!--    <div class="right-menu">-->
+      <!--      <el-dropdown class="avatar-container" trigger="click">-->
+      <!--        <div class="avatar-wrapper">-->
+      <!--          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">-->
+      <!--          <i class="el-icon-caret-bottom" style="color: #ffffff" />-->
+      <!--        </div>-->
+      <!--        <el-dropdown-menu slot="dropdown" class="user-dropdown">-->
+      <!--          <router-link to="/">-->
+      <!--            <el-dropdown-item>-->
+      <!--              Home-->
+      <!--            </el-dropdown-item>-->
+      <!--          </router-link>-->
+      <!--          <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">-->
+      <!--            <el-dropdown-item>Github</el-dropdown-item>-->
+      <!--          </a>-->
+      <!--          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">-->
+      <!--            <el-dropdown-item>Docs</el-dropdown-item>-->
+      <!--          </a>-->
+      <!--          <el-dropdown-item divided>-->
+      <!--            <span style="display:block;" @click="logout">Log Out</span>-->
+      <!--          </el-dropdown-item>-->
+      <!--        </el-dropdown-menu>-->
+      <!--      </el-dropdown>-->
+      <!--    </div>-->
     </div>
-<!--    <div class="right-menu">-->
-<!--      <el-dropdown class="avatar-container" trigger="click">-->
-<!--        <div class="avatar-wrapper">-->
-<!--          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">-->
-<!--          <i class="el-icon-caret-bottom" style="color: #ffffff" />-->
-<!--        </div>-->
-<!--        <el-dropdown-menu slot="dropdown" class="user-dropdown">-->
-<!--          <router-link to="/">-->
-<!--            <el-dropdown-item>-->
-<!--              Home-->
-<!--            </el-dropdown-item>-->
-<!--          </router-link>-->
-<!--          <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">-->
-<!--            <el-dropdown-item>Github</el-dropdown-item>-->
-<!--          </a>-->
-<!--          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">-->
-<!--            <el-dropdown-item>Docs</el-dropdown-item>-->
-<!--          </a>-->
-<!--          <el-dropdown-item divided>-->
-<!--            <span style="display:block;" @click="logout">Log Out</span>-->
-<!--          </el-dropdown-item>-->
-<!--        </el-dropdown-menu>-->
-<!--      </el-dropdown>-->
-<!--    </div>-->
+<!--    <div style="height: 10px;background-color: rgb(242, 242, 246)"></div>-->
   </div>
+
 </template>
 
 <script>
@@ -70,7 +74,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #fff;
   background-image: url("../../assets/img/header.png");
   background-repeat:no-repeat;
   background-size:100% 100%;

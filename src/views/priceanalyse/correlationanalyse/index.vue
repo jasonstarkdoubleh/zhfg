@@ -42,7 +42,7 @@
 
     </jtable>
 
-    <el-dialog :visible.sync="correlationShow" style="width: 1300px">
+    <el-dialog :visible.sync="correlationShow" fullscreen>
         <div>
           <div class="flex">
             <h3 style="color: #3a8ee6;padding-right: 5px">一般相关性分析</h3><div style="flex-grow:1;background: #3a8ee6;height: 3px;width: 100px"></div>
@@ -51,7 +51,7 @@
           <div class="flex bgc">
             <div>
               分析名称:&nbsp;
-              <el-input v-model="formInline.user" style="width: 150px;margin-right: 20px"></el-input>
+              <el-input v-model="formInline.user" style="margin-right: 20px"></el-input>
 
               分析描述:&nbsp;
               <el-select v-model="formInline.region" style="width: 150px;margin-right: 20px">
