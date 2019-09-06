@@ -1,51 +1,56 @@
 <template>
-    <div>
-      <div>
-        <el-button @click="handleUploadShow">文件导入</el-button>
-        <el-button>数据库导入</el-button>
+    <div style="position: relative">
+      <div style="position: absolute;top: -65px;right: -24px;z-index: 999">
+        <el-button-group>
+          <el-button @click="handleUploadShow" size="small">文件导入</el-button>
+          <el-button size="small">数据库导入</el-button>
+        </el-button-group>
       </div>
-      <div style="margin-top: 20px">
-        数据集名称:
-        <el-input  style="width: 150px;margin-right: 20px" v-model="dataSet"></el-input>
-        类型:
-        <el-select v-model="dataType" style="margin-right: 20px">
-          <el-option
-            v-for="item in dataTypeOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
-        <el-button type="primary">查询</el-button>
-        <el-button >重置</el-button>
+      <div class="flex bgc">
+        <div>
+          数据集名称:
+          <el-input style="width: 150px;margin-right: 20px" v-model="dataSet"></el-input>
+          类型:
+          <el-select v-model="dataType" style="margin-right: 20px">
+            <el-option
+              v-for="item in dataTypeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </div>
+        <div>
+          <el-button type="primary">查 询</el-button>
+          <el-button type="warning">重 置</el-button>
+        </div>
       </div>
       <div style="margin-top: 20px;">
-        <el-link type="primary" style="margin-right: 30px" @click="dataResolveFun">数据解析</el-link>
-        <el-link type="primary" style="margin-right: 30px" @click="dataFilterFun">数据过滤</el-link>
-        <el-link type="primary" style="margin-right: 20px" @click="dataCutFun">数据切分</el-link>
+        <el-tabs v-model="activeName" @tab-click="handleClick">
+          <el-tab-pane label="数据解析" name="first" @click="dataResolveFun"></el-tab-pane>
+          <el-tab-pane label="数据过滤" name="second" @click="dataFilterFun"></el-tab-pane>
+          <el-tab-pane label="数据切分" name="third" @click="dataCutFun"></el-tab-pane>
+        </el-tabs>
+<!--        <el-link type="primary" style="margin-right: 30px" @click="dataResolveFun">数据解析</el-link>-->
+<!--        <el-link type="primary" style="margin-right: 30px" @click="dataFilterFun">数据过滤</el-link>-->
+<!--        <el-link type="primary" style="margin-right: 20px" @click="dataCutFun">数据切分</el-link>-->
       </div>
-      <div style="margin-top: 20px">
-        <jtable  :tableData="tableData"
-                 :columnData="columnData"
-                 :searchShow="true"
-                 :downloadShow="true"
-                 :deleteShow="true"
-                 :selection="true"
-        @on-detail="handleSearchDetail">
-        </jtable>
-      </div>
+      <jtable  :tableData="tableData"
+               :columnData="columnData"
+               :searchShow="true"
+               :downloadShow="true"
+               :deleteShow="true"
+               :selection="true"
+      @on-detail="handleSearchDetail">
+      </jtable>
 
       <div style="margin-top: 20px">
         <!--      数据解析-->
         <div v-if="dataResolveShow">
-          <div>
-            数据解析
-          </div>
-          <hr style="margin-top: 10px">
           <div style="margin-top: 10px">
-            <el-button  style="margin-right: 20px" @click="jibenFun">基本统计</el-button>
-            <el-button  style="margin-right: 20px" @click="huizhiFun">绘制趋势图</el-button>
-            <el-button style="margin-right: 20px" @click="juzhengFun">相关性矩阵</el-button>
+            <el-button @click="jibenFun">基本统计</el-button>
+            <el-button @click="huizhiFun">绘制趋势图</el-button>
+            <el-button @click="juzhengFun">相关性矩阵</el-button>
           </div>
           <div style="margin-top: 20px">
             <!--          基本统计-->
@@ -87,7 +92,7 @@
                     :value="item.value">
                   </el-option>
                 </el-select>
-                <el-button type="primary" style="margin-right: 100px">绘图</el-button>
+                <el-button type="primary" style="margin-right: 100px">绘 图</el-button>
                 Y项:
                 <el-select v-model="dataType" style="margin-right: 20px">
                   <el-option
@@ -136,7 +141,7 @@
                     :value="item.value">
                   </el-option>
                 </el-select>
-                <el-button type="primary" >绘图</el-button>
+                <el-button type="primary" >绘 图</el-button>
               </div>
               <div style="margin-top: 30px">
                 <div id="JUXING" style="width: 100%;height: 500px"></div>
@@ -149,17 +154,14 @@
 
         <!--      数据过滤-->
         <div v-if="dataFilterShow">
-          <div>
-            数据过滤
-          </div>
-          <hr style="margin-top: 10px">
-          <div style="margin-top: 10px">
-            <span style="margin-right: 30px">处理方式:</span>
-            <el-link type="primary" style="margin-right: 30px" @click="guiyi">归一化</el-link>
-            <el-link type="primary" style="margin-right: 30px" @click="biaozhun">标准化</el-link>
-            <el-link type="primary" style="margin-right: 20px" @click="bianhua">数据变化</el-link>
-          </div>
-
+            <el-button-group style="float: right">
+              <el-button @click="guiyi">归一化</el-button>
+              <el-button @click="biaozhun">标准化</el-button>
+              <el-button @click="bianhua">数据变化</el-button>
+            </el-button-group>
+<!--            <el-link type="primary" style="margin-right: 30px" @click="guiyi">归一化</el-link>-->
+<!--            <el-link type="primary" style="margin-right: 30px" @click="biaozhun">标准化</el-link>-->
+<!--            <el-link type="primary" style="margin-right: 20px" @click="bianhua">数据变化</el-link>-->
           <div style="margin-top: 20px">
 
             <el-form ref="guiyiForm" :model="form" label-width="80px" v-if="guiyiShow">
@@ -227,10 +229,6 @@
         </div>
 
         <div v-if="dataCutShow">
-          <div>
-            数据切分
-          </div>
-          <hr style="margin-top: 10px">
           <div style="margin-top: 10px">
             <el-form ref="guiyiForm" :model="form" label-width="80px">
               <el-form-item label="数据项">
@@ -321,10 +319,6 @@
             </el-form-item>
           </el-form>
         </div>
-        <div>
-          数据实例
-        </div>
-        <hr style="margin-top: 10px">
         <div style="margin-top: 10px">
           <jtable  :tableData="tableData"
                    :columnData="columnData"
@@ -440,6 +434,7 @@
     export default {
         data(){
             return {
+                activeName:'first',
                 uploadShow:false,
                 qiefenShow:false,
                 biaozhunShow:false,
@@ -485,6 +480,9 @@
             }
         },
         methods:{
+            handleClick(tab, event) {
+                console.log(tab, event);
+            },
             handleUploadShow(){
               this.uploadShow = true
             },

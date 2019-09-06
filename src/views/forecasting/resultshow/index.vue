@@ -11,7 +11,7 @@
         <div>
 
           商品类型:
-          <el-select v-model="resultType" size="mini" style="margin-right: 20px">
+          <el-select v-model="resultType" style="margin-right: 20px">
             <el-option
               v-for="item in resultTypeOptions"
               :key="item.value"
@@ -21,7 +21,7 @@
           </el-select>
 
           商品大类:
-          <el-select v-model="resultName" size="mini" style="margin-right: 20px">
+          <el-select v-model="resultName" style="margin-right: 20px">
             <el-option
               v-for="item in resultNameOptions"
               :key="item.value"
@@ -31,7 +31,7 @@
           </el-select>
 
           预测类型:
-          <el-select v-model="yuceType" size="mini" style="margin-right: 20px">
+          <el-select v-model="yuceType" style="margin-right: 20px">
             <el-option
               v-for="item in yuceTypeOptions"
               :key="item.value"
@@ -41,10 +41,13 @@
           </el-select>
 
           商品名:
-          <el-input size="mini" style="width: 150px;margin-right: 20px" v-model="shangpingName"></el-input>
+          <el-input style="width: 150px;margin-right: 20px" v-model="shangpingName"></el-input>
 
-          <el-button type="primary" size="small">查询</el-button>
-          <el-button type="primary" size="small">重置</el-button>
+        </div>
+
+        <div>
+          <el-button type="primary">查询</el-button>
+          <el-button type="warning">重置</el-button>
         </div>
       </div>
 

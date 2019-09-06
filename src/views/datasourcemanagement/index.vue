@@ -31,9 +31,9 @@
 
         <div>
           <el-button type="primary">查 询</el-button>
-          <el-button type="success" @click="handleAdd">添 加</el-button>
-          <el-button type="primary">修 改</el-button>
-          <el-button type="success">删 除</el-button>
+          <el-button @click="handleAdd">添 加</el-button>
+          <el-button>修 改</el-button>
+          <el-button>删 除</el-button>
         </div>
       </div>
 

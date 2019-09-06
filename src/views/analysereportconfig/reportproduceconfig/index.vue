@@ -9,7 +9,7 @@
         <div>
 
           报告名称:
-          <el-select v-model="warningType" size="mini" style="margin-right: 20px">
+          <el-select v-model="warningType" style="margin-right: 20px">
             <el-option
               v-for="item in warningTypeOptions"
               :key="item.value"
@@ -19,7 +19,7 @@
           </el-select>
 
           报告状态:
-          <el-select v-model="warningName" size="mini">
+          <el-select v-model="warningName">
             <el-option
               v-for="item in warningNameOptions"
               :key="item.value"
@@ -29,7 +29,7 @@
           </el-select>
 
           调度模板:
-          <el-select v-model="warningName" size="mini">
+          <el-select v-model="warningName">
             <el-option
               v-for="item in warningNameOptions"
               :key="item.value"
@@ -40,8 +40,8 @@
         </div>
 
         <div>
-          <el-button type="primary" size="small">查询</el-button>
-          <el-button type="success" size="small" @click="handleCreate">新增</el-button>
+          <el-button type="primary">查 询</el-button>
+          <el-button @click="handleCreate">新 增</el-button>
         </div>
       </div>
 

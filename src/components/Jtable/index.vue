@@ -11,7 +11,7 @@
 <!--    </div>-->
 
     <!--    表格-->
-    <div style="margin-top: 10px" v-loading="loading">
+    <div style="margin-top: 14px" v-loading="loading">
       <el-table
         :data="tableData"
         border
@@ -116,7 +116,7 @@
       </el-table>
 
       <!--    分页-->
-      <div style="display: flex;justify-content: center;margin-top: 10px">
+      <div style="display: flex;justify-content: flex-end;margin-top: 14px">
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"

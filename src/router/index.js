@@ -143,13 +143,13 @@ export const constantRoutes = [
     path: '/forecasting',
     component: Layout,
     redirect: '/forecasting/resultshow',
-    meta: { title: '价格预测', icon: 'example' },
+    meta: { title: '预测分析', icon: 'example' },
     children: [
       {
         path: 'resultshow',
         name: 'Resultshow',
         component: () => import('@/views/forecasting/resultshow'),
-        meta: { title: '价格预测' },
+        meta: { title: '预测分析' },
       }
     ]
   },

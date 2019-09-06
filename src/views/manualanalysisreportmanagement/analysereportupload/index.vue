@@ -40,7 +40,7 @@
 
         <div>
           <el-button type="primary" >查 询</el-button>
-          <el-button type="success" @click="handleUpload">上 传</el-button>
+          <el-button @click="handleUpload">上 传</el-button>
         </div>
       </div>
 

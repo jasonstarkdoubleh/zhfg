@@ -1,6 +1,9 @@
 <template>
   <div :class="{'has-logo':showLogo}">
     <logo v-if="showLogo" :collapse="isCollapse" class="bgimg"/>
+    <div style="height: 47px;background: #17265a">
+<!--      <el-button plain>回到首页</el-button>-->
+    </div>
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
         :default-active="activeMenu"
@@ -57,6 +60,7 @@ export default {
 
 <style scoped>
   .bgimg {
-    background-image: url("../../../assets/img/bcg.png");
+    background: #12172b;
+    /*background-image: url("../../../assets/img/bcg.png");*/
   }
 </style>

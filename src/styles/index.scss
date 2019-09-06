@@ -13,6 +13,11 @@ body {
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
 }
 
+.el-menu-item.is-active {
+  color: #ffffff !important;
+  background-color: #2d84fe !important;
+}
+
 label {
   font-weight: 700;
 }
@@ -66,9 +71,9 @@ div:focus {
 }
 
 .bgc {
-  background: #ffffff;
+  background: #f0f0f2;
   padding: 0 20px;
-  height: 70px;
+  height: 60px;
 }
 
 .dialog-cancel {
