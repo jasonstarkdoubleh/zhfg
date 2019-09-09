@@ -6,7 +6,9 @@
       <!--      <breadcrumb class="breadcrumb-container" />-->
       <!--    </div>-->
       <transition name="fade-transform" mode="out-in">
-        <router-view :key="key" />
+        <keep-alive>
+          <router-view :key="key" />
+        </keep-alive>
       </transition>
     </section>
 

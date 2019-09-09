@@ -30,6 +30,39 @@ import Layout from '@/layout'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
+let system = 'priceSystem'
+let priceSystem = true        //价格监测
+let analysisSystem = true     //分析
+let lyricalSystem = true      //舆情
+let onlineSystem = true       //在线调研
+let modelSystem = true        //模型管理
+let dataSystem = true         //数据
+let adminSystem = true        //管理
+
+switch(system){
+  case "priceSystem":
+    priceSystem = false
+    break
+  case "analysisSystem":
+    analysisSystem = false
+    break
+  case "lyricalSystem":
+    lyricalSystem = false
+    break
+  case "onlineSystem":
+    onlineSystem = false
+    break
+  case "modelSystem":
+    modelSystem = false
+    break
+  case "dataSystem":
+    dataSystem = false
+    break
+  case "adminSystem":
+    adminSystem = false
+    break
+}
+
 export const constantRoutes = [
   {
     path: '/login',
@@ -43,17 +76,13 @@ export const constantRoutes = [
     hidden: true
   },
 
+  //价格监测系统
   {
     path: '/',
     component: Layout,
     redirect: '/pricewarning/pricewarningconfig/warningconfig',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      hidden: true,
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页配置', icon: 'dashboard' }
-    }]
+    meta: { title: "价格监测系统", icon: 'dashboard' },
+    hidden: true
   },
 
   //价格预警
@@ -62,6 +91,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/pricewarning/pricewarningconfig',
     meta: { title: '价格预警', icon: 'example' },
+    hidden: priceSystem,
     children: [
       {
         path: 'pricewarningconfig',
@@ -72,7 +102,7 @@ export const constantRoutes = [
             path: 'warningconfig',
             name: 'Warningconfig',
             component: () => import('@/views/pricewarning/pricewarningconfig/warningconfig'),
-            meta: { title: '预警配置' }
+            meta: { title: '预警配置' },
           },
           {
             path: 'goodsconfig',
@@ -97,6 +127,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/priceanalyse/censusanalyse',
     meta: { title: '价格分析', icon: 'example' },
+    hidden: priceSystem,
     children: [
       {
         path: 'censusanalyse',
@@ -144,6 +175,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/forecasting/resultshow',
     meta: { title: '预测分析', icon: 'example' },
+    hidden: priceSystem,
     children: [
       {
         path: 'resultshow',
@@ -154,34 +186,13 @@ export const constantRoutes = [
     ]
   },
 
-  //模型管理
-  {
-    path: '/modeladmin',
-    component: Layout,
-    redirect: '/modeladmin/datapretreatment',
-    meta: { title: '模型管理', icon: 'example' },
-    children: [
-      {
-        path: 'datapretreatment',
-        name: 'Datapretreatment',
-        component: () => import('@/views/modeladmin/datapretreatment'),
-        meta: { title: '数据预处理' },
-      },
-      {
-        path: 'modelcreate',
-        name: 'Modelcreate',
-        component: () => import('@/views/modeladmin/modelcreate'),
-        meta: { title: '模型创建' },
-      }
-    ]
-  },
-
   //分析报告配置
   {
     path: '/analysereportconfig',
     component: Layout,
     redirect: '/analysereportconfig/reportproduceconfig',
     meta: { title: '分析报告配置', icon: 'example' },
+    hidden: analysisSystem,
     children: [
       {
         path: 'reportproduceconfig',
@@ -198,6 +209,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/manualanalysisreportsearch/reporttaskwatch',
     meta: { title: '分析报告查看', icon: 'example' },
+    hidden: analysisSystem,
     children: [
       {
         path: 'reportsearch',
@@ -208,12 +220,36 @@ export const constantRoutes = [
     ]
   },
 
+  //模型管理
+  {
+    path: '/modeladmin',
+    component: Layout,
+    redirect: '/modeladmin/datapretreatment',
+    meta: { title: '模型管理', icon: 'example' },
+    hidden: modelSystem,
+    children: [
+      {
+        path: 'datapretreatment',
+        name: 'Datapretreatment',
+        component: () => import('@/views/modeladmin/datapretreatment'),
+        meta: { title: '数据预处理' },
+      },
+      {
+        path: 'modelcreate',
+        name: 'Modelcreate',
+        component: () => import('@/views/modeladmin/modelcreate'),
+        meta: { title: '模型创建' },
+      }
+    ]
+  },
+
   //数据源管理
   {
     path: '/datasourcemanagement',
     component: Layout,
     redirect: '/datasourcemanagement/index',
     meta: { title: '数据源管理', icon: 'example' },
+    hidden: dataSystem,
     children: [
       {
         path: 'index',

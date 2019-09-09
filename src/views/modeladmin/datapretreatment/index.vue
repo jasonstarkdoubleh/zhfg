@@ -49,7 +49,7 @@
 
 
 
-      <div style="margin-top: 10px">
+      <div style="margin-top: 20px">
         <!--      数据解析-->
         <el-card v-if="dataResolveShow">
           <div style="margin-top: 10px">
