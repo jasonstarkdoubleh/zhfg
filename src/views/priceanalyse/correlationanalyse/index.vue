@@ -7,13 +7,14 @@
       :searchShow="true"
       :statusShow="true"
       :deleteShow="true"
-      @on-detail="handlecorrelation">
+      @on-detail="handlecorrelation"
+    v-show="tableShow">
 
 <!--      相关性分析-->
       <div class="flex bgc">
         <div>
           分析名称:&nbsp;
-          <el-input style="width: 150px;margin-right: 20px" v-model="correlationName"></el-input>
+          <el-input style="width: 180px;margin-right: 20px" v-model="correlationName"></el-input>
 
           分析类型:&nbsp;
           <el-select v-model="warningName" style="margin-right: 20px">
@@ -42,127 +43,129 @@
 
     </jtable>
 
-    <el-dialog :visible.sync="correlationShow" fullscreen>
-        <div>
-          <div class="flex">
-            <h3 style="color: #3a8ee6;padding-right: 5px">一般相关性分析</h3><div style="flex-grow:1;background: #3a8ee6;height: 3px;width: 100px"></div>
-          </div>
-
-          <div class="flex bgc">
-            <div>
-              分析名称:&nbsp;
-              <el-input v-model="formInline.user" style="margin-right: 20px"></el-input>
-
-              分析描述:&nbsp;
-              <el-select v-model="formInline.region" style="width: 150px;margin-right: 20px">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-
-              数据集:&nbsp;
-              <el-input v-model="formInline.user" style="width: 150px;margin-right: 20px"></el-input>
-
-              变量选择:&nbsp;
-              <el-select v-model="formInline.region" style="width: 150px;margin-right: 20px">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-
-              版本信息:&nbsp;
-              <el-input v-model="formInline.user" style="width: 150px;margin-right: 20px"></el-input>
-            </div>
-
-            <el-button type="primary">运行</el-button>
-          </div>
-
+    <div v-show="correlationShow">
+      <div>
+        <div class="flex">
+          <h3 style="color: #3a8ee6;padding-right: 5px">一般相关性分析</h3><div style="flex-grow:1;background: #3a8ee6;height: 3px;width: 100px"></div>
         </div>
 
-        <div style="margin-top: 10px">
-          <div class="flex">
-            <h3 style="color: #3a8ee6;padding-right: 5px">相关性结果</h3><div style="flex-grow:1;background: #3a8ee6;height: 3px;width: 100px"></div>
-          </div>
-          <div class="flex bgc">
-            <div>
-              审批人:&nbsp;
-              <el-input v-model="formInline.user" style="width: 150px;margin-right: 20px"></el-input>
+        <div class="flex bgc">
+          <div>
+            分析名称:&nbsp;
+            <el-input v-model="formInline.user" style="width: 150px;margin-right: 20px"></el-input>
 
-              活动区域:&nbsp;
-              <el-select v-model="formInline.region" style="width: 150px;margin-right: 20px">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-            </div>
+            分析描述:&nbsp;
+            <el-select v-model="formInline.region" style="width: 150px;margin-right: 20px">
+              <el-option label="区域一" value="shanghai"></el-option>
+              <el-option label="区域二" value="beijing"></el-option>
+            </el-select>
+
+            数据集:&nbsp;
+            <el-input v-model="formInline.user" style="width: 150px;margin-right: 20px"></el-input>
+
+            变量选择:&nbsp;
+            <el-select v-model="formInline.region" style="width: 150px;margin-right: 20px">
+              <el-option label="区域一" value="shanghai"></el-option>
+              <el-option label="区域二" value="beijing"></el-option>
+            </el-select>
+
+            版本信息:&nbsp;
+            <el-input v-model="formInline.user" style="width: 150px;margin-right: 20px"></el-input>
+          </div>
+
+          <el-button type="primary">运行</el-button>
+        </div>
+
+      </div>
+
+      <div style="margin-top: 10px">
+        <div class="flex">
+          <h3 style="color: #3a8ee6;padding-right: 5px">相关性结果</h3><div style="flex-grow:1;background: #3a8ee6;height: 3px;width: 100px"></div>
+        </div>
+        <div class="flex bgc">
+          <div>
+            审批人:&nbsp;
+            <el-input v-model="formInline.user" style="width: 150px;margin-right: 20px"></el-input>
+
+            活动区域:&nbsp;
+            <el-select v-model="formInline.region" style="width: 150px;margin-right: 20px">
+              <el-option label="区域一" value="shanghai"></el-option>
+              <el-option label="区域二" value="beijing"></el-option>
+            </el-select>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 10px">
+        <div class="flex">
+          <h3 style="color: #3a8ee6;padding-right: 5px">相关性图</h3><div style="flex-grow:1;background: #3a8ee6;height: 3px;width: 100px"></div>
+        </div>
+        <div style="height: 500px;background: #f0f0f1;box-sizing: border-box;border: 1px solid #f0f0f1">
+          <div id="cookTble" style="width: 70%;height: 400px;margin: 50px auto 0"></div>
+        </div>
+
+      </div>
+
+      <div style="margin-top: 10px">
+        <div class="flex-justify bgc" style="align-items: center;background: #eeeeee">
+          <div>
+            <h3 style="display: inline-block;margin-right: 60px">相关性表</h3>
+          </div>
+
+          <div>
+            查找变量:&nbsp;
+            <el-select v-model="searchQuantity" placeholder="请选择" style="margin-right: 20px">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <el-button type="primary">下载表格</el-button>
           </div>
         </div>
 
-        <div style="margin-top: 10px">
-          <div class="flex">
-            <h3 style="color: #3a8ee6;padding-right: 5px">相关性图</h3><div style="flex-grow:1;background: #3a8ee6;height: 3px;width: 100px"></div>
-          </div>
-          <div style="height: 500px;background: #f0f0f1;box-sizing: border-box;border: 1px solid #f0f0f1">
-            <div id="cookTble" style="width: 70%;height: 400px;margin: 50px auto 0"></div>
-          </div>
+        <div style="margin-top: 5px">
+          <el-table id="QUANTITY"
+                    :data="dialogTableData"
+                    max-height="600"
+                    border
+                    stripe>
 
+            <el-table-column label="" align="center" prop="lie" width="200"></el-table-column>
+
+            <el-table-column label="猪生产价格指数" align="center">
+              <el-table-column property="zxiangguan" label="相关系数" align="center"></el-table-column>
+              <el-table-column property="zpvalue" label="Pvalue" align="center"></el-table-column>
+            </el-table-column>
+
+            <el-table-column label="粮食产量" align="center">
+              <el-table-column property="lxiangguan" label="相关系数" align="center"></el-table-column>
+              <el-table-column property="lpvalue" label="Pvalue" align="center"></el-table-column>
+            </el-table-column>
+
+            <el-table-column label="粮食相关指数" align="center">
+              <el-table-column property="sxiangguan" label="相关系数" align="center"></el-table-column>
+              <el-table-column property="spvalue" label="Pvalue" align="center"></el-table-column>
+            </el-table-column>
+
+            <el-table-column label="人均纯收入" align="center">
+              <el-table-column property="rxiangguan" label="相关系数" align="center"></el-table-column>
+              <el-table-column property="rpvalue" label="Pvalue" align="center"></el-table-column>
+            </el-table-column>
+
+            <el-table-column label="人均猪肉消费类" align="center">
+              <el-table-column property="jxiangguan" label="相关系数" align="center"></el-table-column>
+              <el-table-column property="jpvalue" label="Pvalue" align="center"></el-table-column>
+            </el-table-column>
+
+          </el-table>
         </div>
+      </div>
 
-        <div style="margin-top: 10px">
-          <div class="flex-justify bgc" style="align-items: center;background: #eeeeee">
-            <div>
-              <h3 style="display: inline-block;margin-right: 60px">相关性表</h3>
-            </div>
+    </div>
 
-            <div>
-              查找变量:&nbsp;
-              <el-select v-model="searchQuantity" placeholder="请选择" style="margin-right: 20px">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-              <el-button type="primary">下载表格</el-button>
-            </div>
-          </div>
-
-          <div style="margin-top: 5px">
-            <el-table id="QUANTITY"
-                      :data="dialogTableData"
-                      max-height="600"
-                      border
-                      stripe>
-
-              <el-table-column label="" align="center" prop="lie" width="200"></el-table-column>
-
-              <el-table-column label="猪生产价格指数" align="center">
-                <el-table-column property="zxiangguan" label="相关系数" align="center"></el-table-column>
-                <el-table-column property="zpvalue" label="Pvalue" align="center"></el-table-column>
-              </el-table-column>
-
-              <el-table-column label="粮食产量" align="center">
-                <el-table-column property="lxiangguan" label="相关系数" align="center"></el-table-column>
-                <el-table-column property="lpvalue" label="Pvalue" align="center"></el-table-column>
-              </el-table-column>
-
-              <el-table-column label="粮食相关指数" align="center">
-                <el-table-column property="sxiangguan" label="相关系数" align="center"></el-table-column>
-                <el-table-column property="spvalue" label="Pvalue" align="center"></el-table-column>
-              </el-table-column>
-
-              <el-table-column label="人均纯收入" align="center">
-                <el-table-column property="rxiangguan" label="相关系数" align="center"></el-table-column>
-                <el-table-column property="rpvalue" label="Pvalue" align="center"></el-table-column>
-              </el-table-column>
-
-              <el-table-column label="人均猪肉消费类" align="center">
-                <el-table-column property="jxiangguan" label="相关系数" align="center"></el-table-column>
-                <el-table-column property="jpvalue" label="Pvalue" align="center"></el-table-column>
-              </el-table-column>
-
-            </el-table>
-          </div>
-        </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -171,6 +174,7 @@
     export default {
         data(){
             return {
+                tableShow: true,
                 warningName:'',
                 warningNameOptions:[],
                 correlationName: '',                        //分析名称
@@ -285,10 +289,11 @@
         },
         methods: {
             handlecorrelation(){
-              this.correlationShow = true
-              this.$nextTick(() => {
-                  this.drawCook()
-              })
+                this.tableShow = false
+                this.correlationShow = true
+                this.$nextTick(() => {
+                    this.drawCook()
+                })
             },
             drawCook(){
                 // 基于准备好的dom，初始化echarts实例

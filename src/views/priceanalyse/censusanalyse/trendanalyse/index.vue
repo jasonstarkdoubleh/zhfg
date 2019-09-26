@@ -1,150 +1,69 @@
 <template>
-  <div class="trend-analyse">
-    <div class="flex-justify">
-      <el-card class="card-width" >
-        <div slot="header" class="clearfix">
-          <i class="el-icon-menu" style="margin-right: 2px"></i><span>民生商品</span>
-        </div>
+  <div>
 
-        <div v-for="(obj,index) in priceData" :key="index" class="text item" style="height: 30px;box-sizing: border-box;border-bottom: 1px #f0f0f1 dashed;">
-          <el-row :gutter="10">
-            <el-col :span="4">
-              <el-tag size="small" type="warning" style="position: relative;top: -3px" v-if="index % 2 === 1">{{obj.label}}</el-tag>
-              <el-tag size="small" type="success" style="position: relative;top: -3px" v-else>{{obj.label}}</el-tag>
-            </el-col>
-            <el-col :span="16" style="padding: 0">
-              <div style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden">
-                <el-link type="info" v-for="(val,index) in obj.value" :key="index" style="margin-right: 20px;" @click="handleWarningShow">
-                  {{ val }}
-                </el-link>
+    <div style="background-color: #ffffff;padding: 10px;margin-top: 10px">
+      <div style="font-size: 16px;padding: 3px 0;border-bottom: 1px dashed #eeeeee">
+        <span style="margin-left: 10px">民生商品</span>
+      </div>
+      <div style="display: flex;flex-wrap: wrap">
+        <template v-for="item in minsheng">
+          <div style="width: 288px;height: 136px;border: 1px solid #eeeeee;padding: 8px 14px;border-radius: 3px;margin: 10px 5px 0">
+            <div style="display: flex;justify-content: space-between;align-items: center;padding-bottom: 6px;border-bottom: 1px solid #eeeeee">
+              <div style="display:flex;align-items: center">
+                <div style="width: 46px;height: 46px;margin-right: 15px">
+                  <img :src="require(`../../../../../public/img/${item.name}.png`)" :alt="item.name">
+                </div>
+                <span :style="{letterSpacing: '5px',fontSize: '16px',color: item.color}">
+                  {{ item.name }}
+                </span>
               </div>
-            </el-col>
-            <el-col :span="4">
-              <el-link type="info" @click="handleWarningShow" style="margin-left: 20px">
-                更多<i class="el-icon-arrow-right"></i>
-              </el-link>
-            </el-col>
-          </el-row>
-        </div>
-      </el-card>
-
-      <el-card class="card-width" >
-        <div slot="header" class="clearfix">
-          <i class="el-icon-menu" style="margin-right: 2px"></i><span>大宗商品</span>
-        </div>
-
-        <div v-for="(obj,index) in priceData" :key="index" class="text item" style="height: 30px;box-sizing: border-box;border-bottom: 1px #f0f0f1 dashed">
-          <el-row :gutter="10">
-            <el-col :span="4">
-              <el-tag size="small" type="warning" style="position: relative;top: -3px" v-if="index % 2 === 1">{{obj.label}}</el-tag>
-              <el-tag size="small" type="success" style="position: relative;top: -3px" v-else>{{obj.label}}</el-tag>
-            </el-col>
-            <el-col :span="16" style="padding: 0">
-              <div style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden">
-                <el-link type="info" v-for="(val,index) in obj.value" :key="index" style="margin-right: 20px;" @click="handleWarningShow">
-                  {{ val }}
-                </el-link>
+              <div style="width: 6px;height: 20px">
+                <img src="../../../../../public/img/更多.png" alt="">
               </div>
-            </el-col>
-            <el-col :span="4">
-              <el-link type="info" @click="handleWarningShow" style="margin-left: 20px">
-                更多<i class="el-icon-arrow-right"></i>
-              </el-link>
-            </el-col>
-          </el-row>
-        </div>
-      </el-card>
+            </div>
+            <div style="line-height: 75px;color: #8090b0;letter-spacing: 2px;text-align: center">
+              <span v-for="(item, index) in xiangmu" @click="goShow" :key="index" :style="{borderRight: index === 4 ? ' ':'1px dashed #cccccc', margin: '0 5px', cursor:'pointer'}">
+                {{ item }}
+              </span>
+            </div>
+          </div>
+        </template>
+      </div>
+
+
     </div>
 
-    <el-dialog :visible.sync="warningShow" fullscreen>
-      <div class="flex-align bgc">
-        <span style="margin-right: 30px;font-size: 15px">预警商品:</span>
-        <el-radio v-model="radio" label="1" border size="small">生猪</el-radio>
-        <el-radio v-model="radio" label="2" border size="small">猪肉</el-radio>
-        <el-radio v-model="radio" label="3" border size="small">仔猪</el-radio>
-        <el-radio v-model="radio" label="3" border size="small">猪三元</el-radio>
+    <div style="background-color: #ffffff;padding: 10px;margin-top: 10px">
+      <div style="font-size: 16px;padding: 3px 0;border-bottom: 1px dashed #eeeeee">
+        <span style="margin-left: 10px">大宗商品</span>
       </div>
-      <div style="margin-top: 10px">
-        <el-tabs v-model="activeName" @tab-click="handleClick">
-          <el-tab-pane label="生产" name="first">
-            <div class="flex-justify">
-              <el-card style="width: 30%;margin-right: 10px">
-                <div slot="header" class="clearfix">
-                  <span>生猪 -- 猪肉信息</span>
+      <div style="display: flex;flex-wrap: wrap">
+        <template v-for="item in dazong">
+          <div style="width: 288px;height: 136px;border: 1px solid #eeeeee;padding: 8px 14px;border-radius: 3px;margin: 10px 5px 0">
+            <div style="display: flex;justify-content: space-between;align-items: center;padding-bottom: 6px;border-bottom: 1px solid #eeeeee">
+              <div style="display:flex;align-items: center">
+                <div style="width: 46px;height: 46px;margin-right: 15px">
+                  <img :src="require(`../../../../../public/img/${item.name}.png`)" :alt="item.name">
                 </div>
-                <div style="margin: 10px 0;display: flex;justify-content: space-between">
-                  <el-date-picker
-                    v-model="dateSearch"
-                    size="small"
-                    type="daterange"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期">
-                  </el-date-picker>
-                  <el-button size="small" type="primary" style="margin-left: 20px">查询</el-button>
-                </div>
-
-                <el-table
-                  :data="tableData"
-                  style="width: 100%">
-                  <el-table-column
-                    prop="price"
-                    label="时间">
-                  </el-table-column>
-                  <el-table-column
-                    prop="price"
-                    label="猪肉产量(万吨)">
-                  </el-table-column>
-                </el-table>
-                <el-table
-                  :data="tableData"
-                  style="width: 100%">
-                  <el-table-column
-                    prop="price"
-                    label="时间">
-                  </el-table-column>
-                  <el-table-column
-                    prop="price"
-                    label="屠宰量(万吨)">
-                  </el-table-column>
-                </el-table>
-                <el-table
-                  :data="tableData"
-                  style="width: 100%">
-                  <el-table-column
-                    prop="price"
-                    label="时间">
-                  </el-table-column>
-                  <el-table-column
-                    prop="price"
-                    label="开工率">
-                  </el-table-column>
-                </el-table>
-              </el-card>
-
-              <el-card style="width: calc(70% - 10px)">
-                <div slot="header" class="clearfix">
-                  <span>生猪 -- 猪肉生产趋势</span>
-                </div>
-                <div style="display: flex;justify-content: flex-end;position: relative;top: 40px;right: 80px">
-                  <el-radio v-model="testData" label="1" @click.native="handleTrend">折线柱状图</el-radio>
-                  <el-radio v-model="testData" label="2" @click.native="handleSandian">散点K线图</el-radio>
-                </div>
-                <div id="TREND" style="width: 100%;height: 300px;margin-top: 20px" v-if="trendShow"></div>
-                <div id="SANDIAN" style="width: 100%;height: 300px;margin-top: 20px" v-if="sandianShow"></div>
-              </el-card>
+                <span :style="{letterSpacing: '5px',fontSize: '16px',color: item.color}">
+                  {{ item.name }}
+                </span>
+              </div>
+              <div style="width: 6px;height: 20px">
+                <img src="../../../../../public/img/更多.png" alt="">
+              </div>
             </div>
-          </el-tab-pane>
-
-          <el-tab-pane label="流通" name="second">流通</el-tab-pane>
-          <el-tab-pane label="价格" name="third">价格</el-tab-pane>
-          <el-tab-pane label="消费" name="fouth">消费</el-tab-pane>
-          <el-tab-pane label="贸易" name="fifth">贸易</el-tab-pane>
-          <el-tab-pane label="成本收益" name="sixth">成本收益</el-tab-pane>
-          <el-tab-pane label="舆情" name="seventh">舆情</el-tab-pane>
-        </el-tabs>
+            <div style="line-height: 75px;color: #8090b0;letter-spacing: 2px;text-align: center">
+              <span v-for="(item, index) in xiangmu" @click="goShow" :key="index" :style="{borderRight: index === 4 ? ' ':'1px dashed #cccccc', margin: '0 5px', cursor:'pointer'}">
+                {{ item }}
+              </span>
+            </div>
+          </div>
+        </template>
       </div>
-    </el-dialog>
+
+
+    </div>
 
   </div>
 </template>
@@ -153,453 +72,44 @@
     export default {
         data(){
             return {
-                testData:'1',
-                tableData:[],
-                trendShow:true,
-                sandianShow:false,
-                data:{},
-                dateSearch:'',
-                activeName:'first',
-                radio:'1',
-                warningShow:false,
-                priceData:[{
-                    label:'水果',
-                    value:['苹果','香蕉','橙子','梨','西瓜']
+                minsheng: [{
+                    name: '水果',
+                    color: '#1389ff'
+                }, {
+                    name: '蔬菜',
+                    color: '#fbcf48'
                 },{
-                    label:'水果',
-                    value:['苹果','香蕉','橙子','梨','西瓜','苹果','香蕉','橙子','梨','西瓜','苹果','香蕉','橙子','梨','西瓜','苹果','香蕉','橙子','梨','西瓜']
+                    name: '调味品',
+                    color: '#0099ff'
                 },{
-                    label:'水果',
-                    value:['苹果','香蕉','橙子','梨','西瓜']
+                    name: '奶制品',
+                    color: '#ffb137'
                 },{
-                    label:'水果',
-                    value:['苹果','香蕉','橙子','梨','西瓜']
-                },{
-                    label:'水果',
-                    value:['苹果','香蕉','橙子','梨','西瓜']
-                },{
-                    label:'水果',
-                    value:['苹果','香蕉','橙子','梨','西瓜']
-                },{
-                    label:'水果',
-                    value:['苹果','香蕉','橙子','梨','西瓜']
-                },{
-                    label:'水果',
-                    value:['苹果','香蕉','橙子','梨','西瓜']
-                },{
-                    label:'水果',
-                    value:['苹果','香蕉','橙子','梨','西瓜']
+                    name: '水',
+                    color: '#4ce3c9'
                 }],
-                num: 0
+                dazong: [{
+                    name: '能源',
+                    color: '#94c04e'
+                },{
+                    name: '钢铁',
+                    color: '#2da9e9'
+                },{
+                    name: '建材',
+                    color: '#ef7633'
+                }],
+                xiangmu: ['苹果', '香蕉', '橙子', '梨', '西瓜'],
+                images:['../../../../assets/img/水果.png']
             }
-        },
-        computed:{
         },
         methods:{
-            handleTrend(){
-                this.trendShow = true
-                this.sandianShow = false
-                this.$nextTick(() => {
-                    this.drawLine()
-                })
-            },
-            handleSandian(){
-                this.trendShow = false
-                this.sandianShow = true
-                this.$nextTick(() => {
-                    this.drawSandian()
-                })
-            },
-            handleClick(tab, event) {
-                console.log(tab, event);
-            },
-            handleWarningShow(){
-                this.warningShow = true;
-                this.$nextTick(() => {
-                    this.drawLine();
-                })
-
-            },
-            drawLine(){
-                // 基于准备好的dom，初始化echarts实例
-                let myChart = echarts.init(document.getElementById('TREND'))
-                // 绘制图表
-                let option = {
-                    title : {
-                        text: '',
-                        subtext: ''
-                    },
-                    tooltip : {
-                        trigger: 'axis'
-                    },
-                    legend: {
-                        data:['最新成交价', '预购队列'],
-                        y: 'bottom'
-                    },
-                    toolbox: {
-                        show : false,
-                        feature : {
-                            mark : {show: true},
-                            dataView : {show: true, readOnly: false},
-                            magicType : {show: true, type: ['line', 'bar']},
-                            // magicType : {show: true, type: ['scatter']},
-                            restore : {show: true},
-                            saveAsImage : {show: true}
-                        }
-                    },
-                    dataZoom : {
-                        show : false,
-                        start : 0,
-                        end : 100
-                    },
-                    xAxis : [
-                        {
-                            type : 'category',
-                            boundaryGap : true,
-                            data : (function (){
-                                let now = new Date();
-                                let res = [];
-                                let len = 10;
-                                while (len--) {
-                                    res.unshift(now.toLocaleTimeString().replace(/^\D*/,''));
-                                    now = new Date(now - 2000);
-                                }
-                                return res;
-                            })()
-                        },
-                        {
-                            type : 'category',
-                            boundaryGap : true,
-                            data : (function (){
-                                let res = [];
-                                let len = 10;
-                                while (len--) {
-                                    res.push(len + 1);
-                                }
-                                return res;
-                            })()
-                        }
-                    ],
-                    yAxis : [
-                        {
-                            type : 'value',
-                            scale: true,
-                            name : '价格',
-                            boundaryGap: [0.2, 0.2]
-                        },
-                        {
-                            type : 'value',
-                            scale: true,
-                            name : '预购量',
-                            boundaryGap: [0.2, 0.2]
-                        }
-                    ],
-                    series : [
-                        {
-                            name:'预购队列',
-                            type:'bar',
-                            xAxisIndex: 1,
-                            yAxisIndex: 1,
-                            data:(function (){
-                                let res = [];
-                                let len = 10;
-                                while (len--) {
-                                    res.push(Math.round(Math.random() * 1000));
-                                }
-                                return res;
-                            })()
-                        },
-                        {
-                            name:'最新成交价',
-                            type:'line',
-                            data:(function (){
-                                let res = [];
-                                let len = 10;
-                                while (len--) {
-                                    res.push((Math.random()*10 + 5).toFixed(1) - 0);
-                                }
-                                return res;
-                            })()
-                        }
-                    ]
-                };
-                let lastData = 11;
-                let axisData;
-                let timeTicket
-                clearInterval(timeTicket);
-                timeTicket = setInterval(() => {
-                    lastData += Math.random() * ((Math.round(Math.random() * 10) % 2) == 0 ? 1 : -1);
-                    lastData = lastData.toFixed(1) - 0;
-                    axisData = (new Date()).toLocaleTimeString().replace(/^\D*/,'');
-
-                    // 动态数据接口 addData
-                    myChart.addData([
-                        [
-                            0,        // 系列索引
-                            Math.round(Math.random() * 1000), // 新增数据
-                            true,     // 新增数据是否从队列头部插入
-                            false     // 是否增加队列长度，false则自定删除原有数据，队头插入删队尾，队尾插入删队头
-                        ],
-                        [
-                            1,        // 系列索引
-                            lastData, // 新增数据
-                            false,    // 新增数据是否从队列头部插入
-                            false,    // 是否增加队列长度，false则自定删除原有数据，队头插入删队尾，队尾插入删队头
-                            axisData  // 坐标轴标签
-                        ]
-                    ]);
-                }, 2100);
-                myChart.setOption(option);
-            },
-            drawSandian(){
-                // 基于准备好的dom，初始化echarts实例
-                let myChart = echarts.init(document.getElementById('SANDIAN'))
-                // 绘制图表
-                let option = {
-                    title : {
-                        text: '',
-                        subtext: ''
-                    },
-                    tooltip : {
-                        trigger: 'axis'
-                    },
-                    legend: {
-                        data:['上证指数', '随机数据']
-                    },
-                    toolbox: {
-                        show : true,
-                        feature : {
-                            mark : {show: true},
-                            dataView : {show: true, readOnly: false},
-                            restore : {show: true},
-                            saveAsImage : {show: true}
-                        }
-                    },
-                    dataZoom : {
-                        show : false,
-                        realtime: true,
-                        start : 50,
-                        end : 100
-                    },
-                    xAxis : [
-                        {
-                            type : 'category',
-                            boundaryGap : true,
-                            data : [
-                                "2013/1/24", "2013/1/25", "2013/1/28", "2013/1/29", "2013/1/30",
-                                "2013/1/31", "2013/2/1", "2013/2/4", "2013/2/5", "2013/2/6",
-                                "2013/2/7", "2013/2/8", "2013/2/18", "2013/2/19", "2013/2/20",
-                                "2013/2/21", "2013/2/22", "2013/2/25", "2013/2/26", "2013/2/27",
-                                "2013/2/28", "2013/3/1", "2013/3/4", "2013/3/5", "2013/3/6",
-                                "2013/3/7", "2013/3/8", "2013/3/11", "2013/3/12", "2013/3/13",
-                                "2013/3/14", "2013/3/15", "2013/3/18", "2013/3/19", "2013/3/20",
-                                "2013/3/21", "2013/3/22", "2013/3/25", "2013/3/26", "2013/3/27",
-                                "2013/3/28", "2013/3/29", "2013/4/1", "2013/4/2", "2013/4/3",
-                                "2013/4/8", "2013/4/9", "2013/4/10", "2013/4/11", "2013/4/12",
-                                "2013/4/15", "2013/4/16", "2013/4/17", "2013/4/18", "2013/4/19",
-                                "2013/4/22", "2013/4/23", "2013/4/24", "2013/4/25", "2013/4/26",
-                                "2013/5/2", "2013/5/3", "2013/5/6", "2013/5/7", "2013/5/8",
-                                "2013/5/9", "2013/5/10", "2013/5/13", "2013/5/14", "2013/5/15",
-                                "2013/5/16", "2013/5/17", "2013/5/20", "2013/5/21", "2013/5/22",
-                                "2013/5/23", "2013/5/24", "2013/5/27", "2013/5/28", "2013/5/29",
-                                "2013/5/30", "2013/5/31", "2013/6/3", "2013/6/4", "2013/6/5",
-                                "2013/6/6", "2013/6/7", "2013/6/13"
-                            ]
-                        },
-                        {
-                            type : 'value',
-                            max:100,
-                            scale: true
-                        }
-                    ],
-                    yAxis : [
-                        {
-                            type : 'value',
-                            scale:true,
-                            splitNumber: 5,
-                            boundaryGap: [0.05, 0.05]
-                        },
-                        {
-                            type : 'value',
-                            splitNumber: 5,
-                            scale: true
-                        }
-                    ],
-                    series : [
-                        {
-                            name:'上证指数',
-                            type:'k',
-                            data:[ // 开盘，收盘，最低，最高
-                                [2320.26,2302.6,2287.3,2362.94],
-                                [2300,2291.3,2288.26,2308.38],
-                                [2295.35,2346.5,2295.35,2346.92],
-                                [2347.22,2358.98,2337.35,2363.8],
-                                [2360.75,2382.48,2347.89,2383.76],
-                                [2383.43,2385.42,2371.23,2391.82],
-                                [2377.41,2419.02,2369.57,2421.15],
-                                [2425.92,2428.15,2417.58,2440.38],
-                                [2411,2433.13,2403.3,2437.42],
-                                [2432.68,2434.48,2427.7,2441.73],
-                                [2430.69,2418.53,2394.22,2433.89],
-                                [2416.62,2432.4,2414.4,2443.03],
-                                [2441.91,2421.56,2415.43,2444.8],
-                                [2420.26,2382.91,2373.53,2427.07],
-                                [2383.49,2397.18,2370.61,2397.94],
-                                [2378.82,2325.95,2309.17,2378.82],
-                                [2322.94,2314.16,2308.76,2330.88],
-                                [2320.62,2325.82,2315.01,2338.78],
-                                [2313.74,2293.34,2289.89,2340.71],
-                                [2297.77,2313.22,2292.03,2324.63],
-                                [2322.32,2365.59,2308.92,2366.16],
-                                [2364.54,2359.51,2330.86,2369.65],
-                                [2332.08,2273.4,2259.25,2333.54],
-                                [2274.81,2326.31,2270.1,2328.14],
-                                [2333.61,2347.18,2321.6,2351.44],
-                                [2340.44,2324.29,2304.27,2352.02],
-                                [2326.42,2318.61,2314.59,2333.67],
-                                [2314.68,2310.59,2296.58,2320.96],
-                                [2309.16,2286.6,2264.83,2333.29],
-                                [2282.17,2263.97,2253.25,2286.33],
-                                [2255.77,2270.28,2253.31,2276.22],
-                                [2269.31,2278.4,2250,2312.08],
-                                [2267.29,2240.02,2239.21,2276.05],
-                                [2244.26,2257.43,2232.02,2261.31],
-                                [2257.74,2317.37,2257.42,2317.86],
-                                [2318.21,2324.24,2311.6,2330.81],
-                                [2321.4,2328.28,2314.97,2332],
-                                [2334.74,2326.72,2319.91,2344.89],
-                                [2318.58,2297.67,2281.12,2319.99],
-                                [2299.38,2301.26,2289,2323.48],
-                                [2273.55,2236.3,2232.91,2273.55],
-                                [2238.49,2236.62,2228.81,2246.87],
-                                [2229.46,2234.4,2227.31,2243.95],
-                                [2234.9,2227.74,2220.44,2253.42],
-                                [2232.69,2225.29,2217.25,2241.34],
-                                [2196.24,2211.59,2180.67,2212.59],
-                                [2215.47,2225.77,2215.47,2234.73],
-                                [2224.93,2226.13,2212.56,2233.04],
-                                [2236.98,2219.55,2217.26,2242.48],
-                                [2218.09,2206.78,2204.44,2226.26],
-                                [2199.91,2181.94,2177.39,2204.99],
-                                [2169.63,2194.85,2165.78,2196.43],
-                                [2195.03,2193.8,2178.47,2197.51],
-                                [2181.82,2197.6,2175.44,2206.03],
-                                [2201.12,2244.64,2200.58,2250.11],
-                                [2236.4,2242.17,2232.26,2245.12],
-                                [2242.62,2184.54,2182.81,2242.62],
-                                [2187.35,2218.32,2184.11,2226.12],
-                                [2213.19,2199.31,2191.85,2224.63],
-                                [2203.89,2177.91,2173.86,2210.58],
-                                [2170.78,2174.12,2161.14,2179.65],
-                                [2179.05,2205.5,2179.05,2222.81],
-                                [2212.5,2231.17,2212.5,2236.07],
-                                [2227.86,2235.57,2219.44,2240.26],
-                                [2242.39,2246.3,2235.42,2255.21],
-                                [2246.96,2232.97,2221.38,2247.86],
-                                [2228.82,2246.83,2225.81,2247.67],
-                                [2247.68,2241.92,2231.36,2250.85],
-                                [2238.9,2217.01,2205.87,2239.93],
-                                [2217.09,2224.8,2213.58,2225.19],
-                                [2221.34,2251.81,2210.77,2252.87],
-                                [2249.81,2282.87,2248.41,2288.09],
-                                [2286.33,2299.99,2281.9,2309.39],
-                                [2297.11,2305.11,2290.12,2305.3],
-                                [2303.75,2302.4,2292.43,2314.18],
-                                [2293.81,2275.67,2274.1,2304.95],
-                                [2281.45,2288.53,2270.25,2292.59],
-                                [2286.66,2293.08,2283.94,2301.7],
-                                [2293.4,2321.32,2281.47,2322.1],
-                                [2323.54,2324.02,2321.17,2334.33],
-                                [2316.25,2317.75,2310.49,2325.72],
-                                [2320.74,2300.59,2299.37,2325.53],
-                                [2300.21,2299.25,2294.11,2313.43],
-                                [2297.1,2272.42,2264.76,2297.1],
-                                [2270.71,2270.93,2260.87,2276.86],
-                                [2264.43,2242.11,2240.07,2266.69],
-                                [2242.26,2210.9,2205.07,2250.63],
-                                [2190.1,2148.35,2126.22,2190.1]
-                            ]
-                        },
-                        {
-                            name:'随机数据',
-                            type:'scatter',
-                            xAxisIndex: 1,
-                            yAxisIndex: 1,
-                            symbolSize: function (value){
-                                return Math.round(value[2] / 4);
-                            },
-                            data: (function () {
-                                let d = [];
-                                let len = 100;
-                                while (len--) {
-                                    d.push([
-                                        (Math.random()*100).toFixed(2) - 0,
-                                        (Math.random()*100).toFixed(2) - 0,
-                                        (Math.random()*100).toFixed(2) - 0
-                                    ]);
-                                }
-                                return d;
-                            })()
-                        }
-                    ]
-                };
-                let lastIndex = 0;
-                let len = option.series[0].data.length;
-                let timeTicket
-                clearInterval(timeTicket);
-                timeTicket = setInterval(function (){
-                    // 动态数据接口 addData
-                    lastIndex += 1;
-                    myChart.addData([
-                        [
-                            0,        // 系列索引
-                            option.series[0].data[lastIndex%len], // 新增数据
-                            false,     // 新增数据是否从队列头部插入
-                            false,     // 是否增加队列长度，false则自定删除原有数据，队头插入删队尾，队尾插入删队头
-                            option.xAxis[0].data[lastIndex%len]
-                        ],
-                        [
-                            1,        // 系列索引
-                            [
-                                (Math.random()*100).toFixed(2) - 0,
-                                (Math.random()*100).toFixed(2) - 0,
-                                (Math.random()*100).toFixed(2) - 0
-                            ], // 新增数据
-                            false,    // 新增数据是否从队列头部插入
-                            false    // 是否增加队列长度，false则自定删除原有数据，队头插入删队尾，队尾插入删队头
-                        ]
-                    ]);
-                }, 2000);
-                myChart.setOption(option);
+            goShow() {
+                this.$router.push('/secondpage/index')
             }
         }
-
     }
 </script>
 
 <style lang="scss">
-  .trend-analyse {
-    .el-date-editor .el-range-separator {
-      padding: 0;
-    }
-    .el-button--mini, .el-button--mini.is-round {
-      padding: 5px 15px;
-    }
-    .text {
-      font-size: 14px;
-    }
 
-    .item {
-      margin-bottom: 18px;
-    }
-
-    .clearfix:before,
-    .clearfix:after {
-      display: table;
-      content: "";
-    }
-    .clearfix:after {
-      clear: both
-    }
-  }
 </style>

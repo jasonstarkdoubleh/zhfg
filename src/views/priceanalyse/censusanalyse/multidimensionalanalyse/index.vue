@@ -1,6 +1,6 @@
 <template>
   <div class="trend-analyse">
-    <div class="flex-justify">
+    <div class="flex-justify" v-show="menuShow">
       <el-card class="card-width" >
         <div slot="header" class="clearfix">
           <i class="el-icon-menu" style="margin-right: 2px"></i><span>民生商品</span>
@@ -56,205 +56,206 @@
       </el-card>
     </div>
 
-    <el-dialog :visible.sync="searchShow" fullscreen>
-        <div class="flex-align bgc">
-          <el-radio v-model="radio" label="1" border size="small">生猪</el-radio>
-          <el-radio v-model="radio" label="2" border size="small">猪肉</el-radio>
-          <el-radio v-model="radio" label="3" border size="small">仔猪</el-radio>
-          <el-radio v-model="radio" label="4" border size="small">猪三元</el-radio>
+    <div v-show="searchShow">
+      <div class="flex-align bgc">
+        <el-radio v-model="radio" label="1" border size="small">生猪</el-radio>
+        <el-radio v-model="radio" label="2" border size="small">猪肉</el-radio>
+        <el-radio v-model="radio" label="3" border size="small">仔猪</el-radio>
+        <el-radio v-model="radio" label="4" border size="small">猪三元</el-radio>
+      </div>
+
+      <div style="display: flex;justify-content: space-between;margin-top: 10px">
+        <!--      左边-->
+        <div style="margin-right: 10px;width: 30%;">
+
+          <el-card>
+            <div style="height: 150px;display: flex;flex-direction: column;justify-content: space-around">
+              <div>
+                <span>猪肉产量:</span>
+                <span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>上年产量:</span>
+                <span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>同比:</span>
+                <span style="margin-left: 20px">2165万吨</span>
+              </div>
+            </div>
+          </el-card>
+
+          <el-card style="margin-top: 10px">
+            <div style="height: 150px;display: flex;flex-direction: column;justify-content: space-around">
+              <div>
+                <span>鲜猪肉销量:</span>
+                <span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>期初库存:</span>
+                <span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>期末库存:</span>
+                <span style="margin-left: 20px">2165万吨</span>
+              </div>
+            </div>
+          </el-card>
+
+          <el-card style="margin-top: 10px">
+            <div style="height: 150px;display: flex;flex-direction: column;justify-content: space-around">
+              <div>
+                <span>市场价格:</span>
+                <span style="margin-left: 20px">15KG</span>
+              </div>
+              <div>
+                <span>电商价格:</span>
+                <span style="margin-left: 20px">15KG</span>
+              </div>
+              <div>
+                <span>超市价格:</span>
+                <span style="margin-left: 20px">15KG</span>
+              </div>
+            </div>
+          </el-card>
+
+          <el-card style="margin-top: 10px">
+            <div style="height: 150px;display: flex;flex-direction: column;justify-content: space-around">
+              <div>
+                <span>消费量:</span>
+                <span style="margin-left: 20px">15KG</span>
+              </div>
+              <div>
+                <span>供给量:</span>
+                <span style="margin-left: 20px">15KG</span>
+              </div>
+              <div>
+                <span>居民家庭人均:</span>
+                <span style="margin-left: 20px">15KG</span>
+              </div>
+            </div>
+          </el-card>
+
+          <el-card style="margin-top: 10px">
+            <div style="height: 150px;display: flex;flex-direction: column;justify-content: space-around">
+              <div>
+                <span>进口量:</span>
+                <span style="margin-left: 20px">15KG</span>
+              </div>
+              <div>
+                <span>出口量:</span>
+                <span style="margin-left: 20px">15KG</span>
+              </div>
+              <div>
+                <span>进口额:</span>
+                <span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>出口额:</span>
+                <span style="margin-left: 20px">2165万吨</span>
+              </div>
+            </div>
+          </el-card>
+
         </div>
 
-        <div style="display: flex;justify-content: space-between;margin-top: 10px">
-            <!--      左边-->
-            <div style="margin-right: 10px;width: 30%;">
+        <!--      中间-->
+        <div style="margin-right: 10px;width: 40%;">
+          <el-card id="MAPmany" style="position: relative;">
+            <div style="position: absolute;top: 5px;left: 5px;color: #ffffff">价格运行状态</div>
+            <div id="mainmany" style="width: 500px;height: 500px"></div>
+          </el-card>
 
-              <el-card>
-                <div style="height: 150px;display: flex;flex-direction: column;justify-content: space-around">
-                  <div>
-                    <span>猪肉产量:</span>
-                    <span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>上年产量:</span>
-                    <span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>同比:</span>
-                    <span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                </div>
-              </el-card>
 
-              <el-card style="margin-top: 10px">
-                <div style="height: 150px;display: flex;flex-direction: column;justify-content: space-around">
-                  <div>
-                    <span>鲜猪肉销量:</span>
-                    <span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>期初库存:</span>
-                    <span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>期末库存:</span>
-                    <span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                </div>
-              </el-card>
-
-              <el-card style="margin-top: 10px">
-                <div style="height: 150px;display: flex;flex-direction: column;justify-content: space-around">
-                  <div>
-                    <span>市场价格:</span>
-                    <span style="margin-left: 20px">15KG</span>
-                  </div>
-                  <div>
-                    <span>电商价格:</span>
-                    <span style="margin-left: 20px">15KG</span>
-                  </div>
-                  <div>
-                    <span>超市价格:</span>
-                    <span style="margin-left: 20px">15KG</span>
-                  </div>
-                </div>
-              </el-card>
-
-              <el-card style="margin-top: 10px">
-                <div style="height: 150px;display: flex;flex-direction: column;justify-content: space-around">
-                  <div>
-                    <span>消费量:</span>
-                    <span style="margin-left: 20px">15KG</span>
-                  </div>
-                  <div>
-                    <span>供给量:</span>
-                    <span style="margin-left: 20px">15KG</span>
-                  </div>
-                  <div>
-                    <span>居民家庭人均:</span>
-                    <span style="margin-left: 20px">15KG</span>
-                  </div>
-                </div>
-              </el-card>
-
-              <el-card style="margin-top: 10px">
-                <div style="height: 150px;display: flex;flex-direction: column;justify-content: space-around">
-                  <div>
-                    <span>进口量:</span>
-                    <span style="margin-left: 20px">15KG</span>
-                  </div>
-                  <div>
-                    <span>出口量:</span>
-                    <span style="margin-left: 20px">15KG</span>
-                  </div>
-                  <div>
-                    <span>进口额:</span>
-                    <span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>出口额:</span>
-                    <span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                </div>
-              </el-card>
-
+          <el-card style="margin-top: 10px">
+            <div style="width: 500px;height: 300px;display: flex;flex-direction: column;justify-content: space-around">
+              <div>
+                <span>进口量:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>出口量:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>进口额:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>出口额:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>进口量:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>出口量:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
             </div>
+          </el-card>
 
-            <!--      中间-->
-            <div style="margin-right: 10px;width: 40%;">
-              <el-card id="MAPmany" style="position: relative;">
-                <div style="position: absolute;top: 5px;left: 5px;color: #ffffff">价格运行状态</div>
-                <div id="mainmany" style="width: 500px;height: 500px"></div>
-              </el-card>
-
-
-              <el-card style="margin-top: 10px">
-                <div style="width: 500px;height: 300px;display: flex;flex-direction: column;justify-content: space-around">
-                  <div>
-                    <span>进口量:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>出口量:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>进口额:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>出口额:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>进口量:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>出口量:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                </div>
-              </el-card>
-
-            </div>
-
-            <!--      右边-->
-            <div style="width: 30%;">
-              <el-card>
-                <div style="width: 300px;height: 810px;display: flex;flex-direction: column;justify-content: space-around">
-                  <div>
-                    <span>进口量:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>出口量:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>进口额:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>出口额:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>进口量:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>出口量:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>进口量:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>出口量:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>进口额:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>出口额:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>进口量:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>出口量:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>进口量:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>出口量:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>进口额:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>出口额:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>进口量:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                  <div>
-                    <span>出口量:</span><span style="margin-left: 20px">2165万吨</span>
-                  </div>
-                </div>
-              </el-card>
-            </div>
         </div>
-    </el-dialog>
+
+        <!--      右边-->
+        <div style="width: 30%;">
+          <el-card>
+            <div style="width: 300px;height: 810px;display: flex;flex-direction: column;justify-content: space-around">
+              <div>
+                <span>进口量:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>出口量:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>进口额:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>出口额:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>进口量:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>出口量:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>进口量:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>出口量:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>进口额:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>出口额:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>进口量:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>出口量:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>进口量:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>出口量:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>进口额:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>出口额:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>进口量:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+              <div>
+                <span>出口量:</span><span style="margin-left: 20px">2165万吨</span>
+              </div>
+            </div>
+          </el-card>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -263,6 +264,7 @@
     export default {
         data(){
             return {
+                menuShow: true,
                 radio:'1',
                 searchShow:false,
                 priceDataItem:[{
@@ -301,13 +303,14 @@
         },
         methods:{
             handleSearch(){
-                this.searchShow = true
-                this.$nextTick(() => {
-                    this.drawMap()
-                })
+                // this.menuShow = false
+                // this.searchShow = true
+                // this.$nextTick(() => {
+                //     this.drawMap()
+                // })
+                this.$router.push('/analyses/index')
             },
             drawMap(){
-                console.log(123);
                 let myChart = this.$echarts.init(document.getElementById('mainmany'));
                 let option = {
                     tooltip: {

@@ -4,7 +4,8 @@
       :tableData="tableData"
       :columnData="columnData"
       :searchShow="true"
-      @on-detail = searchDetail>
+      @on-detail = searchDetail
+    v-show="tableShow">
 
 <!--      预测结果显示-->
       <div class="flex bgc">
@@ -53,8 +54,8 @@
 
     </jtable>
 
-    <el-dialog :visible.sync="priceShow" fullscreen>
-      <div style="padding: 10px">
+    <div v-show="priceShow">
+      <el-card style="padding: 10px">
         <div style="font-size: 18px;text-align: center">咖啡(英）-日预测</div>
         <div id="RESULT" style="width: 100%;height: 500px;margin-top: 10px"></div>
         <el-card>
@@ -116,10 +117,10 @@
             <el-button style="margin-left: 15px" @click="changePage = false">返回</el-button>
           </div>
         </el-dialog>
-      </div>
-    </el-dialog>
+      </el-card>
+    </div>
 
-    <el-dialog :visible.sync="indexShow" fullscreen>
+    <div v-show="indexShow">
       <div style="padding: 10px">
         <jtable
           :tableData="indexTableData"
@@ -147,9 +148,14 @@
           </div>
 
         </jtable>
-        <div id="ZHIBIAO" style="width: 100%;height: 500px;margin-top: 50px"></div>
+
+        <el-card style="margin-top: 10px">
+          <div id="ZHIBIAO" style="width: 100%;height: 500px;"></div>
+        </el-card>
+
       </div>
-    </el-dialog>
+    </div>
+
   </div>
 </template>
 
@@ -159,6 +165,7 @@
         name: "result",
         data() {
             return {
+                tableShow:true,
                 predictionTime: '',                           //预测时间段
                 predictionName:'',                          //预测名称
                 indexTableData: [{
@@ -268,11 +275,12 @@
         },
         methods: {
             searchDetail(){
-                // this.priceShow = true
-                this.indexShow = true
+                this.tableShow = false
+                this.priceShow = true
+                // this.indexShow = true
                 this.$nextTick(() => {
-                    // this.drawRESULT()
-                    this.drawZHIBIAO()
+                    this.drawRESULT()
+                    // this.drawZHIBIAO()
                 })
             },
             drawRESULT(){

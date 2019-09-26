@@ -2,7 +2,9 @@
   <div>
     <jtable
       :tableData="tableData"
-      :columnData="columnData">
+      :columnData="columnData"
+    :searchShow="true"
+    :downloadShow="true">
 
       <div class="flex bgc">
         <div>

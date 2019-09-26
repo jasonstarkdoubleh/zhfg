@@ -1,15 +1,13 @@
 <template>
 
-    <section class="app-main" style="background: #f2f2f6;">
+    <section class="app-main" :style="{'background': mainBgc ? '#f2f2f6':'#051961'}">
       <!--    <div style="height: 56px;background: rgb(48, 65, 86);">-->
       <!--      <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />-->
       <!--      <breadcrumb class="breadcrumb-container" />-->
       <!--    </div>-->
-      <transition name="fade-transform" mode="out-in">
-        <keep-alive>
-          <router-view :key="key" />
-        </keep-alive>
-      </transition>
+<!--      <transition name="fade-transform" mode="out-in">-->
+        <router-view :key="key" />
+<!--      </transition>-->
     </section>
 
 </template>
@@ -21,24 +19,38 @@ import {
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 export default {
-  name: 'AppMain',
-  computed: {
-    ...mapGetters([
-      'sidebar'
-    ]),
-    key() {
-      return this.$route.path
+    name: 'AppMain',
+    data() {
+      return {
+          mainBgc: false,
+      }
+    },
+    watch: {
+        $route: function(to, from) {
+            console.log(this.$route.path)
+            this.mainBgc = this.$route.path !== '/secondpage/index';
+        }
+    },
+    computed: {
+      ...mapGetters([
+        'sidebar'
+      ]),
+      key() {
+        return this.$route.path
+      }
+    },
+    components: {
+      Breadcrumb,
+      Hamburger
+    },
+    methods: {
+      toggleSideBar() {
+        this.$store.dispatch('app/toggleSideBar')
+      }
+    },
+    created() {
+        this.mainBgc = this.$route.path !== '/secondpage/index';
     }
-  },
-  components: {
-    Breadcrumb,
-    Hamburger
-  },
-  methods: {
-    toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
-    }
-  }
 }
 </script>
 
@@ -46,7 +58,7 @@ export default {
 	.app-main {
 		/*50 = navbar  */
 		min-height: 100vh;
-		min-width: 1400px;
+		/*min-width: 1400px;*/
 		width: 100%;
 		position: relative;
 		overflow: auto;

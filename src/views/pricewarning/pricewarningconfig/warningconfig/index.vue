@@ -1,52 +1,48 @@
 <template>
   <div>
-    <transition name="fade-transform" mode="out-in">
-      <div v-show="tableShow">
-        <jtable  :tableData="tableData"
-                 :columnData="columnData"
-                 :total = "total"
-                 :loading="loading"
-                 :searchShow="true"
-                 :statusShow="true"
-                 :deleteShow="true"
-                 @on-delete="deleteItem"
-                 @on-detail="searchDetail">
 
-          <!--      预警配置-->
-          <div class="flex bgc">
-            <div>
-              预警类型:&nbsp;
-              <el-select v-model="warningType">
-                <el-option
-                  v-for="(item, index) in warningTypeOptions"
-                  :key="index"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
+    <jtable  :tableData="tableData"
+             :columnData="columnData"
+             :total = "total"
+             :loading="loading"
+             :searchShow="true"
+             :statusShow="true"
+             :deleteShow="true"
+             @on-delete="deleteItem"
+             @on-detail="searchDetail"
+             v-show="tableShow">
 
-              预警名称:&nbsp;
-              <el-select v-model="warningName">
-                <el-option
-                  v-for="(item, index) in warningNameOptions"
-                  :key="index"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </div>
-            <div>
-              <el-button type="primary" @click="handleSearch">查 询</el-button>
-              <el-button type="warning" @click="handleAdd">新 增</el-button>
-            </div>
-          </div>
+      <!--      预警配置-->
+      <div class="flex bgc">
+        <div>
+          预警类型:&nbsp;
+          <el-select v-model="warningType">
+            <el-option
+              v-for="(item, index) in warningTypeOptions"
+              :key="index"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
 
-        </jtable>
+          预警名称:&nbsp;
+          <el-select v-model="warningName">
+            <el-option
+              v-for="(item, index) in warningNameOptions"
+              :key="index"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </div>
+        <div>
+          <el-button type="primary" @click="handleSearch">查 询</el-button>
+          <el-button type="warning" @click="handleAdd">新 增</el-button>
+        </div>
       </div>
-    </transition>
+    </jtable>
 
     <div v-show="addWarningShow">
-      <!--      <el-dialog :visible.sync="addWarningShow" fullscreen>-->
 
       <div class="flex-justify" v-loading="dialogLoading">
         <el-card class="card-width">
@@ -146,84 +142,82 @@
       </div>
       <div class="dialog-cancel">
         <el-button type="primary" @click="onSubmit" :disabled="disabled">提 交</el-button>
-        <el-button type="warning" @click="addWarningShow = false">关 闭</el-button>
+        <el-button type="warning" @click="handleCloseAdd">关 闭</el-button>
       </div>
-      <!--      </el-dialog>-->
     </div>
 
 
+
 <!--    预警配置查看-->
+    <div v-show="warningSearch">
+        <!--      预警表单 一-->
+        <el-table :data="warningSearchData" border>
+          <el-table-column property="name" label="预警名称" align="center"></el-table-column>
+          <el-table-column property="plain" label="预警_常规_通用" align="center"></el-table-column>
+          <el-table-column property="type" label="预警类型" align="center"></el-table-column>
+          <el-table-column property="common" label="常规预警" align="center"></el-table-column>
+          <el-table-column property="validity" label="有效期" align="center"></el-table-column>
+          <el-table-column property="start" label="开始时间" align="center"></el-table-column>
+          <el-table-column property="to" label="至" align="center" width="50" ></el-table-column>
+          <el-table-column property="end" label="结束时间" align="center"></el-table-column>
+        </el-table>
 
-    <el-dialog :visible.sync="warningSearch" fullscreen>
-
-      <!--      预警表单 一-->
-      <el-table :data="warningSearchData" border>
-        <el-table-column property="name" label="预警名称" align="center"></el-table-column>
-        <el-table-column property="plain" label="预警_常规_通用" align="center"></el-table-column>
-        <el-table-column property="type" label="预警类型" align="center"></el-table-column>
-        <el-table-column property="common" label="常规预警" align="center"></el-table-column>
-        <el-table-column property="validity" label="有效期" align="center"></el-table-column>
-        <el-table-column property="start" label="开始时间" align="center"></el-table-column>
-        <el-table-column property="to" label="至" align="center" width="50" ></el-table-column>
-        <el-table-column property="end" label="结束时间" align="center"></el-table-column>
-      </el-table>
-
-      <!--      预警表单 二-->
-      <el-table :data="warningInfo" border :header-cell-style="discountHeaderStyle" :cell-style="discountCellStyle">
-        <el-table-column label="预警信息" align="center">
-          <el-table-column label="预警区间" align="center">
-            <el-table-column property="name" label="预警名称" align="center"></el-table-column>
-            <el-table-column property="plain" label="预警_常规_通用" align="center"></el-table-column>
-            <el-table-column property="type" label="预警类型" align="center"></el-table-column>
+        <!--      预警表单 二-->
+        <el-table :data="warningInfo" border :header-cell-style="discountHeaderStyle" :cell-style="discountCellStyle">
+          <el-table-column label="预警信息" align="center">
+            <el-table-column label="预警区间" align="center">
+              <el-table-column property="name" label="预警名称" align="center"></el-table-column>
+              <el-table-column property="plain" label="预警_常规_通用" align="center"></el-table-column>
+              <el-table-column property="type" label="预警类型" align="center"></el-table-column>
+            </el-table-column>
+            <el-table-column label="预警区间" align="center">
+              <el-table-column property="common" label="常规预警" align="center"></el-table-column>
+            </el-table-column>
+            <el-table-column label="预警区间" align="center">
+              <el-table-column property="validity" label="有效期" align="center"></el-table-column>
+              <el-table-column property="start" label="开始时间" align="center"></el-table-column>
+              <el-table-column property="to" label="至" align="center"></el-table-column>
+            </el-table-column>
+            <el-table-column label="预警区间" align="center">
+              <el-table-column property="end" label="结束时间" align="center"></el-table-column>
+            </el-table-column>
           </el-table-column>
-          <el-table-column label="预警区间" align="center">
-            <el-table-column property="common" label="常规预警" align="center"></el-table-column>
-          </el-table-column>
-          <el-table-column label="预警区间" align="center">
-            <el-table-column property="validity" label="有效期" align="center"></el-table-column>
-            <el-table-column property="start" label="开始时间" align="center"></el-table-column>
-            <el-table-column property="to" label="至" align="center"></el-table-column>
-          </el-table-column>
-          <el-table-column label="预警区间" align="center">
-            <el-table-column property="end" label="结束时间" align="center"></el-table-column>
-          </el-table-column>
-        </el-table-column>
-      </el-table>
+        </el-table>
 
-      <!--      预警表单 三-->
-      <el-table :data="warningDate" border id="warningDate" :show-header="false" :span-method="arraySpanMethod">
-        <el-table-column property="name" label="预警名称" align="center"></el-table-column>
-        <el-table-column property="plain" label="预警_常规_通用" align="center">
-          <template slot-scope="scope">
-            <el-radio v-model="radio" label="1" @click.native="handleUpDateShow(true)">单日上涨</el-radio>
-            <el-radio v-model="radio" label="2" @click.native="handleUpDateShow(false)">连续上涨</el-radio>
-            <el-input v-model="upDateInput" style="margin-right: 10px;width: 100px" :disabled="upDateShow" ></el-input>天
-          </template>
-        </el-table-column>
-        <el-table-column property="type" label="预警类型" align="center"></el-table-column>
-        <el-table-column property="common" label="常规预警" align="center"></el-table-column>
-        <el-table-column property="validity" label="有效期" align="center"></el-table-column>
-        <el-table-column property="start" label="开始时间" align="center"></el-table-column>
-        <el-table-column property="to" label="至" align="center"></el-table-column>
-        <el-table-column property="end" label="结束时间" align="center"></el-table-column>
-      </el-table>
+        <!--      预警表单 三-->
+        <el-table :data="warningDate" border id="warningDate" :show-header="false" :span-method="arraySpanMethod">
+          <el-table-column property="name" label="预警名称" align="center"></el-table-column>
+          <el-table-column property="plain" label="预警_常规_通用" align="center">
+            <template slot-scope="scope">
+              <el-radio v-model="radio" label="1" @click.native="handleUpDateShow(true)">单日上涨</el-radio>
+              <el-radio v-model="radio" label="2" @click.native="handleUpDateShow(false)">连续上涨</el-radio>
+              <el-input v-model="upDateInput" style="margin-right: 10px;width: 100px" :disabled="upDateShow" ></el-input>天
+            </template>
+          </el-table-column>
+          <el-table-column property="type" label="预警类型" align="center"></el-table-column>
+          <el-table-column property="common" label="常规预警" align="center"></el-table-column>
+          <el-table-column property="validity" label="有效期" align="center"></el-table-column>
+          <el-table-column property="start" label="开始时间" align="center"></el-table-column>
+          <el-table-column property="to" label="至" align="center"></el-table-column>
+          <el-table-column property="end" label="结束时间" align="center"></el-table-column>
+        </el-table>
 
-      <!--      预警表单 四-->
-      <el-table :data="warningMarks" border :show-header="false" :span-method="arraySpanMethod">
-        <el-table-column property="name" label="预警名称" align="center"></el-table-column>
-        <el-table-column property="plain" label="预警_常规_通用" align="center"></el-table-column>
-        <el-table-column property="type" label="预警类型" align="center"></el-table-column>
-        <el-table-column property="common" label="常规预警" align="center"></el-table-column>
-        <el-table-column property="validity" label="有效期" align="center"></el-table-column>
-        <el-table-column property="start" label="开始时间" align="center"></el-table-column>
-        <el-table-column property="to" label="至" align="center"></el-table-column>
-        <el-table-column property="end" label="结束时间" align="center"></el-table-column>
-      </el-table>
+        <!--      预警表单 四-->
+        <el-table :data="warningMarks" border :show-header="false" :span-method="arraySpanMethod">
+          <el-table-column property="name" label="预警名称" align="center"></el-table-column>
+          <el-table-column property="plain" label="预警_常规_通用" align="center"></el-table-column>
+          <el-table-column property="type" label="预警类型" align="center"></el-table-column>
+          <el-table-column property="common" label="常规预警" align="center"></el-table-column>
+          <el-table-column property="validity" label="有效期" align="center"></el-table-column>
+          <el-table-column property="start" label="开始时间" align="center"></el-table-column>
+          <el-table-column property="to" label="至" align="center"></el-table-column>
+          <el-table-column property="end" label="结束时间" align="center"></el-table-column>
+        </el-table>
 
-      <div class="dialog-cancel">
-        <el-button type="warning" @click="warningSearch = false">关 闭</el-button>
-      </div>
-    </el-dialog>
+        <div class="dialog-cancel">
+          <el-button type="warning" @click="handleCloseSearch">关 闭</el-button>
+        </div>
+    </div>
 
 <!--    预警表新增-->
 
@@ -332,6 +326,14 @@ export default {
       }
     },
     methods:{
+        handleCloseSearch(){
+          this.warningSearch = false
+          this.tableShow = true
+        },
+        handleCloseAdd(){
+            this.addWarningShow = false
+            this.tableShow = true
+        },
         handleSearch(){
             let ewarnId = '';
             let ewarnTypeId = '';
@@ -374,8 +376,9 @@ export default {
                 })
             })
         },
-        searchDetail(data){
-            this.warningSearch = data
+        searchDetail(){
+            this.tableShow = false
+            this.warningSearch = true
         },
         onSubmit() {
             console.log(this.sizeForm.beginDate);

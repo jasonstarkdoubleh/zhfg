@@ -22,3 +22,18 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function getPermission(token) {
+  return request({
+    url: `/zhjg/login/?id_token=${token}`,
+    method: 'get'
+  })
+}
+
+export function goPublic(url) {
+  return request({
+    url: `/zhjg/goToService/?urlParm=${url}`,
+    method: 'get'
+  })
+}
+

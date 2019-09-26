@@ -6,7 +6,8 @@
       :searchShow="true"
       :statusShow="true"
       :deleteShow="true"
-      @on-detail="handleCause">
+      @on-detail="handleCause"
+    v-show="tableShow">
 
 <!--      因果分析-->
       <div class="flex bgc">
@@ -41,7 +42,7 @@
 
     </jtable>
 
-    <el-dialog :visible.sync="gelanjieShow" fullscreen>
+    <div v-show="gelanjieShow">
       <div style="padding: 10px" id="GELANJIE">
         <div>
           <h3>格兰杰因果检验</h3>
@@ -101,11 +102,10 @@
             </el-table>
           </div>
         </div>
-
       </div>
-    </el-dialog>
+    </div>
 
-    <el-dialog :visible.sync="wayShow" fullscreen>
+    <div v-show="wayShow">
       <div class="flex">
         <h3 style="color: #3a8ee6;padding-right: 5px">因果分析</h3><div style="flex-grow:1;background: #3a8ee6;height: 3px;width: 100px"></div>
       </div>
@@ -144,40 +144,35 @@
         <h3 style="color: #3a8ee6;padding-right: 5px">因果分析结果</h3><div style="flex-grow:1;background: #3a8ee6;height: 3px;width: 100px"></div>
       </div>
       <div>
-          因果图结果:&nbsp;
-          <el-select v-model="formInline.region" style="width: 150px">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
-          </el-select>
+        因果图结果:&nbsp;
+        <el-select v-model="formInline.region" style="width: 150px">
+          <el-option label="区域一" value="shanghai"></el-option>
+          <el-option label="区域二" value="beijing"></el-option>
+        </el-select>
       </div>
 
       <div class="flex" style="margin-top: 10px">
         <h3 style="color: #3a8ee6;padding-right: 5px">因果图</h3><div style="flex-grow:1;background: #3a8ee6;height: 3px;width: 100px"></div>
       </div>
       <div class="flex">
-          <el-card style="width: 50%">
-            <div slot="header">关系图</div>
-            <div id="CAUSE" style="width:100%;height: 500px;margin-top: 10px"></div>
-          </el-card>
+        <el-card style="width: 50%">
+          <div slot="header">关系图</div>
+          <div id="CAUSE" style="width:100%;height: 500px;margin-top: 10px"></div>
+        </el-card>
 
-          <el-card style="width: 50%;margin-left: 10px">
-            <div slot="header">路径分析表</div>
-            <div style="margin-top: 10px">
-              <el-table :data="dialogTableData" border stripe style="width: 100%;height: 500px">
-                <el-table-column label="" prop="column" align="center"></el-table-column>
-                <el-table-column label="路径系数" prop="gelanjie" align="center"></el-table-column>
-                <el-table-column label="Pvalue" prop="pvalue" align="center"></el-table-column>
-              </el-table>
-            </div>
-          </el-card>
-
+        <el-card style="width: 50%;margin-left: 10px">
+          <div slot="header">路径分析表</div>
+          <div style="margin-top: 10px">
+            <el-table :data="dialogTableData" border stripe style="width: 100%;height: 500px">
+              <el-table-column label="" prop="column" align="center"></el-table-column>
+              <el-table-column label="路径系数" prop="gelanjie" align="center"></el-table-column>
+              <el-table-column label="Pvalue" prop="pvalue" align="center"></el-table-column>
+            </el-table>
+          </div>
+        </el-card>
       </div>
+    </div>
 
-
-
-
-
-    </el-dialog>
   </div>
 </template>
 
@@ -186,6 +181,7 @@
     export default {
       data(){
           return {
+              tableShow: true,
               wayShow:false,
               formInline: {
                   user: '',
@@ -353,8 +349,10 @@
               myChart.setOption(option);
           },
           handleCause(){
-              // this.gelanjieShow = true
-              this.wayShow = true
+              this.tableShow = false
+              this.gelanjieShow = true
+
+              // this.wayShow = true
               this.$nextTick(() => {
                   this.drawLine()
               })

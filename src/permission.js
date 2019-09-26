@@ -5,6 +5,7 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
+import { getPermission } from '@/api/user'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -25,22 +26,29 @@ router.beforeEach(async(to, from, next) => {
     let obj = {};
     let reg = /[?&][^?&]+=[^?&]+/g;
     let arr = url.match(reg);
+    let tempArr
     if (arr) {
       arr.forEach((item) => {
-        let tempArr = item.substring(1).split('=');
-        let key = tempArr[0];
-        obj[key] = tempArr[1];
+        tempArr = item.substring(1).split('=');
+        // let key = tempArr[0];
+        // obj[key] = tempArr[1];
       })
     }
-    return obj.id === 'kdjakjdiwjasjdij2199392187389ahdkahi82kjhdi128y8'
-  }
 
-  if(urlParse()){
-    console.log(123);
-    store.dispatch('user/login', {username: 'admin', password: '111111'}).then(() => {
-      next({ path: '/' })
+    console.log(tempArr)
+
+    getPermission(tempArr[1]).then(res => {
+      console.log(res)
+    }).catch(() => {
+      console.log('error')
     })
   }
+
+  // if(urlParse()){
+  //   store.dispatch('user/login', {username: 'admin', password: '111111'}).then(() => {
+  //     next({ path: '/' })
+  //   })
+  // }
 
   if (hasToken) {
     if (to.path === '/login') {

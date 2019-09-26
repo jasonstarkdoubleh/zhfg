@@ -6,7 +6,8 @@
              :loading="loading"
              :configShow="true"
              :warningShow="true"
-             @on-config="searchConfig">
+             @on-config="searchConfig"
+    v-show="tableShow">
 
       <!--    商品配置-->
       <div class="flex bgc">
@@ -49,16 +50,16 @@
 
     </jtable>
 
-    <el-dialog :visible.sync="jtreeShow" fullscreen>
+    <div v-show="jtreeShow">
       <div style="width: 80%;margin-left: 10%;">
-          <el-card style="width: 80%;margin-left: 10%;margin-bottom: 20px">
-            <div slot="header" class="clearfix">
-              <span>预警设置</span>
-            </div>
-            <div>
-              <jtree></jtree>
-            </div>
-          </el-card>
+        <el-card style="width: 80%;margin-left: 10%;margin-bottom: 20px">
+          <div slot="header" class="clearfix">
+            <span>预警设置</span>
+          </div>
+          <div>
+            <jtree></jtree>
+          </div>
+        </el-card>
         <div style="width: 80%;margin-left: 10%;">
           <el-checkbox v-model="checked">
             <span>该类商品下所有子类均按此设置</span>
@@ -66,10 +67,11 @@
         </div>
         <div style="width: 80%;margin-left: 10%;display: flex;justify-content: center;margin-top: 20px">
           <el-button style="margin-right: 20px" type="success">提 交</el-button>
-          <el-button @click="jtreeShow = false" type="warning">退 出</el-button>
+          <el-button @click="hanleCloseJtree" type="warning">退 出</el-button>
         </div>
       </div>
-    </el-dialog>
+    </div>
+
   </div>
 </template>
 
@@ -85,6 +87,7 @@
         },
         data() {
             return {
+                tableShow: true,
                 commLevelCode_2: '',                         //商品名称
                 goodsNameOptions:[],
                 commLevelCode_1: '',                         //商品大类
@@ -101,6 +104,10 @@
             }
         },
         methods:{
+            hanleCloseJtree(){
+              this.tableShow = false
+              this.jtreeShow = true
+            },
             handleSearch(){
                 let data = {
                     "commLevelCode_0": this.commLevelCode_0,
@@ -120,8 +127,9 @@
                     this.loading = false
                 })
             },
-            searchConfig(data){
-                this.jtreeShow = data
+            searchConfig(){
+                this.tableShow = false
+                this.jtreeShow = true
             },
             ...mapActions([
                 'getCommType',

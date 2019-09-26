@@ -76,15 +76,75 @@ export const constantRoutes = [
     hidden: true
   },
 
-  //价格监测系统
+
   {
     path: '/',
-    component: Layout,
-    redirect: '/pricewarning/pricewarningconfig/warningconfig',
-    meta: { title: "价格监测系统", icon: 'dashboard' },
+    // redirect: '/pricewarning/pricewarningconfig/warningconfig',
+    component: () => import('@/views/dashboard'),
     hidden: true
   },
 
+  //商品总览
+  {
+    path: '/secondpage',
+    component: Layout,
+    redirect: '/secondpage/index',
+    children: [{
+      path:'index',
+      component: () => import('@/views/secondpage'),
+      meta: { title: '商品总览', icon: '' },
+    }]
+  },
+
+  //预警展示
+  {
+    path: '/warningshow',
+    component: Layout,
+    redirect: '/warningshow/index',
+    children: [{
+      path:'index',
+      component: () => import('@/views/warningshow'),
+      meta: { title: '预警展示', icon: '' },
+    }]
+  },
+
+  //多维分析
+  {
+    path: '/analyses',
+    component: Layout,
+    redirect: '/analyses/index',
+    children: [{
+      path:'index',
+      component: () => import('@/views/analyses'),
+      meta: { title: '多维分析', icon: '' },
+    }]
+  },
+
+  //预测分析
+  {
+    path: '/divine',
+    component: Layout,
+    redirect: '/divine/index',
+    children: [{
+      path:'index',
+      component: () => import('@/views/divine'),
+      meta: { title: '预测分析', icon: '' },
+    }]
+  },
+
+  //舆情系统
+  {
+    path: '/pubilcsystem',
+    component: Layout,
+    redirect: '/pubilcsystem/index',
+    children: [{
+      path:'index',
+      component: () => import('@/views/pubilcsystem'),
+      meta: { title: '舆情系统', icon: 'example' },
+    }]
+  },
+
+  //价格监测系统
   //价格预警
   {
     path: '/pricewarning',
@@ -174,14 +234,14 @@ export const constantRoutes = [
     path: '/forecasting',
     component: Layout,
     redirect: '/forecasting/resultshow',
-    meta: { title: '预测分析', icon: 'example' },
+    meta: { title: '价格预测', icon: 'example' },
     hidden: priceSystem,
     children: [
       {
         path: 'resultshow',
         name: 'Resultshow',
         component: () => import('@/views/forecasting/resultshow'),
-        meta: { title: '预测分析' },
+        meta: { title: '价格预测' },
       }
     ]
   },

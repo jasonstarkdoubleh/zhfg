@@ -2,7 +2,9 @@
   <div :class="{'has-logo':showLogo}">
     <logo v-if="showLogo" :collapse="isCollapse" class="bgimg"/>
     <div style="height: 40px;background: #17265a">
-<!--      <el-button plain>回到首页</el-button>-->
+      <el-button class="backhome" style="border: 0;color: #ffffff;width: 57px;height: 37px;margin-left: 10px" @click="backHome">
+        <span style="margin-left: 15px">返 回</span>
+      </el-button>
     </div>
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
@@ -28,8 +30,8 @@ import SidebarItem from './SidebarItem'
 import variables from '@/styles/variables.scss'
 
 export default {
-  components: { SidebarItem, Logo },
-  computed: {
+    components: { SidebarItem, Logo },
+    computed: {
     ...mapGetters([
       'sidebar'
     ]),
@@ -54,7 +56,12 @@ export default {
     isCollapse() {
       return !this.sidebar.opened
     }
-  }
+  },
+    methods: {
+        backHome() {
+            this.$router.push('/')
+        }
+    }
 }
 </script>
 
@@ -62,5 +69,11 @@ export default {
   .bgimg {
     background: #12172b;
     /*background-image: url("../../../assets/img/bcg.png");*/
+  }
+  .backhome {
+    background-color: #17265a;
+    background-image: url("../../../assets/img/back.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
   }
 </style>

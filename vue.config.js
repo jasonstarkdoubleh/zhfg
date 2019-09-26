@@ -6,10 +6,9 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || '金价工程' // page title
+const name = defaultSettings.title || '智慧发改' // page title
 
 process.env.VUE_APP_BASE_API = 'http://10.1.1.140:8081/fagaiwei_api/'
-// process.env.VUE_APP_BASE_API = 'http://172.20.10.13:8081/fagaiwei_api'
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
@@ -35,11 +34,11 @@ module.exports = {
   devServer: {
     port: port,
     open: true,
+    disableHostCheck: true,
     overlay: {
       warnings: false,
       errors: true
     },
-
     proxy: {
       // change xxx-api/login => mock/login
       // detail: https://cli.vuejs.org/config/#devserver-proxy

@@ -17,12 +17,13 @@ service.interceptors.request.use(
     // do something before request is sent
 
     config.headers['Content-Type'] = "application/json;charset=utf-8";
+    config.headers['token'] = '79362e48e37283a7cdea0825e2614375';
 
     if (store.getters.token) {
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
-      config.headers['X-Token'] = getToken()
+      // config.headers['X-Token'] = getToken()
     }
     console.log(config);
     return config
