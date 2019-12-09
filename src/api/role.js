@@ -22,3 +22,11 @@ export function addRole(data) {
     data
   })
 }
+
+//菜单信息
+export function rolePerm() {
+  return request({
+    url: '/sys/role/rolePerm',
+    method: 'GET'
+  })
+}

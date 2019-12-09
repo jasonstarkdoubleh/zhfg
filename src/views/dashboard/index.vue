@@ -1,509 +1,638 @@
 <template>
   <div class="dashboard-container">
-
     <div class="fixed-header">
       <Navbar></Navbar>
     </div>
 
     <div class="main-body">
-
       <div class="left-section">
-
         <div class="live-preview">
-
           <div class="preview-title">
-            <div><img src="../../assets/img/shu.png" style="margin: 1px 6px 0 0"></div>
-            <div>实时预览</div>
+            <div><img src="../../assets/img/实时总览.png" style="margin: 1px 6px 0 0"></div>
+            <div style="color: black">实时预览</div>
           </div>
-
           <div class="num-details">
             <div class="details-body">
 
-              <div>
-                商品总数量
-                <template v-for="item in numArray1">
-                  <span class="num-style" style="color: #4eb1fd;border: 1px solid #4eb1fd;">
+              <div style="text-align: center">
+                <span style="color: #4eb1fd">总量</span><span style="font-size: 12px">(万)</span>
+                <div style="margin-top: 15px;text-align: center">
+                  <span v-for="(item, index) in numArrayAll" :key="index" class="num-style" style="color: #4eb1fd;border: 1px solid #4eb1fd;">
                     <vue-count-up :start-value="0" :end-value="item"></vue-count-up>
                   </span>
-                </template>
+                </div>
               </div>
 
-              <div>
-                今日上涨总量
-                <template v-for="item in numArray1">
-                  <span class="num-style" style="color: #1cff9e;border: 1px solid #1cff9e;">
+              <div style="text-align: center">
+                <span style="color: red">红色</span>
+                <div style="margin-top: 15px;text-align: center">
+                  <span v-for="(item, index) in redEwarnTotal" :key="index" class="num-style" style="color: red;border: 1px solid red;">
                     <vue-count-up :start-value="0" :end-value="item"></vue-count-up>
                   </span>
-                </template>
+                </div>
               </div>
 
-              <div>
-                今日下跌总量
-                <template v-for="item in numArray1">
-                  <span class="num-style" style="color: #ff2661;border: 1px solid #ff2661;">
+              <div style="text-align: center">
+                <span style="color: orange">橙色</span>
+                <div style="margin-top: 15px;text-align: center">
+                  <span v-for="(item, index) in orangeEwarnTotal" :key="index" class="num-style" style="color: orange;border: 1px solid orange;">
                     <vue-count-up :start-value="0" :end-value="item"></vue-count-up>
                   </span>
-                </template>
+                </div>
               </div>
 
+              <div style="text-align: center">
+                <span style="color: #ffcb48">黄色</span>
+                <div style="margin-top: 15px;text-align: center">
+                  <span v-for="(item, index) in yellowEwarnTotal" :key="index" class="num-style" style="color: #ffcb48;border: 1px solid #ffcb48;">
+                    <vue-count-up :start-value="0" :end-value="item"></vue-count-up>
+                  </span>
+                </div>
+              </div>
+
+              <div style="text-align: center">
+                <span style="color: green">绿色</span>
+                <div style="margin-top: 15px;text-align: center">
+                  <span v-for="(item, index) in greenEwarnTotal" :key="index" class="num-style" style="color: green;border: 1px solid green;">
+                    <vue-count-up :start-value="0" :end-value="item"></vue-count-up>
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         <div class="goods-details">
-
           <div class="preview-title">
-            <div><img src="../../assets/img/shu.png" style="margin: 1px 6px 0 0"></div>
-            <div>商品预警详情</div>
+            <div><img src="../../assets/img/预警.png" style="margin: 1px 6px 0 0"></div>
+            <div style="color: black">商品预警情况</div>
           </div>
 
-          <div class="goods-table">
+          <div class="goods-more" v-loading="qiuLoading">
+            <div class="preview-title">
+              <div><img src="../../assets/img/shu.png" style="margin: 1px 6px 0 0"></div>
+              <div>商品预警趋势</div>
+            </div>
+            <div class="goods-echarts">
+              <div class="echarts-all">
+                <div id="dashboardtwo" style="width: 100%;height: 100%"></div>
+              </div>
+            </div>
+          </div>
 
-            <el-scrollbar class="scrollbar-table" style="height: calc(100% - 60px)">
+          <div class="goods-more" v-loading="qiuLoading">
+            <div class="preview-title">
+              <div><img src="../../assets/img/shu.png" style="margin: 1px 6px 0 0"></div>
+              <div>商品预警分布</div>
+            </div>
+            <div class="goods-echarts">
+              <div class="echarts-all">
+                <div id="dashboardone" style="width: 100%;height: 100%"></div>
+              </div>
+            </div>
+          </div>
 
-              <el-table
-                :data="minsheng"
-                :header-cell-style="{background:'rgb(15, 29, 111)'}"
-                stripe
-                style="width: 100%">
+        </div>
+      </div>
 
-                <el-table-column
-                  show-overflow-tooltip
-                  prop="commName"
-                  label="商品名称">
-                  <template slot-scope="scope">
-                    <el-link type="primary" @click="gorouter">{{ scope.row.commName }}</el-link>
-                  </template>
-                </el-table-column>
+      <div style="width: 55%;height: 100%;background: #fff;margin: 0 6px">
+        <div class="preview-title">
+          <div><img src="../../assets/img/预警详情.png" style="margin: 1px 6px 0 0"></div>
+          <div style="color: black">商品预警详情</div>
+        </div>
 
-                <el-table-column
-                  show-overflow-tooltip
-                  prop="priValue"
-                  label="商品价格">
-                  <template slot-scope="scope">
-                    <span style="color: #409EFF">{{ scope.row.priValue }}</span>
-                  </template>
-                </el-table-column>
+        <div class="goods-thing" style="height: 100%;">
+          <div style="margin: 10px 30px">
+            <el-radio-group v-model="radio" size="small">
+              <el-radio-button :label="1">大宗商品</el-radio-button>
+              <el-radio-button :label="2">民生商品</el-radio-button>
+            </el-radio-group>
+          </div>
 
-                <el-table-column
-                  show-overflow-tooltip
-                  prop="priRange"
-                  label="增长幅度">
+          <div class="qiu" style="height:286px;text-align: center;margin-top: 100px;position: relative" v-loading="qiuLoading">
+            <div style="position: absolute;height: 50px;width: 100px;top: 45%;left: 44%;color: #2d84fe;font-weight: bold">
+              <div>{{qiuName.name}}</div>
+              <div>{{qiuName.eng}}</div>
+            </div>
 
-                  <template slot-scope="scope">
+            <template v-for="(item, index) in goodsAll">
+              <div :style="itemStyle[index]" :key="index" class="kuang">
+                <div class="kuang-sub" v-if="index < 4">
+                  <div style="margin-top: 18px">{{item.commName}}</div>
+                  <div v-if="item.ewarnLevel === '绿色预警'" style="margin-top: 10px;color: green">
+                    {{item.priValue}}{{item.unit}} {{item.priRange}}%
+                    <i class="el-icon-caret-top" v-if="item.priRange > 0"></i>
+                    <i class="el-icon-caret-bottom" v-else></i>
+                  </div>
+                  <div v-if="item.ewarnLevel === '黄色预警'" style="margin-top: 10px;color: #ffcb48">
+                    {{item.priValue}}{{item.unit}} {{item.priRange}}%
+                    <i class="el-icon-caret-top" v-if="item.priRange > 0"></i>
+                    <i class="el-icon-caret-bottom" v-else></i>
+                  </div>
+                  <div v-if="item.ewarnLevel === '橙色预警'" style="margin-top: 10px;color: orange">
+                    {{item.priValue}}{{item.unit}} {{item.priRange}}%
+                    <i class="el-icon-caret-top" v-if="item.priRange > 0"></i>
+                    <i class="el-icon-caret-bottom" v-else></i>
+                  </div>
+                  <div v-if="item.ewarnLevel === '红色预警'" style="margin-top: 10px;color: red">
+                    {{item.priValue}}{{item.unit}} {{item.priRange}}%
+                    <i class="el-icon-caret-top" v-if="item.priRange > 0"></i>
+                    <i class="el-icon-caret-bottom" v-else></i>
+                  </div>
+                </div>
 
-                    <template v-if="parseInt(scope.row.priRange) - 1  > 0">
-                      <span style="color: #ff2661">
-                        {{(parseInt(scope.row.priRange) - 1) * 100}}%
-<!--                        <i class="el-icon-caret-top"></i>-->
-                      </span>
-                    </template>
-
-                    <template v-else-if="parseInt(scope.row.priRange) - 1 < 0">
-                      <span style="color: green">
-                        {{(parseInt(scope.row.priRange) + 1) * 100 }}%&nbsp;
-                      </span>
-<!--                      <i class="el-icon-caret-bottom"></i>-->
-                    </template>
-
-                    <span v-else style="color: #409EFF">{{ 0 }}</span>
-
-                  </template>
-                </el-table-column>
-
-                <el-table-column
-                  show-overflow-tooltip
-                  prop="ewarnLevel"
-                  label="预警状态">
-                  <template slot-scope="scope">
-                    <span style="color: #409EFF">{{ scope.row.ewarnLevel }}</span>
-                  </template>
-                </el-table-column>
-
-              </el-table>
-
-            </el-scrollbar>
+                <div :class="{'kuang-item': true, 'is-active-right': boot === index }" @click="handleChange(index, item, true)">
+                  <div style="width: 35px;height: 35px">
+                    <img :src="require(`../../../public/img/${item.commId}.jpg`)" alt="" style="width: 35px;height: 35px">
+                  </div>
+                </div>
+                <div class="kuang-sub" style="text-align: left" v-if="index > 3">
+                  <div style="margin-top: 18px">{{item.commName}}</div>
+                  <div v-if="item.ewarnLevel === '绿色预警'" style="margin-top: 10px;color: green">
+                    {{item.priValue}}{{item.unit}} {{item.priRange}}%
+                    <i class="el-icon-caret-top" v-if="item.priRange > 0"></i>
+                    <i class="el-icon-caret-bottom" v-else></i>
+                  </div>
+                  <div v-if="item.ewarnLevel === '黄色预警'" style="margin-top: 10px;color: #ffcb48">
+                    {{item.priValue}}{{item.unit}} {{item.priRange}}%
+                    <i class="el-icon-caret-top" v-if="item.priRange > 0"></i>
+                    <i class="el-icon-caret-bottom" v-else></i>
+                  </div>
+                  <div v-if="item.ewarnLevel === '橙色预警'" style="margin-top: 10px;color: orange">
+                    {{item.priValue}}{{item.unit}} {{item.priRange}}%
+                    <i class="el-icon-caret-top" v-if="item.priRange > 0"></i>
+                    <i class="el-icon-caret-bottom" v-else></i>
+                  </div>
+                  <div v-if="item.ewarnLevel === '红色预警'" style="margin-top: 10px;color: red">
+                    {{item.priValue}}{{item.unit}} {{item.priRange}}%
+                    <i class="el-icon-caret-top" v-if="item.priRange > 0"></i>
+                    <i class="el-icon-caret-bottom" v-else></i>
+                  </div>
+                </div>
+              </div>
+            </template>
 
           </div>
         </div>
       </div>
 
       <div class="right-section">
-
-        <div class="goods-more">
-          <div class="preview-title">
-            <div><img src="../../assets/img/shu.png" style="margin: 1px 6px 0 0"></div>
-            <div>商品预警情况</div>
-          </div>
-          <div class="goods-echarts">
-            <div class="echarts-all">
-              <div id="dashboardone" style="width: 49%;height: 100%"></div>
-              <div id="dashboardtwo" style="width: 49%;height: 100%"></div>
-            </div>
-          </div>
-        </div>
-
         <div class="goods-all">
-
-            <div class="opinion-details">
-
-              <div class="preview-title">
-                <div><img src="../../assets/img/shu.png" style="margin: 1px 6px 0 0"></div>
-                <div>各商品的舆情情况</div>
-              </div>
-
-              <el-scrollbar style="height: calc(100% - 60px)">
-                <div class="opinion-body">
-
-                  <div class="opinion-item">
-                    <div class="opinion-index">
-                      <div class="hot hot-red">
-                        <span>1</span>
-                      </div>&nbsp;&nbsp;
-                      <div>
-                        <span>希拉里访问印度,减少进口伊朗石油</span>
-                      </div>
-                    </div>
-                    <div class="fire">
-                      <img src="../../assets/img/热度.png">&nbsp;
-                      <span>2345</span>
-                    </div>
-                  </div>
-
-                  <div class="opinion-item">
-                    <div class="opinion-index">
-                      <div class="hot hot-orange">
-                        <span>2</span>
-                      </div>&nbsp;&nbsp;
-                      <div>
-                        <span>希拉里访问印度,减少进口伊朗石油</span>
-                      </div>
-                    </div>
-                    <div class="fire">
-                      <img src="../../assets/img/热度.png">&nbsp;
-                      <span>2345</span>
-                    </div>
-                  </div>
-
-                  <div class="opinion-item">
-                    <div class="opinion-index">
-                      <div class="hot hot-yellow">
-                        <span>3</span>
-                      </div>&nbsp;&nbsp;
-                      <div>
-                        <span>希拉里访问印度,减少进口伊朗石油</span>
-                      </div>
-                    </div>
-                    <div class="fire">
-                      <img src="../../assets/img/热度.png">&nbsp;
-                      <span>2345</span>
-                    </div>
-                  </div>
-
-
-                  <div class="opinion-item" v-for="item in 15">
-                    <div class="opinion-index">
-                      <div class="hot hot-gray">
-                        <span>{{ item+3 }}</span>
-                      </div>&nbsp;&nbsp;
-                      <div>
-                        <span>希拉里访问印度,减少进口伊朗石油</span>
-                      </div>
-                    </div>
-                    <div class="fire">
-                      <img src="../../assets/img/热度.png">&nbsp;
-                      <span>2345</span>
-                    </div>
-                  </div>
-
-                </div>
-              </el-scrollbar>
-
+          <div class="opinion-details" v-loading="loading">
+            <div class="preview-title">
+              <div><img src="../../assets/img/舆情情况.png" style="margin: 1px 6px 0 0"></div>
+              <div style="cursor: pointer;color: #2d84fe" @click="handleGolang('/secondpage/index', 'newsShow')">各商品的舆情情况</div>
             </div>
 
-            <div class="report-details">
-
-              <div class="preview-title">
-                <div><img src="../../assets/img/shu.png" style="margin: 1px 6px 0 0"></div>
-                <div>各商品的分析报告</div>
-              </div>
-
-              <el-scrollbar style="height: calc(100% - 60px)">
-                <div class="opinion-body">
-
-                  <div class="opinion-item">
-                    <div class="opinion-index">
-                      <div class="hot hot-red">
-                        <span>1</span>
-                      </div>&nbsp;&nbsp;
-                      <div>
-                        <span>希拉里访问印度,减少进口伊朗石油</span>
-                      </div>
-                    </div>
-                    <div class="fire">
-                      <img src="../../assets/img/热度.png">&nbsp;
-                      <span>2345</span>
+            <el-scrollbar style="height: calc(100% - 60px)">
+              <div class="opinion-body" v-if="urlInfo.length > 0">
+                <div class="opinion-item">
+                  <div class="opinion-index" style="width: 80%;">
+                    <div class="hot hot-red">
+                      <span>1</span>
+                    </div>&nbsp;&nbsp;
+                    <div style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;width: 80%;">
+                      <span style="cursor: pointer" @click="targetPage(urlInfo[0].url)">{{ this.urlInfo[0].title }}</span>
                     </div>
                   </div>
-
-                  <div class="opinion-item">
-                    <div class="opinion-index">
-                      <div class="hot hot-orange">
-                        <span>2</span>
-                      </div>&nbsp;&nbsp;
-                      <div>
-                        <span>希拉里访问印度,减少进口伊朗石油</span>
-                      </div>
-                    </div>
-                    <div class="fire">
-                      <img src="../../assets/img/热度.png">&nbsp;
-                      <span>2345</span>
-                    </div>
+                  <div class="fire">
+                    <img src="../../assets/img/热度.png">&nbsp;
+                    <span>{{ this.urlInfo[0].heat }}</span>
                   </div>
-
-                  <div class="opinion-item">
-                    <div class="opinion-index">
-                      <div class="hot hot-yellow">
-                        <span>3</span>
-                      </div>&nbsp;&nbsp;
-                      <div>
-                        <span>希拉里访问印度,减少进口伊朗石油</span>
-                      </div>
-                    </div>
-                    <div class="fire">
-                      <img src="../../assets/img/热度.png">&nbsp;
-                      <span>2345</span>
-                    </div>
-                  </div>
-
-
-                  <div class="opinion-item" v-for="item in 15">
-                    <div class="opinion-index">
-                      <div class="hot hot-gray">
-                        <span>{{ item+3 }}</span>
-                      </div>&nbsp;&nbsp;
-                      <div>
-                        <span>希拉里访问印度,减少进口伊朗石油</span>
-                      </div>
-                    </div>
-                    <div class="fire">
-                      <img src="../../assets/img/热度.png">&nbsp;
-                      <span>2345</span>
-                    </div>
-                  </div>
-
                 </div>
-              </el-scrollbar>
 
+                <div class="opinion-item">
+                  <div class="opinion-index" style="width: 80%;">
+                    <div class="hot hot-orange">
+                      <span>2</span>
+                    </div>&nbsp;&nbsp;
+                    <div style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;width: 80%;">
+                      <span style="cursor: pointer" @click="targetPage(urlInfo[1].url)">{{ this.urlInfo[1].title }}</span>
+                    </div>
+                  </div>
+                  <div class="fire">
+                    <img src="../../assets/img/热度.png">&nbsp;
+                    <span>{{ this.urlInfo[1].heat }}</span>
+                  </div>
+                </div>
+
+                <div class="opinion-item">
+                  <div class="opinion-index" style="width: 80%;">
+                    <div class="hot hot-yellow">
+                      <span>3</span>
+                    </div>&nbsp;&nbsp;
+                    <div style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;width: 80%;">
+                      <span style="cursor: pointer" @click="targetPage(urlInfo[2].url)">{{ this.urlInfo[2].title }}</span>
+                    </div>
+                  </div>
+                  <div class="fire">
+                    <img src="../../assets/img/热度.png">&nbsp;
+                    <span>{{ this.urlInfo[2].heat }}</span>
+                  </div>
+                </div>
+
+                <div class="opinion-item" v-for="(item, index) in infoCopy" :key="index">
+                  <div class="opinion-index" style="width: 80%;">
+                    <div class="hot hot-gray">
+                      <span>{{ index+4 }}</span>
+                    </div>&nbsp;&nbsp;
+
+                    <div style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;width: 80%;">
+                      <!--                        <el-link :href="item.url" target="_blank" type="primary">{{ item.title }}</el-link>-->
+                      <span style="cursor: pointer" @click="targetPage(item.url)">{{ item.title }}</span>
+                    </div>
+                  </div>
+
+                  <div class="fire">
+                    <img src="../../assets/img/热度.png">&nbsp;
+                    <span>{{ item.heat }}</span>
+                  </div>
+                </div>
+              </div>
+            </el-scrollbar>
+          </div>
+
+          <div class="report-details">
+            <div class="preview-title">
+              <div><img src="../../assets/img/分析报告.png" style="margin: 1px 6px 0 0"></div>
+              <div style="cursor: pointer;color: #2d84fe" @click="handleGolang('/report/analysereportconfig/reportproduceconfig')">各商品的分析报告</div>
             </div>
 
+            <el-scrollbar style="height: calc(100% - 60px)">
+              <div class="opinion-body">
+
+                <div class="opinion-item">
+                  <div class="opinion-index">
+                    <div class="hot hot-red">
+                      <span>1</span>
+                    </div>&nbsp;&nbsp;
+                    <div>
+                      <span>希拉里访问印度,减少进口伊朗石油</span>
+                    </div>
+                  </div>
+                  <div class="fire">
+                    <img src="../../assets/img/热度.png">&nbsp;
+                    <span>2345</span>
+                  </div>
+                </div>
+
+                <div class="opinion-item">
+                  <div class="opinion-index">
+                    <div class="hot hot-orange">
+                      <span>2</span>
+                    </div>&nbsp;&nbsp;
+                    <div>
+                      <span>希拉里访问印度,减少进口伊朗石油</span>
+                    </div>
+                  </div>
+                  <div class="fire">
+                    <img src="../../assets/img/热度.png">&nbsp;
+                    <span>2345</span>
+                  </div>
+                </div>
+
+                <div class="opinion-item">
+                  <div class="opinion-index">
+                    <div class="hot hot-yellow">
+                      <span>3</span>
+                    </div>&nbsp;&nbsp;
+                    <div>
+                      <span>希拉里访问印度,减少进口伊朗石油</span>
+                    </div>
+                  </div>
+                  <div class="fire">
+                    <img src="../../assets/img/热度.png">&nbsp;
+                    <span>2345</span>
+                  </div>
+                </div>
+
+                <div class="opinion-item" v-for="item in 15">
+                  <div class="opinion-index">
+                    <div class="hot hot-gray">
+                      <span>{{ item+3 }}</span>
+                    </div>&nbsp;&nbsp;
+                    <div>
+                      <span>希拉里访问印度,减少进口伊朗石油</span>
+                    </div>
+                  </div>
+                  <div class="fire">
+                    <img src="../../assets/img/热度.png">&nbsp;
+                    <span>2345</span>
+                  </div>
+                </div>
+              </div>
+            </el-scrollbar>
+          </div>
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import { Navbar } from '@/layout/components'
-import VueCountUp from 'vue-countupjs'
-export default {
+  import { mapGetters, mapActions } from 'vuex'
+  import { Navbar } from '@/layout/components'
+  import VueCountUp from 'vue-countupjs'
+  export default {
     name: 'Dashboard',
     data() {
-        return {
-            numArray1:[3,6,9],
-            minsheng:[]
+      return {
+        qiuLoading: true,
+        loading: true,
+        num: 0,
+        goodsAll: [],
+        dazong:[],
+        minsheng: [],
+        dataSet:[],
+        itemStyle: [{
+          top: '-70px',
+          left: '120px'
+        },{
+          top: '30px',
+          left: '20px'
+        },{
+          bottom: '30px',
+          left: '20px'
+        },{
+          bottom: '-70px',
+          left: '120px'
+        },{
+          bottom: '-70px',
+          right: '120px'
+        },{
+          bottom: '30px',
+          right: '20px'
+        },{
+          top: '30px',
+          right: '20px'
+        },{
+          top: '-70px',
+          right: '120px'
+        }],
+        allShow: {},
+        radio: 1,
+        urlInfo: [],
+        infoCopy: [],
+        numArrayAll: '',
+        greenEwarnTotal: '',
+        orangeEwarnTotal: '',
+        redEwarnTotal: '',
+        yellowEwarnTotal: '',
+        boot: '',
+        qiuName: {name:'大宗商品', eng:'DAZONG'},
+        interVal: '',
+        caidanValue: 0
+      }
+    },
+    watch: {
+      radio(val) {
+        if(val === 1) {
+          this.qiuName = {name:'大宗商品', eng:'DAZONG'}
+          this.goodsAll = this.dazong.slice(0,8)
+          this.handlePic(this.dazong)
+        }else {
+          this.qiuName = {name:'民生商品', eng:'MINSHENG'}
+          this.goodsAll = this.minsheng.slice(0,8)
+          this.handlePic(this.minsheng)
         }
+      }
     },
     methods: {
-        ...mapActions([
-           'view'
-        ]),
-        gorouter() {
-          this.$router.push('/secondpage/index')
-        },
-        drawOne() {
-          // 基于准备好的dom，初始化echarts实例
-          var myChart = this.$echarts.init(document.getElementById('dashboardone'));
-
-          // 指定图表的配置项和数据
-          var option = {
-              // title: {
-              //     text: '预警情况',
-              //     left: 'center',
-              //     top: 20,
-              //     textStyle: {
-              //         color: '#fff'
-              //     }
-              // },
-
-              tooltip : {
-                  trigger: 'item',
-                  formatter: "{a} <br/>{b} : {c} ({d}%)"
-              },
-
-              visualMap: {
-                  show: false,
-                  min: 80,
-                  max: 600,
-                  inRange: {
-                      colorLightness: [0, 1]
-                  }
-              },
-              series : [
-                  {
-                      name:'访问来源',
-                      type:'pie',
-                      radius : '55%',
-                      center: ['50%', '50%'],
-                      data:[
-                          {value:335, name:'直接访问'},
-                          {value:310, name:'邮件营销'},
-                          {value:274, name:'联盟广告'},
-                          {value:235, name:'视频广告'},
-                          {value:400, name:'搜索引擎'}
-                      ].sort(function (a, b) { return a.value - b.value; }),
-                      roseType: 'radius',
-                      label: {
-                          normal: {
-                              textStyle: {
-                                  color: 'rgba(255, 255, 255, 1)'
-                              }
-                          }
-                      },
-                      labelLine: {
-                          normal: {
-                              lineStyle: {
-                                  color: 'rgba(255, 255, 255, 1)'
-                              },
-                              smooth: 0.2,
-                              length: 10,
-                              length2: 20
-                          }
-                      },
-                      itemStyle: {
-                          normal: {
-                              color: '#c23531',
-                              shadowBlur: 200,
-                              shadowColor: 'rgba(0, 0, 0, 0.5)'
-                          }
-                      },
-
-                      animationType: 'scale',
-                      animationEasing: 'elasticOut',
-                      animationDelay: function (idx) {
-                          return Math.random() * 200;
-                      }
-                  }
-              ]
-          };
-
-          // 使用刚指定的配置项和数据显示图表。
-          myChart.setOption(option);
-        },
-
-        drawTwo() {
-            // 基于准备好的dom，初始化echarts实例
-            var myChart = this.$echarts.init(document.getElementById('dashboardtwo'));
-
-            // 指定图表的配置项和数据
-            var option = {
-                tooltip : {
-                    trigger: 'axis',
-                    axisPointer: {
-                        type: 'cross',
-                        label: {
-                            backgroundColor: '#6a7985'
-                        }
-                    }
+      handlePic(data) {
+        this.num = 8
+        if(this.interVal) {
+          clearInterval(this.interVal)
+        }
+        this.interVal =  setInterval(() => {
+          this.num += 8
+          if(this.num > data.length || this.num === data.length) {
+            this.num = 0
+          }
+          this.goodsAll = data.slice(this.num, this.num+8)
+        },10000)
+      },
+      handleGolang(url, query) {
+        this.$router.push({ path:url, query:{num: query}})
+      },
+      handleChange(index, item, boo) {
+        for(let i in this.allShow) {
+          this.allShow[i] = false
+        }
+        this.allShow[index] = true
+        this.boot = index
+        if(boo) {
+          this.$router.push({ path:'/secondpage/index'})
+          this.changePageValue(item)
+        }
+      },
+      targetPage(url) {
+        let newUrl = `https://${url}`
+        window.open(newUrl,'_blank')
+      },
+      ...mapActions([
+        'view',
+        'changePageValue',
+        'getTopUrlInfo'
+      ]),
+      drawOne(data) {
+        let myChart = this.$echarts.init(document.getElementById('dashboardone'));
+        let legendData = []
+        let seriesData = []
+        let num = 0
+        for(let i in data) {
+          legendData[num] = i
+          seriesData[num] = {}
+          seriesData[num].value = parseInt(data[i])
+          seriesData[num].name = i
+          num++
+        }
+        let option = {
+          tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+          },
+          legend: {
+            orient: 'vertical',
+            left: 'left',
+            top:'0%',
+            data: legendData
+          },
+          series : [
+            {
+              name: '访问来源',
+              type: 'pie',
+              radius : '55%',
+              center: ['50%', '60%'],
+              data: seriesData,
+              itemStyle: {
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
                 },
-                // legend: {
-                //     data:['邮件营销','联盟广告','视频广告'],
-                //     textStyle: {
-                //         color: '#ffffff'
-                //     }
-                // },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
-                },
-                xAxis : [
-                    {
-                        type : 'category',
-                        boundaryGap : false,
-                        data : ['周一','周二','周三','周四','周五','周六','周日'],
-                        axisLabel: {
-                            show: true,
-                            textStyle: {
-                                color: '#ffffff'
-                            }
-                        }
+                normal:{
+                  color:function(params) {
+                    let colorList = ['green','#ffcb48', 'orange','red'];
+                    return colorList[params.dataIndex]
+                  }
+                }
+              }
+            }
+          ]
+        };
+        myChart.setOption(option);
+      },
 
-                    }
-                ],
-                yAxis : [
-                    {
-                        type : 'value',
-                        axisLabel : {
-                            formatter: '{value}',
-                            textStyle: {
-                                color: '#fff'
-                            }
-                        }
-                    }
-                ],
-                series : [
-                    {
-                        name:'邮件营销',
-                        type:'line',
-                        stack: '总量',
-                        areaStyle: {},
-                        data:[120, 132, 101, 134, 90, 230, 210]
-                    },
-                    {
-                        name:'联盟广告',
-                        type:'line',
-                        stack: '总量',
-                        areaStyle: {},
-                        data:[220, 182, 191, 234, 290, 330, 310]
-                    },
-                    {
-                        name:'视频广告',
-                        type:'line',
-                        stack: '总量',
-                        areaStyle: {},
-                        data:[150, 232, 201, 154, 190, 330, 410]
-                    }
-                ]
-            };
-
-            // 使用刚指定的配置项和数据显示图表。
-            myChart.setOption(option);
-        },
+      drawTwo(data) {
+        let myChart = this.$echarts.init(document.getElementById('dashboardtwo'));
+        let len = 0
+        let k = ''
+        Object.keys(data).forEach((item, index) => {
+          if(data[item].length > len) {
+            len = data[item].length
+            k = item
+          }
+        })
+        let time = data[k].map((item, index) => {
+          return data[k][index].ewarnDate
+        })
+        let keys = Object.keys(data)
+        let dataValue1 = data[keys[0]].map(item => {
+          return item.ewarnCount
+        })
+        let dataValue2 = data[keys[1]].map(item => {
+          return item.ewarnCount
+        })
+        let dataValue3 = data[keys[2]].map(item => {
+          return item.ewarnCount
+        })
+        let dataValue4 = data[keys[3]].map(item => {
+          return item.ewarnCount
+        })
+        let option = {
+          tooltip : {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'cross',
+              label: {
+                backgroundColor: '#6a7985'
+              }
+            }
+          },
+          grid:{
+            left:20,
+            top:0,
+            right:0,
+            bottom:20
+          },
+          xAxis : [
+            {
+              type : 'category',
+              boundaryGap : false,
+              data : time,
+              axisLabel: {
+                show: true,
+                textStyle: {
+                  color: '#ccc'
+                }
+              }
+            }
+          ],
+          yAxis : [
+            {
+              type : 'value',
+              axisLabel : {
+                formatter: '{value}',
+                textStyle: {
+                  color: '#ccc'
+                }
+              }
+            }
+          ],
+          series : [
+            {
+              name: keys[0],
+              type:'line',
+              stack: '总量',
+              // areaStyle: {},
+              data: dataValue1
+            },
+            {
+              name: keys[1],
+              type:'line',
+              stack: '总量',
+              // areaStyle: {},
+              data: dataValue2
+            },
+            {
+              name: keys[2],
+              type:'line',
+              stack: '总量',
+              // areaStyle: {},
+              data: dataValue3
+            },
+            {
+              name: keys[3],
+              type:'line',
+              stack: '总量',
+              // areaStyle: {},
+              data: dataValue4
+            },
+          ]
+        };
+        myChart.setOption(option);
+      },
     },
     components:{
-        Navbar,
-        VueCountUp
+      Navbar,
+      VueCountUp
     },
     computed: {
       ...mapGetters([
-        'name'
+        'name',
       ])
     },
     mounted() {
-        this.drawOne()
-        this.drawTwo()
+      let i = 0
+      for(;i<8;i++) {
+        this.allShow[i] = false
+        this.dataSet[i] = {}
+      }
+      this.view().then(res => {
+        let data = res.data
+        this.numArrayAll = (parseInt(data.commTotal/10000) + '').split("")
+        this.greenEwarnTotal = (parseInt(data.greenEwarnTotal) + '').split("")
+        this.orangeEwarnTotal = (parseInt(data.orangeEwarnTotal) + '').split("")
+        this.redEwarnTotal = (parseInt(data.redEwarnTotal) + '').split("")
+        this.yellowEwarnTotal = (parseInt(data.yellowEwarnTotal) + '').split("")
+        this.dazong = data.ewanInfo.dazong
+        this.minsheng = data.ewanInfo.minsheng
+        this.goodsAll = this.dazong.slice(0,8)
+        this.handlePic(this.dazong)
+        this.drawOne(data.rateVel)
+        this.drawTwo(data.priVal)
+        this.qiuLoading = false
+      })
+      let num = 0
+      setInterval(() => {
+        this.handleChange(num,undefined,false)
+        num++
+        if(num === 8) {
+          num = 0
+        }
+      },1000)
     },
     created() {
-        this.view().then(res => {
-            console.log(res.data.ewanInfo)
-            this.minsheng = res.data.ewanInfo
-        })
+      this.getTopUrlInfo().then(res => {
+        this.urlInfo = res.data
+        this.infoCopy = this.urlInfo.slice(3)
+        // this.loading = false
+        this.loading = true
+      }).catch(()=>{
+        this.urlInfo = []
+      })
     }
-}
+  }
 </script>
 
 <style lang="scss">
@@ -511,6 +640,55 @@ export default {
     height: 100vh;
     overflow: hidden;
     color: #ffffff;
+
+    .goods-thing {
+      background-image: url('../../assets/img/价格子系统.png');
+      background-repeat:no-repeat;
+      background-position: bottom;
+      /*background-size:100% 100%;*/
+
+      .qiu {
+        background-image: url('../../assets/img/qiu2.png');
+        background-repeat:no-repeat;
+        background-position: center;
+        background-size: 40%;
+
+        .kuang {
+          width: 200px;
+          height: 84px;
+          position: absolute;
+          display: flex;
+
+          .kuang-sub {
+            width: 123px;
+            height: 100%;
+            color: black;
+            text-align: right
+          }
+
+          .kuang-item {
+            width: 77px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background-image: url('../../assets/img/kuang.png');
+            background-repeat:no-repeat;
+            background-position: center;
+            background-size: 110%;
+          }
+
+          .kuang-item:hover {
+            background-image: url('../../assets/img/kuang2.png');
+          }
+
+          .is-active-right {
+            background-image: url('../../assets/img/kuang2.png');
+          }
+        }
+      }
+    }
 
     .fixed-header {
       position: fixed;
@@ -525,7 +703,7 @@ export default {
       justify-content: space-between;
       height: 100%;
       padding: 84px 14px 8px;
-      background: #051961;
+      background: #f0f2f6;
 
       .preview-title {
         display: flex;
@@ -595,7 +773,7 @@ export default {
       }
 
       .left-section {
-        width: 38%;
+        width: calc((100% - 700px) / 2);
         height: 100%;
 
         .live-preview {
@@ -606,18 +784,19 @@ export default {
 
           .num-details {
             width: calc(100% - 16px);
-            padding: 40px 0 0 16px;
+            padding: 0 0 0 16px;
             color: #afb6ce;
+            margin-top: 5px;
 
             .details-body {
               display: flex;
-              justify-content: space-between;
+              justify-content: space-around;
               letter-spacing: 1px;
 
               .num-style {
                 margin-right:4px;
-                font-size: 18px;
-                padding: 10px 8px
+                font-size: 16px;
+                padding: 10px 4px
               }
             }
           }
@@ -626,39 +805,27 @@ export default {
         .goods-details {
           height: calc(100% - 135px);
           margin-top: 4px;
-          background-image: url("../../assets/img/dashboard1-2.png");
-          background-repeat: no-repeat;
-          background-size: 100% 100%;
+          background: #ffffff;
+          /*background-image: url("../../assets/img/dashboard1-2.png");*/
+          /*background-repeat: no-repeat;*/
+          /*background-size: 100% 100%;*/
 
-          .goods-table {
-            width: calc(100% - 16px);
-            height: 100%;
-            padding: 10px 0 0 16px;
+          .goods-more {
+            margin: 0 20px;
+            height: 40%;
+            /*background-image: url("../../assets/img/dashboard2-1.png");*/
+            /*background-repeat: no-repeat;*/
+            /*background-size: 100% 100%;*/
 
-            .scrollbar-table {
+            .goods-echarts {
+              padding: 10px 0 0 16px;
+              height: 80%;
 
-              .el-table thead {
-                color: #ffffff;
-              }
-
-              .el-table tr {
-                background: rgb(15, 29, 111);
-              }
-
-              .el-table td, .el-table th.is-leaf {
-                border-bottom: 0 solid #EBEEF5;
-              }
-
-              .el-table::before {
-                height: 0;
-              }
-
-              .el-table--striped .el-table__body tr.el-table__row--striped td {
-                background: #1031a0;
-              }
-
-              .el-table--enable-row-hover .el-table__body tr:hover>td {
-                background: #1a4894;
+              .echarts-all {
+                display: flex;
+                justify-content: space-between;
+                height: 100%;
+                padding-right:16px
               }
             }
           }
@@ -666,55 +833,38 @@ export default {
       }
 
       .right-section {
-        width: 62%;
+        width: calc((100% - 700px) / 2);
         height: 100%;
-        padding-left: 6px;
-
-        .goods-more {
-          height: 50%;
-          background-image: url("../../assets/img/dashboard2-1.png");
-          background-repeat: no-repeat;
-          background-size: 100% 100%;
-
-          .goods-echarts {
-            padding: 10px 0 0 16px;
-            height: 80%;
-
-            .echarts-all {
-              display: flex;
-              justify-content: space-between;
-              height: 100%;
-              padding-right:16px
-            }
-          }
-        }
+        /*padding-left: 6px;*/
 
         .goods-all {
-          display: flex;
-          justify-content: space-between;
-          height: 50%;
-          padding: 3px 0 0;
+          /*display: flex;*/
+          /*justify-content: space-between;*/
+          height: 100%;
+          /*padding: 0;*/
 
           .opinion-details {
-            width: 50%;
-            margin-right: 4px;
-            background-image: url("../../assets/img/dashboard2-2.png");
-            background-repeat: no-repeat;
-            background-size: 100% 100%;
-
+            height: 50%;
+            /*margin-right: 4px;*/
+            background: #ffffff;
+            color: #666666;
+            /*background-image: url("../../assets/img/dashboard2-2.png");*/
+            /*background-repeat: no-repeat;*/
+            /*background-size: 100% 100%;*/
           }
 
           .report-details {
-            width: 50%;
+            height: 50%;
             margin-top: 5px;
             margin-bottom: -4px;
-            background-image: url("../../assets/img/dashboard2-3.png");
-            background-repeat: no-repeat;
-            background-size: 100% 100%;
+            background: #ffffff;
+            color: #666666;
+            /*background-image: url("../../assets/img/dashboard2-3.png");*/
+            /*background-repeat: no-repeat;*/
+            /*background-size: 100% 100%;*/
           }
         }
       }
     }
-
   }
 </style>

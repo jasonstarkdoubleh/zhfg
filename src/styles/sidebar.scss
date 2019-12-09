@@ -66,6 +66,7 @@
     // menu hover
     .submenu-title-noDropdown,
     .el-submenu__title {
+      //background-color: #f9f9f9 !important;
       &:hover {
         background-color: $menuHover !important;
       }
@@ -78,10 +79,14 @@
     & .nest-menu .el-submenu>.el-submenu__title,
     & .el-submenu .el-menu-item {
       min-width: $sideBarWidth !important;
-      //background-color: $subMenuBg !important;
+      background-color: $subMenuBg !important;
 
       &:hover {
         background-color: $subMenuHover !important;
+      }
+      &.is-active {
+        color: #ffffff !important;
+        background-color: #2d84fe !important;
       }
     }
   }

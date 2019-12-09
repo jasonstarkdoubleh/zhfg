@@ -10,8 +10,6 @@
         created() {
             goPublic('http://10.1.0.139:8087/scyuqing').then(res => {
                 window.open(res.url,'_blank')
-            }).catch(error => {
-                console.log(123)
             })
         }
     }

@@ -1,6 +1,6 @@
 <template>
 
-    <section class="app-main" :style="{'background': mainBgc ? '#f2f2f6':'#051961'}">
+    <section class="app-main" :style="{'background': mainBgc ? '#f0f2f6':'#f0f2f6'}">
       <!--    <div style="height: 56px;background: rgb(48, 65, 86);">-->
       <!--      <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />-->
       <!--      <breadcrumb class="breadcrumb-container" />-->
@@ -27,7 +27,6 @@ export default {
     },
     watch: {
         $route: function(to, from) {
-            console.log(this.$route.path)
             this.mainBgc = this.$route.path !== '/secondpage/index';
         }
     },
@@ -56,9 +55,7 @@ export default {
 
 <style lang="scss" scoped>
 	.app-main {
-		/*50 = navbar  */
 		min-height: 100vh;
-		/*min-width: 1400px;*/
 		width: 100%;
 		position: relative;
 		overflow: auto;

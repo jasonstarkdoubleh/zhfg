@@ -5,9 +5,9 @@
 
       <breadcrumb class="breadcrumb-container" /> -->
 
-      <div style="color: #ffffff;font-size: 18px;font-weight: bolder;display: flex;align-items: center" @click="toggleSideBar">
-        <img style="width: 30px;height: 30px;margin-right: 2px;margin-top: 2px" src="../../assets/img/headerlogo.png" alt="智慧发改•价格大数据应用系统">
-        <span style="margin-left: 2px">智慧发改•价格大数据应用系统</span>
+      <div style="color: #ffffff;font-size: 25px;font-weight: bolder;display: flex;align-items: center" @click="toggleSideBar">
+        <img style="width: 30px;height: 30px;margin-right: 2px;margin-top: 2px" src="../../assets/img/LOGO.svg" alt="智慧发改•价格大数据应用系统">
+        <span style="margin-left: 2px;color: #79f3ea">智慧发改•价格大数据应用系统</span>
       </div>
 <!--      <div class="right-menu">-->
 <!--        <el-dropdown class="avatar-container" trigger="click">-->

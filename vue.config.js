@@ -9,6 +9,9 @@ function resolve(dir) {
 const name = defaultSettings.title || '智慧发改' // page title
 
 process.env.VUE_APP_BASE_API = 'http://10.1.0.139:8081/fagaiwei_api/'
+// process.env.VUE_APP_BASE_API = 'http://172.20.10.13:8081/fagaiwei_api/'
+// process.env.VUE_APP_BASE_API = 'http://10.1.1.140:8081/fagaiwei_api/'
+
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
@@ -43,7 +46,10 @@ module.exports = {
       // change xxx-api/login => mock/login
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
-        target: `http://127.0.0.1:${port}/mock`,
+        // target: `http://127.0.0.1:${port}/mock`,
+        target: `http://10.1.0.139:8081/fagaiwei_api/`,
+        // target: `http://172.20.10.13:8081/fagaiwei_api/`,
+        // target: `http://10.1.1.140:8081/fagaiwei_api/`,
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''

@@ -116,7 +116,6 @@ export default {
             this.loading = false
           })
         } else {
-          console.log('error submit!!');
           return false
         }
       })
@@ -193,7 +192,7 @@ $light_gray:#eee;
   }
 
   .tips {
-    font-size: 14px;
+    font-size: 15px;
     color: #fff;
     margin-bottom: 10px;
 

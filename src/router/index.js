@@ -147,7 +147,7 @@ export const constantRoutes = [
     path: '/pricewatch',
     component: Layout,
     redirect: '/pricewatch/pricewarning',
-    meta: { title: '价格监测', icon: '' },
+    meta: { title: '价格分析', icon: 'dashboard' },
     hidden: priceSystem,
     children: [
       //价格预警
@@ -274,7 +274,7 @@ export const constantRoutes = [
     children: [{
       path:'index',
       component: () => import('@/views/onlineSurveySystem'),
-      meta: { title: '在线调研', icon: 'example' },
+      meta: { title: '在线调研', icon: 'eye' },
     }]
   },
 
@@ -283,7 +283,7 @@ export const constantRoutes = [
     path: '/report',
     component: Layout,
     redirect: '/analysereportconfig',
-    meta: { title: '分析报告', icon: 'example' },
+    meta: { title: '分析报告', icon: 'eye-open' },
     hidden: analysisSystem,
     children: [
       //分析报告配置
@@ -291,7 +291,7 @@ export const constantRoutes = [
         path: 'analysereportconfig',
         component: () => import('@/views/analysereportconfig'),
         redirect: '/analysereportconfig/reportproduceconfig',
-        meta: { title: '分析报告配置' },
+        meta: { },
         hidden: analysisSystem,
         children: [
           {
@@ -308,7 +308,7 @@ export const constantRoutes = [
         path: 'manualanalysisreportsearch',
         component: () => import('@/views/manualanalysisreportsearch'),
         redirect: '/manualanalysisreportsearch/reporttaskwatch',
-        meta: { title: '分析报告查看' },
+        meta: { },
         hidden: analysisSystem,
         children: [
           {
@@ -318,7 +318,7 @@ export const constantRoutes = [
             meta: { title: '报告查询' },
           }
         ]
-      },
+      }
     ]
   },
 
@@ -329,7 +329,7 @@ export const constantRoutes = [
     path: '/modeladmin',
     component: Layout,
     redirect: '/modeladmin/datapretreatment',
-    meta: { title: '模型管理', icon: 'example' },
+    meta: { title: '模型管理', icon: 'form' },
     hidden: modelSystem,
     children: [
       {
@@ -352,7 +352,7 @@ export const constantRoutes = [
     path: '/datasourcemanagement',
     component: Layout,
     redirect: '/datasourcemanagement/index',
-    meta: { title: '数据源管理', icon: 'example' },
+    meta: { title: '数据源管理', icon: 'nested' },
     hidden: dataSystem,
     children: [
       {
@@ -360,7 +360,14 @@ export const constantRoutes = [
         name: 'Datasourcemanagement',
         component: () => import('@/views/datasourcemanagement'),
         meta: { title: '数据源管理', breadcrumb: false },
-      }
+      },
+
+      //数据集
+      {
+        path: 'dataset',
+        component: () => import('@/views/dataset'),
+        meta: {title: '数据集' },
+      },
     ]
   },
 
@@ -369,7 +376,7 @@ export const constantRoutes = [
     path:'/sysconfig',
     component: Layout,
     redirect: '/sysconfig/usersconfig',
-    meta: { title: '系统管理', icon: 'example' },
+    meta: { title: '系统管理', icon: 'user' },
     children: [
       {
         path: 'usersconfig',
@@ -393,68 +400,37 @@ export const constantRoutes = [
         name: 'MenuManager',
         component: () => import('@/views/sysconfig/menuconfig/list.vue'),
         meta: { title: '菜单管理' }
-      }
+      },
+
+      // 调度管理
+      {
+        path: 'management',
+        name: 'Management',
+        component: () => import('@/views/management/index'),
+        meta: { title: '调度管理' }
+      },
+
+      // 调度配置
+      // {
+      //   path: 'diaoDuPeiZhi',
+      //   component:  () => import('@/views/diaoDuPeiZhi/index'),
+      //   meta: { title: '调度配置' }
+      // },
     ]
   },
 
-  //数据集
-  // {
-  //   path: '/dataset',
-  //   component: Layout,
-  //   redirect: '/dataset/index',
-  //   meta: { title: '数据集', icon: 'example' },
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'Datasourcemanagement',
-  //       component: () => import('@/views/dataset'),
-  //       meta: { title: '数据源管理' },
-  //     }
-  //   ]
-  // },
-
-
-
-
-
-  //自动报告调度配置
-  // {
-  //   path: '/ziDongBaoGao',
-  //   component: Layout,
-  //   redirect: '/ziDongBaoGao/index',
-  //   children: [{
-  //     path: 'index',
-  //     name: 'ziDongBaoGao',
-  //     component: () => import('@/views/ziDongBaoGao/index'),
-  //     meta: { title: '自动报告调度配置', icon: 'dashboard' }
-  //   }]
-  // },
-
-  //调度配置
-  // {
-  //   path: '/diaoDuPeiZhi',
-  //   component: Layout,
-  //   redirect: '/diaoDuPeiZhi/index',
-  //   children: [{
-  //     path: 'index',
-  //     name: 'diaoDuPeiZhi',
-  //     component: () => import('@/views/diaoDuPeiZhi/index'),
-  //     meta: { title: '调度配置', icon: 'dashboard' }
-  //   }]
-  // },
-
-  //握手协议
-  // {
-  //   path: '/woshouxieyi',
-  //   component: Layout,
-  //   redirect: '/woshouxieyi/index',
-  //   children: [{
-  //     path: 'index',
-  //     name: 'woshouxieyi',
-  //     component: () => import('@/views/woShouXieYi/index'),
-  //     meta: { title: '握手协议', icon: 'dashboard' }
-  //   }]
-  // },
+  // 握手协议
+  {
+    path: '/woshouxieyi',
+    component: Layout,
+    redirect: '/woshouxieyi/index',
+    children: [{
+      path: 'index',
+      name: 'woshouxieyi',
+      component: () => import('@/views/woShouXieYi/index'),
+      meta: { title: '握手协议', icon: 'link' }
+    }]
+  },
 
 
   // {

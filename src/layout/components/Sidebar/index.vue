@@ -1,8 +1,8 @@
 <template>
   <div :class="{'has-logo':showLogo}">
     <logo v-if="showLogo" :collapse="isCollapse" class="bgimg"/>
-    <div style="height: 40px;background: #17265a">
-      <el-button class="backhome" style="border: 0;color: #ffffff;width: 57px;height: 37px;margin-left: 10px" @click="backHome">
+    <div style="height: 43px;background: #54A6FC">
+      <el-button class="backhome" style="border: 0;color: #ffffff;width: 57px;height: 33px;margin-left: 10px;margin-top: 5px" @click="backHome">
         <span style="margin-left: 15px">返 回</span>
       </el-button>
     </div>
@@ -67,11 +67,11 @@ export default {
 
 <style scoped>
   .bgimg {
-    background: #12172b;
+    background: #54A6FC;
     /*background-image: url("../../../assets/img/bcg.png");*/
   }
   .backhome {
-    background-color: #17265a;
+    background-color: #54A6FC;
     background-image: url("../../../assets/img/back.png");
     background-repeat: no-repeat;
     background-size: 100% 100%;

@@ -2,7 +2,6 @@
   <div>
     <el-card>
       <slot></slot>
-
       <!--    loading-->
       <!--    <div v-show="loading"-->
       <!--         style="margin-top: 10px;height: 200px;z-index: 100;width: 100%"-->
@@ -16,6 +15,7 @@
           :data="tableData"
           border
           stripe
+          @row-click="openDetails"
           highlight-current-row>
 
           <!--        索引-->
@@ -69,17 +69,6 @@
             </template>
           </el-table-column>
 
-          <!--      删除-->
-          <el-table-column
-            v-if="deleteShow"
-            prop="delete"
-            :width="tableWidth"
-            label="删除">
-            <template slot-scope="scope">
-              <el-button type="danger" plain icon="el-icon-delete" circle size="mini" @click="hanleDelete(scope.row)"></el-button>
-            </template>
-          </el-table-column>
-
           <!--      下载-->
           <el-table-column
             v-if="downloadShow"
@@ -96,22 +85,33 @@
             v-if="configShow"
             prop="config"
             :width="tableWidth"
-            label="配置">
+            label="修改">
             <template slot-scope="scope">
-              <el-button type="warning" plain icon="el-icon-edit" circle size="mini" @click="handleConfig"></el-button>
+              <el-button type="warning" plain icon="el-icon-edit" circle size="mini" @click="handleConfig(scope)"></el-button>
+            </template>
+          </el-table-column>
+
+          <!--      删除-->
+          <el-table-column
+            v-if="deleteShow"
+            prop="delete"
+            :width="tableWidth"
+            label="删除">
+            <template slot-scope="scope">
+              <el-button type="danger" plain icon="el-icon-delete" circle size="mini" @click="hanleDelete(scope.row)"></el-button>
             </template>
           </el-table-column>
 
         </el-table>
 
         <!--    分页-->
-        <div style="display: flex;justify-content: flex-end;margin-top: 14px">
+        <div v-if="pageShow" style="display: flex;justify-content: flex-end;margin-top: 14px">
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="currentPage"
-            :page-sizes="[100, 200, 300, 400]"
-            :page-size="100"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="10"
             layout="total, sizes, prev, pager, next, jumper"
             :total="total">
           </el-pagination>
@@ -124,112 +124,123 @@
 </template>
 
 <script>
-    export default {
-        data() {
-            return {
-                currentPage: 1,                    //当前页
-            }
-        },
-        props:{
-            //下载显示
-            downloadShow:{
-                type: Boolean,
-                default: false,
-            },
-            //模型管理显示
-            modelconfig:{
-                type: Boolean,
-                default: false,
-            },
-            //指数显示
-            predictionconfig:{
-                type: Boolean,
-                default: false,
-            },
-            //表头
-            columnData:{
-                type: Object,
-                default: () => {},
-            },
-            //表格数据
-            tableData:{
-                type: Array,
-                default: () => {
-                    return []
-                }
-            },
-            //列宽
-            tableWidth:{
-                type: String,
-                default: '0'
-            },
-            //总页数
-            total:{
-                type: Number,
-                default: 0
-            },
-            //加载
-            loading:{
-                type: Boolean,
-                default: false
-            },
-            // 查看
-            searchShow:{
-                type: Boolean,
-                default: false
-            },
-            // 状态
-            statusShow:{
-                type: Boolean,
-                default: false
-            },
-            // 删除显示
-            deleteShow:{
-                type: Boolean,
-                default: false
-            },
-            // 索引
-            index:{
-                type: Boolean,
-                default: false
-            },
-            // 多选
-            selection:{
-                type: Boolean,
-                default: false
-            },
-            // 配置
-            configShow:{
-                type: Boolean,
-                default: false
-            }
-        },
-        methods: {
-            hanleDelete(row){
-                this.$emit('on-delete',row)                     //删除
-            },
-            handleConfig(){                                     //查看配置
-                this.$emit('on-config',true)
-            },
-            handleDetail(data){                                     //详情查看
-                this.$emit('on-detail',data)
-            },
-            handleSizeChange(val) {                             //pageSize 改变时会触发
-                console.log(`每页 ${val} 条`);
-            },
-            handleCurrentChange(val) {                          //currentPage 改变时会触发
-                console.log(`当前页: ${val}`);
-            },
-        },
-        watch: {
-            columnData(val){
-                if(Object.keys(val).length < 8){
-                    this.tableWidth = '0'
-                }
-            }
+  export default {
+    data() {
+      return {
+        currentPage: 1,                    //当前页
+        pageSize: 10,
+      }
+    },
+    props:{
+      //分页显示
+      pageShow: {
+        type: Boolean,
+        default: true,
+      },
+      //下载显示
+      downloadShow:{
+        type: Boolean,
+        default: false,
+      },
+      //模型管理显示
+      modelconfig:{
+        type: Boolean,
+        default: false,
+      },
+      //指数显示
+      predictionconfig:{
+        type: Boolean,
+        default: false,
+      },
+      //表头
+      columnData:{
+        type: Object,
+        default: () => {},
+      },
+      //表格数据
+      tableData:{
+        type: Array,
+        default: () => {
+          return []
         }
-
+      },
+      //列宽
+      tableWidth:{
+        type: String,
+        default: '0'
+      },
+      //总页数
+      total:{
+        type: Number,
+        default: 0
+      },
+      //加载
+      loading:{
+        type: Boolean,
+        default: false
+      },
+      // 查看
+      searchShow:{
+        type: Boolean,
+        default: false
+      },
+      // 状态
+      statusShow:{
+        type: Boolean,
+        default: false
+      },
+      // 删除显示
+      deleteShow:{
+        type: Boolean,
+        default: false
+      },
+      // 索引
+      index:{
+        type: Boolean,
+        default: false
+      },
+      // 多选
+      selection:{
+        type: Boolean,
+        default: false
+      },
+      // 配置
+      configShow:{
+        type: Boolean,
+        default: false
+      }
+    },
+    methods: {
+      openDetails(row) {
+        this.$emit('click', row)
+      },
+      hanleDelete(row){
+        this.$emit('on-delete',row)                     //删除
+      },
+      handleConfig(data){                                     //修改
+        this.$emit('on-config',data)
+      },
+      handleDetail(data){                                     //详情查看
+        this.$emit('on-detail',data)
+      },
+      handleSizeChange(val) {                             //pageSize 改变时会触发
+        this.pageSize = val
+        this.$emit('pageChange',this.pageSize,this.currentPage)
+      },
+      handleCurrentChange(val) {                          //currentPage 改变时会触发
+        this.currentPage = val
+        this.$emit('pageChange',this.pageSize,this.currentPage)
+      },
+    },
+    watch: {
+      columnData(val){
+        if(Object.keys(val).length < 8){
+          this.tableWidth = '0'
+        }
+      }
     }
+
+  }
 </script>
 
 <style lang="scss">

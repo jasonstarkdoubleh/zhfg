@@ -8,6 +8,7 @@ import getPageTitle from '@/utils/get-page-title'
 import { getPermission } from '@/api/user'
 import Cookies from 'js-cookie'
 import fa from "element-ui/src/locale/lang/fa"
+import { getUrl } from './api/user'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -21,6 +22,7 @@ let urlParse = function() {
   let reg = /[?&][^?&]+=[^?&]+/g;
   let arr = url.match(reg);
   let tempArr
+
   if (arr) {
     arr.forEach((item) => {
       tempArr = item.substring(1).split('=');
@@ -29,13 +31,10 @@ let urlParse = function() {
     })
   }
 
-  console.log(tempArr)
-
   getPermission(tempArr[1]).then(res => {
-    console.log(res)
     Cookies.set('permission', res.token)
     store.dispatch('user/login', {username: 'admin', password: '111111'}).then(() => {
-      next({ path: '/' })
+      router.push('/')
     })
   }).catch(() => {
     console.log('error')

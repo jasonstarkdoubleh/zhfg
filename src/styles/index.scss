@@ -5,17 +5,12 @@
 @import './sidebar.scss';
 
 body {
-  font-size: 14px;
+  font-size: 15px;
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
-}
-
-.el-menu-item.is-active {
-  color: #ffffff !important;
-  background-color: #2d84fe !important;
 }
 
 label {
@@ -104,4 +99,11 @@ div:focus {
 
 .card-width {
   width: calc(50% - 5px)
+}
+
+#app .sidebar-container .nest-menu .el-submenu > .el-submenu__title, #app .sidebar-container .el-submenu .el-menu-item {
+  margin-left: 25px;
+}
+.el-submenu__icon-arrow {
+  right: 35px !important;
 }

@@ -135,7 +135,6 @@
 //        this.dialogLoading = true;
 //        this.disabled = true;
 //        this.save(this.sizeForm).then((res) => {
-//          console.log(res);
 //          this.sizeForm = JSON.parse(JSON.stringify(this.sizeFormCopy));
 //          this.dialogLoading = false;
 //          this.disabled = false;
