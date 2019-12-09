@@ -1,46 +1,62 @@
 <template>
+
   <div>
-    <jtable
-      :tableData="tableData"
-      :columnData="columnData"
-      :searchShow="true"
-      :statusShow="true"
-      :deleteShow="true"
-      @on-detail="handleCause"
-    v-show="tableShow">
 
-<!--      因果分析-->
-      <div class="flex bgc">
-        <div>
-          分析结果名称:&nbsp;
-          <el-input style="width: 150px;margin-right: 20px" v-model="correlationName"></el-input>
+    <el-tabs v-model="activeName" @tab-click="handleClick">
+      <el-tab-pane label="数据展示" name="first">
+        <jtable
+          :tableData="tableData"
+          :columnData="columnData"
+          :searchShow="true"
+          :statusShow="true"
+          :deleteShow="true"
+          @on-detail="handleCause"
+          v-show="tableShow">
 
-          模型名称:&nbsp;
-          <el-select v-model="warningName" style="margin-right: 20px">
-            <el-option
-              v-for="item in warningNameOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
+          <!--      因果分析-->
+          <div class="flex bgc">
+            <div>
+              分析结果名称:&nbsp;
+              <el-input style="width: 150px;margin-right: 20px" v-model="correlationName"></el-input>
 
-          数据集名称:&nbsp;
-          <el-select v-model="warningName" style="margin-right: 20px">
-            <el-option
-              v-for="item in warningNameOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </div>
-        <div>
-          <el-button type="primary" @click="handleCause">查询</el-button>
-        </div>
-      </div>
+              模型名称:&nbsp;
+              <el-select v-model="warningName" style="margin-right: 20px">
+                <el-option
+                  v-for="item in warningNameOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
 
-    </jtable>
+              数据集名称:&nbsp;
+              <el-select v-model="warningName" style="margin-right: 20px">
+                <el-option
+                  v-for="item in warningNameOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </div>
+            <div>
+              <el-button type="primary" @click="handleCause">查询</el-button>
+            </div>
+          </div>
+
+        </jtable>
+      </el-tab-pane>
+
+      <el-tab-pane label="格兰杰因果检验" name="second">
+
+      </el-tab-pane>
+
+      <el-tab-pane label="路径分析" name="third">
+
+      </el-tab-pane>
+    </el-tabs>
+
+
 
     <div v-show="gelanjieShow">
       <div style="padding: 10px" id="GELANJIE">
@@ -181,6 +197,7 @@
     export default {
       data(){
           return {
+              activeName: 'first',
               tableShow: true,
               wayShow:false,
               formInline: {
@@ -248,6 +265,9 @@
           jtable
       },
       methods:{
+          handleClick(tab, event) {
+              console.log(tab, event);
+          },
           drawLine(){
               // 基于准备好的dom，初始化echarts实例
               let myChart = this.$echarts.init(document.getElementById('CAUSE'))

@@ -78,7 +78,32 @@ const actions = {
     }catch (e) {
       console.log(e);
     }
+  },
+
+  async wpbaseindexinfo({commit}, data) {
+    try {
+      return await warning.wpbaseindexinfo(data)
+    }catch (e) {
+      console.log(e);
+    }
+  },
+
+  async queryAll({commit}) {
+    try {
+      return await warning.queryAll()
+    }catch (e) {
+      console.log(e);
+    }
+  },
+
+  async view({commit}) {
+    try {
+      return await warning.view()
+    }catch (e) {
+      console.log(e);
+    }
   }
+
 
 
 };

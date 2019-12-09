@@ -69,6 +69,30 @@ export default {
     })
   },
 
+  // 商品指标基础信息
+  wpbaseindexinfo(data) {
+    return request({
+      url: `/price/wpbaseindexinfo/info/${data}`,
+      method: 'get',
+    })
+  },
+
+  // 查询所有商品
+  queryAll() {
+    return request({
+      url: `/price/comm/conf/queryAll`,
+      method: 'get',
+    })
+  },
+
+  //首页商品详情
+  view() {
+    return request({
+      url: `/price/first/view`,
+      method: 'get',
+    })
+  },
+
 
 }
 

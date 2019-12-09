@@ -6,10 +6,41 @@ import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
 import { getPermission } from '@/api/user'
+import Cookies from 'js-cookie'
+import fa from "element-ui/src/locale/lang/fa"
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login'] // no redirect whitelist
+
+let once = true
+
+let urlParse = function() {
+  let url = window.location.href;
+  let obj = {};
+  let reg = /[?&][^?&]+=[^?&]+/g;
+  let arr = url.match(reg);
+  let tempArr
+  if (arr) {
+    arr.forEach((item) => {
+      tempArr = item.substring(1).split('=');
+      // let key = tempArr[0];
+      // obj[key] = tempArr[1];
+    })
+  }
+
+  console.log(tempArr)
+
+  getPermission(tempArr[1]).then(res => {
+    console.log(res)
+    Cookies.set('permission', res.token)
+    store.dispatch('user/login', {username: 'admin', password: '111111'}).then(() => {
+      next({ path: '/' })
+    })
+  }).catch(() => {
+    console.log('error')
+  })
+}
 
 router.beforeEach(async(to, from, next) => {
   // start progress bar
@@ -21,34 +52,11 @@ router.beforeEach(async(to, from, next) => {
   // determine whether the user has logged in
   const hasToken = getToken()
 
-  function urlParse() {
-    let url = window.location.href;
-    let obj = {};
-    let reg = /[?&][^?&]+=[^?&]+/g;
-    let arr = url.match(reg);
-    let tempArr
-    if (arr) {
-      arr.forEach((item) => {
-        tempArr = item.substring(1).split('=');
-        // let key = tempArr[0];
-        // obj[key] = tempArr[1];
-      })
-    }
-
-    console.log(tempArr)
-
-    getPermission(tempArr[1]).then(res => {
-      console.log(res)
-    }).catch(() => {
-      console.log('error')
-    })
+  if(once){
+    once = false
+    // urlParse()
   }
 
-  // if(urlParse()){
-  //   store.dispatch('user/login', {username: 'admin', password: '111111'}).then(() => {
-  //     next({ path: '/' })
-  //   })
-  // }
 
   if (hasToken) {
     if (to.path === '/login') {

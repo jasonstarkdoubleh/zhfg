@@ -699,6 +699,9 @@
             this.drawMap()
             this.drawPie()
             this.drawLine()
+            if(this.$route.query.num) {
+                this.handleProductionShow(this.$route.query.num)
+            }
         }
     }
 </script>

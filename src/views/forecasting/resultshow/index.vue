@@ -275,13 +275,14 @@
         },
         methods: {
             searchDetail(){
-                this.tableShow = false
-                this.priceShow = true
+                this.$router.push('./divine/index')
+                // this.tableShow = false
+                // this.priceShow = true
                 // this.indexShow = true
-                this.$nextTick(() => {
-                    this.drawRESULT()
-                    // this.drawZHIBIAO()
-                })
+                // this.$nextTick(() => {
+                //     this.drawRESULT()
+                //     this.drawZHIBIAO()
+                // })
             },
             drawRESULT(){
                 // 基于准备好的dom，初始化echarts实例

@@ -30,38 +30,47 @@ import Layout from '@/layout'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-let system = 'priceSystem'
-let priceSystem = true        //价格监测
-let analysisSystem = true     //分析
-let lyricalSystem = true      //舆情
-let onlineSystem = true       //在线调研
-let modelSystem = true        //模型管理
-let dataSystem = true         //数据
-let adminSystem = true        //管理
+// let system = 'priceSystem'
+// let priceSystem = true        //价格监测
+// let analysisSystem = true     //分析
+// let lyricalSystem = true      //舆情
+// let onlineSystem = true       //在线调研
+// let modelSystem = true        //模型管理
+// let dataSystem = true         //数据
+// let adminSystem = true        //管理
 
-switch(system){
-  case "priceSystem":
-    priceSystem = false
-    break
-  case "analysisSystem":
-    analysisSystem = false
-    break
-  case "lyricalSystem":
-    lyricalSystem = false
-    break
-  case "onlineSystem":
-    onlineSystem = false
-    break
-  case "modelSystem":
-    modelSystem = false
-    break
-  case "dataSystem":
-    dataSystem = false
-    break
-  case "adminSystem":
-    adminSystem = false
-    break
-}
+let priceSystem = false        //价格监测
+let analysisSystem = false     //分析
+let lyricalSystem = false      //舆情
+let onlineSystem = false       //在线调研
+let modelSystem = false        //模型管理
+let dataSystem = false         //数据
+let adminSystem = false        //管理
+
+
+// switch(system){
+//   case "priceSystem":
+//     priceSystem = false
+//     break
+//   case "analysisSystem":
+//     analysisSystem = false
+//     break
+//   case "lyricalSystem":
+//     lyricalSystem = false
+//     break
+//   case "onlineSystem":
+//     onlineSystem = false
+//     break
+//   case "modelSystem":
+//     modelSystem = false
+//     break
+//   case "dataSystem":
+//     dataSystem = false
+//     break
+//   case "adminSystem":
+//     adminSystem = false
+//     break
+// }
 
 export const constantRoutes = [
   {
@@ -132,6 +141,119 @@ export const constantRoutes = [
     }]
   },
 
+
+  //价格监测系统
+  {
+    path: '/pricewatch',
+    component: Layout,
+    redirect: '/pricewatch/pricewarning',
+    meta: { title: '价格监测', icon: '' },
+    hidden: priceSystem,
+    children: [
+      //价格预警
+      {
+        path: 'pricewarning',
+        component: () => import('@/views/pricewarning'),
+        redirect: '/pricewarning/pricewarningconfig',
+        meta: { title: '价格预警' },
+        hidden: priceSystem,
+        children: [
+          {
+            path: 'pricewarningconfig',
+            component: () => import('@/views/pricewarning/pricewarningconfig'),
+            meta: { title: '价格预警配置' },
+            children:[
+              {
+                path: 'warningconfig',
+                name: 'Warningconfig',
+                component: () => import('@/views/pricewarning/pricewarningconfig/warningconfig'),
+                meta: { title: '预警配置' },
+              },
+              {
+                path: 'goodsconfig',
+                name: 'Goodsconfig',
+                component: () => import('@/views/pricewarning/pricewarningconfig/goodsconfig'),
+                meta: { title: '商品配置' }
+              }
+            ]
+          },
+          {
+            path: 'pricewarningresult',
+            name: 'Pricewarningresult',
+            component: () => import('@/views/pricewarning/pricewarningresult'),
+            meta: { title: '价格预警结果' }
+          }
+        ]
+      },
+
+      //价格分析
+      {
+        path: 'priceanalyse',
+        component: () => import('@/views/priceanalyse'),
+        redirect: '/priceanalyse/censusanalyse',
+        meta: { title: '价格分析' },
+        hidden: priceSystem,
+        children: [
+          {
+            path: 'censusanalyse',
+            component: () => import('@/views/priceanalyse/censusanalyse'),
+            meta: { title: '统计分析' },
+            children:[
+              {
+                path: 'trendanalyse',
+                name: 'Trendanalyse',
+                component: () => import('@/views/priceanalyse/censusanalyse/trendanalyse'),
+                meta: { title: '趋势分析' }
+              },
+              {
+                path: 'multidimensionalanalyse',
+                name: 'Multidimensionalanalyse',
+                component: () => import('@/views/priceanalyse/censusanalyse/multidimensionalanalyse'),
+                meta: { title: '多维分析' }
+              },
+              {
+                path: 'macrographyanalyse',
+                name: 'Macrographyanalyse',
+                component: () => import('@/views/priceanalyse/censusanalyse/macrographyanalyse'),
+                meta: { title: '宏观趋势分析' }
+              }
+            ]
+          },
+          {
+            path: 'correlationanalyse',
+            name: 'Correlationanalyse',
+            component: () => import('@/views/priceanalyse/correlationanalyse'),
+            meta: { title: '相关性分析' }
+          },
+          {
+            path: 'causeanalyse',
+            name: 'Causeanalyse',
+            component: () => import('@/views/priceanalyse/causeanalyse'),
+            meta: { title: '因果分析' }
+          }
+        ]
+      },
+
+      //价格预测
+      {
+        path: 'forecasting',
+        component: () => import('@/views/forecasting'),
+        redirect: '/forecasting/resultshow',
+        meta: { title: '价格预测' },
+        hidden: priceSystem,
+        children: [
+          {
+            path: 'resultshow',
+            name: 'Resultshow',
+            component: () => import('@/views/forecasting/resultshow'),
+            meta: { title: '价格预测' },
+          }
+        ]
+      },
+    ]
+  },
+
+
   //舆情系统
   {
     path: '/pubilcsystem',
@@ -144,141 +266,63 @@ export const constantRoutes = [
     }]
   },
 
-  //价格监测系统
-  //价格预警
+  //在线调研
   {
-    path: '/pricewarning',
+    path: '/online',
     component: Layout,
-    redirect: '/pricewarning/pricewarningconfig',
-    meta: { title: '价格预警', icon: 'example' },
-    hidden: priceSystem,
+    redirect: '/online/index',
+    children: [{
+      path:'index',
+      component: () => import('@/views/onlineSurveySystem'),
+      meta: { title: '在线调研', icon: 'example' },
+    }]
+  },
+
+  //分析报告
+  {
+    path: '/report',
+    component: Layout,
+    redirect: '/analysereportconfig',
+    meta: { title: '分析报告', icon: 'example' },
+    hidden: analysisSystem,
     children: [
+      //分析报告配置
       {
-        path: 'pricewarningconfig',
-        component: () => import('@/views/pricewarning/pricewarningconfig'),
-        meta: { title: '价格预警配置' },
-        children:[
+        path: 'analysereportconfig',
+        component: () => import('@/views/analysereportconfig'),
+        redirect: '/analysereportconfig/reportproduceconfig',
+        meta: { title: '分析报告配置' },
+        hidden: analysisSystem,
+        children: [
           {
-            path: 'warningconfig',
-            name: 'Warningconfig',
-            component: () => import('@/views/pricewarning/pricewarningconfig/warningconfig'),
-            meta: { title: '预警配置' },
-          },
-          {
-            path: 'goodsconfig',
-            name: 'Goodsconfig',
-            component: () => import('@/views/pricewarning/pricewarningconfig/goodsconfig'),
-            meta: { title: '商品配置' }
+            path: 'reportproduceconfig',
+            name: 'Reportproduceconfig',
+            component: () => import('@/views/analysereportconfig/reportproduceconfig'),
+            meta: { title: '报告生成配置' },
           }
         ]
       },
-      {
-        path: 'pricewarningresult',
-        name: 'Pricewarningresult',
-        component: () => import('@/views/pricewarning/pricewarningresult'),
-        meta: { title: '价格预警结果' }
-      }
-    ]
-  },
 
-  //价格分析
-  {
-    path: '/priceanalyse',
-    component: Layout,
-    redirect: '/priceanalyse/censusanalyse',
-    meta: { title: '价格分析', icon: 'example' },
-    hidden: priceSystem,
-    children: [
+      //分析报告查看
       {
-        path: 'censusanalyse',
-        component: () => import('@/views/priceanalyse/censusanalyse'),
-        meta: { title: '统计分析' },
-        children:[
+        path: 'manualanalysisreportsearch',
+        component: () => import('@/views/manualanalysisreportsearch'),
+        redirect: '/manualanalysisreportsearch/reporttaskwatch',
+        meta: { title: '分析报告查看' },
+        hidden: analysisSystem,
+        children: [
           {
-            path: 'trendanalyse',
-            name: 'Trendanalyse',
-            component: () => import('@/views/priceanalyse/censusanalyse/trendanalyse'),
-            meta: { title: '趋势分析' }
-          },
-          {
-            path: 'multidimensionalanalyse',
-            name: 'Multidimensionalanalyse',
-            component: () => import('@/views/priceanalyse/censusanalyse/multidimensionalanalyse'),
-            meta: { title: '多维分析' }
-          },
-          {
-            path: 'macrographyanalyse',
-            name: 'Macrographyanalyse',
-            component: () => import('@/views/priceanalyse/censusanalyse/macrographyanalyse'),
-            meta: { title: '宏观趋势分析' }
+            path: 'reportsearch',
+            name: 'Reportsearch',
+            component: () => import('@/views/manualanalysisreportsearch/reportsearch'),
+            meta: { title: '报告查询' },
           }
         ]
       },
-      {
-        path: 'correlationanalyse',
-        name: 'Correlationanalyse',
-        component: () => import('@/views/priceanalyse/correlationanalyse'),
-        meta: { title: '相关性分析' }
-      },
-      {
-        path: 'causeanalyse',
-        name: 'Causeanalyse',
-        component: () => import('@/views/priceanalyse/causeanalyse'),
-        meta: { title: '因果分析' }
-      }
     ]
   },
 
-  //价格预测
-  {
-    path: '/forecasting',
-    component: Layout,
-    redirect: '/forecasting/resultshow',
-    meta: { title: '价格预测', icon: 'example' },
-    hidden: priceSystem,
-    children: [
-      {
-        path: 'resultshow',
-        name: 'Resultshow',
-        component: () => import('@/views/forecasting/resultshow'),
-        meta: { title: '价格预测' },
-      }
-    ]
-  },
 
-  //分析报告配置
-  {
-    path: '/analysereportconfig',
-    component: Layout,
-    redirect: '/analysereportconfig/reportproduceconfig',
-    meta: { title: '分析报告配置', icon: 'example' },
-    hidden: analysisSystem,
-    children: [
-      {
-        path: 'reportproduceconfig',
-        name: 'Reportproduceconfig',
-        component: () => import('@/views/analysereportconfig/reportproduceconfig'),
-        meta: { title: '报告生成配置' },
-      }
-    ]
-  },
-
-  //分析报告查看
-  {
-    path: '/manualanalysisreportsearch',
-    component: Layout,
-    redirect: '/manualanalysisreportsearch/reporttaskwatch',
-    meta: { title: '分析报告查看', icon: 'example' },
-    hidden: analysisSystem,
-    children: [
-      {
-        path: 'reportsearch',
-        name: 'Reportsearch',
-        component: () => import('@/views/manualanalysisreportsearch/reportsearch'),
-        meta: { title: '报告查询' },
-      }
-    ]
-  },
 
   //模型管理
   {
@@ -316,6 +360,39 @@ export const constantRoutes = [
         name: 'Datasourcemanagement',
         component: () => import('@/views/datasourcemanagement'),
         meta: { title: '数据源管理', breadcrumb: false },
+      }
+    ]
+  },
+
+  //系统管理
+  {
+    path:'/sysconfig',
+    component: Layout,
+    redirect: '/sysconfig/usersconfig',
+    meta: { title: '系统管理', icon: 'example' },
+    children: [
+      {
+        path: 'usersconfig',
+        component: () => import('@/views/sysconfig/usersconfig/list.vue'),
+        meta: { title: '用户管理' }
+      },
+      {
+        path: 'depconfig',
+        name: 'DepManager',
+        component: () => import('@/views/sysconfig/depconfig/list.vue'),
+        meta: { title: '部门管理' }
+      },
+      {
+        path: 'roleconfig',
+        name: 'RoleManager',
+        component: () => import('@/views/sysconfig/roleconfig/list.vue'),
+        meta: { title: '角色管理' }
+      },
+      {
+        path: 'menuconfig',
+        name: 'MenuManager',
+        component: () => import('@/views/sysconfig/menuconfig/list.vue'),
+        meta: { title: '菜单管理' }
       }
     ]
   },

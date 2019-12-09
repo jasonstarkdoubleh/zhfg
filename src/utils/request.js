@@ -2,6 +2,7 @@ import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
+import Cookies from 'js-cookie'
 
 // create an axios instance
 const service = axios.create({
@@ -17,7 +18,7 @@ service.interceptors.request.use(
     // do something before request is sent
 
     config.headers['Content-Type'] = "application/json;charset=utf-8";
-    config.headers['token'] = '79362e48e37283a7cdea0825e2614375';
+    config.headers['token'] = Cookies.get('permission') || '';
 
     if (store.getters.token) {
       // let each request carry token
@@ -49,7 +50,7 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-
+    console.log(res)
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 0) {
       Message({

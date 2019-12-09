@@ -68,51 +68,55 @@
                 style="width: 100%">
 
                 <el-table-column
-                  prop="name"
+                  show-overflow-tooltip
+                  prop="commName"
                   label="商品名称">
                   <template slot-scope="scope">
-                    <el-link type="primary" @click="gorouter">{{ scope.row.name }}</el-link>
+                    <el-link type="primary" @click="gorouter">{{ scope.row.commName }}</el-link>
                   </template>
                 </el-table-column>
 
                 <el-table-column
-                  prop="price"
+                  show-overflow-tooltip
+                  prop="priValue"
                   label="商品价格">
                   <template slot-scope="scope">
-                    <el-link type="primary">{{ scope.row.price }}</el-link>
+                    <span style="color: #409EFF">{{ scope.row.priValue }}</span>
                   </template>
                 </el-table-column>
 
                 <el-table-column
-                  prop="rate"
+                  show-overflow-tooltip
+                  prop="priRange"
                   label="增长幅度">
 
                   <template slot-scope="scope">
 
-                    <template v-if="parseInt(scope.row.rate) > 0">
+                    <template v-if="parseInt(scope.row.priRange) - 1  > 0">
                       <span style="color: #ff2661">
-                        {{scope.row.rate}}
-                        <i class="el-icon-caret-top"></i>
+                        {{(parseInt(scope.row.priRange) - 1) * 100}}%
+<!--                        <i class="el-icon-caret-top"></i>-->
                       </span>
                     </template>
 
-                    <template v-else-if="parseInt(scope.row.rate) < 0">
+                    <template v-else-if="parseInt(scope.row.priRange) - 1 < 0">
                       <span style="color: green">
-                        {{scope.row.rate}}&nbsp;
+                        {{(parseInt(scope.row.priRange) + 1) * 100 }}%&nbsp;
                       </span>
-                      <i class="el-icon-bottom" type="danger"></i>
+<!--                      <i class="el-icon-caret-bottom"></i>-->
                     </template>
 
-                    <span v-else>{{scope.row.rate}}</span>
+                    <span v-else style="color: #409EFF">{{ 0 }}</span>
 
                   </template>
                 </el-table-column>
 
                 <el-table-column
-                  prop="state"
+                  show-overflow-tooltip
+                  prop="ewarnLevel"
                   label="预警状态">
                   <template slot-scope="scope">
-                    <el-link style="color: #ff2661" type="danger">{{ scope.row.state }}</el-link>
+                    <span style="color: #409EFF">{{ scope.row.ewarnLevel }}</span>
                   </template>
                 </el-table-column>
 
@@ -301,7 +305,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { Navbar } from '@/layout/components'
 import VueCountUp from 'vue-countupjs'
 export default {
@@ -309,70 +313,13 @@ export default {
     data() {
         return {
             numArray1:[3,6,9],
-            minsheng:[{
-                name: '苹果',
-                price: '5元/斤',
-                rate: '10%',
-                state: '红色预警'
-            },{
-                name: '苹果',
-                price: '5元/斤',
-                rate: '10%',
-                state: '红色预警'
-            },{
-                name: '苹果',
-                price: '5元/斤',
-                rate: '10%',
-                state: '红色预警'
-            },{
-                name: '苹果',
-                price: '5元/斤',
-                rate: '10%',
-                state: '红色预警'
-            },{
-                name: '苹果',
-                price: '5元/斤',
-                rate: '10%',
-                state: '红色预警'
-            },{
-                name: '苹果',
-                price: '5元/斤',
-                rate: '10%',
-                state: '红色预警'
-            },{
-                name: '苹果',
-                price: '5元/斤',
-                rate: '10%',
-                state: '红色预警'
-            },{
-                name: '苹果',
-                price: '5元/斤',
-                rate: '10%',
-                state: '红色预警'
-            },{
-                name: '苹果',
-                price: '5元/斤',
-                rate: '10%',
-                state: '红色预警'
-            },{
-                name: '苹果',
-                price: '5元/斤',
-                rate: '10%',
-                state: '红色预警'
-            },{
-                name: '苹果',
-                price: '5元/斤',
-                rate: '10%',
-                state: '红色预警'
-            },{
-                name: '苹果',
-                price: '5元/斤',
-                rate: '10%',
-                state: '红色预警'
-            }]
+            minsheng:[]
         }
     },
     methods: {
+        ...mapActions([
+           'view'
+        ]),
         gorouter() {
           this.$router.push('/secondpage/index')
         },
@@ -549,6 +496,12 @@ export default {
     mounted() {
         this.drawOne()
         this.drawTwo()
+    },
+    created() {
+        this.view().then(res => {
+            console.log(res.data.ewanInfo)
+            this.minsheng = res.data.ewanInfo
+        })
     }
 }
 </script>

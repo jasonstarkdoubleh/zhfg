@@ -1,12 +1,19 @@
 <template>
-    <div>
+  <div>
 
-    </div>
+  </div>
 </template>
 
 <script>
+    import { goPublic } from '@/api/user'
     export default {
-        name: "index"
+        created() {
+            goPublic('http://10.1.0.139:8088/fagaiwei').then(res => {
+                window.open(res.url,'_blank')
+            }).catch(error => {
+                console.log(123)
+            })
+        }
     }
 </script>
 

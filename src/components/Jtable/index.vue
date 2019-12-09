@@ -65,7 +65,7 @@
             :width="tableWidth"
             label="查看详情">
             <template slot-scope="scope">
-              <el-button type="primary" plain icon="el-icon-search" circle size="mini" @click="handleDetail" ></el-button>
+              <el-button type="primary" plain icon="el-icon-search" circle size="mini" @click="handleDetail(scope)" ></el-button>
             </template>
           </el-table-column>
 
@@ -99,17 +99,6 @@
             label="配置">
             <template slot-scope="scope">
               <el-button type="warning" plain icon="el-icon-edit" circle size="mini" @click="handleConfig"></el-button>
-            </template>
-          </el-table-column>
-
-          <!--      预警-->
-          <el-table-column
-            v-if="warningShow"
-            prop="warning"
-            :width="tableWidth"
-            label="预警">
-            <template slot-scope="scope">
-              <el-link type="danger">警告链接</el-link>
             </template>
           </el-table-column>
 
@@ -213,12 +202,7 @@
             configShow:{
                 type: Boolean,
                 default: false
-            },
-            // 预警
-            warningShow:{
-                type: Boolean,
-                default: false
-            },
+            }
         },
         methods: {
             hanleDelete(row){
@@ -227,8 +211,8 @@
             handleConfig(){                                     //查看配置
                 this.$emit('on-config',true)
             },
-            handleDetail(){                                     //详情查看
-                this.$emit('on-detail',true)
+            handleDetail(data){                                     //详情查看
+                this.$emit('on-detail',data)
             },
             handleSizeChange(val) {                             //pageSize 改变时会触发
                 console.log(`每页 ${val} 条`);
