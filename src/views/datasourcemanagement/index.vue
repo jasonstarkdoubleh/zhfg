@@ -2,25 +2,19 @@
   <div>
     <jtable
       :tableData="tableData"
-      :columnData="columnData">
+      :columnData="columnData"
+    :deleteShow="true"
+    @on-delete="hanleDelete">
 
       <div class="flex bgc">
         <div>
-
           数据源名称:
-          <el-select v-model="warningType" style="margin-right: 20px">
-            <el-option
-              v-for="item in warningTypeOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
+          <el-input v-model="dataName" style="width: 180px;margin-right: 30px"></el-input>
 
           数据源类型:
-          <el-select v-model="warningName">
+          <el-select v-model="dataType">
             <el-option
-              v-for="item in warningNameOptions"
+              v-for="item in dataTypeOptions"
               :key="item.value"
               :label="item.label"
               :value="item.value">
@@ -30,10 +24,9 @@
         </div>
 
         <div>
-          <el-button type="primary">查 询</el-button>
-          <el-button @click="handleAdd">添 加</el-button>
+          <el-button type="primary" @click="handleSearch">查 询</el-button>
+          <el-button type="warning" @click="handleAdd">添 加</el-button>
           <el-button>修 改</el-button>
-          <el-button>删 除</el-button>
         </div>
       </div>
 
@@ -86,91 +79,78 @@
 </template>
 
 <script>
-    import jtable from '_c/Jtable'
-    export default {
-        data() {
-            return {
-                checked:false,
-                dialogFormVisible: false,
-                form: {
-                    name: '',
-                    region: '',
-                    date1: '',
-                    date2: '',
-                    delivery: false,
-                    type: [],
-                    resource: '',
-                    desc: ''
-                },
-                formLabelWidth: '120px',
-                warningType: '选项1',                  //预警类型
-                warningTypeOptions: [{                       //预警类型选择
-                    value: '选项1',
-                    label: '全部'
-                }, {
-                    value: '选项2',
-                    label: '常规预警'
-                }, {
-                    value: '选项3',
-                    label: '不常规类型'
-                }, {
-                    value: '选项4',
-                    label: '舆情报警'
-                }],
-                warningName: '选项1',                              //预警名称
-                warningNameOptions: [{                       //预警类型选择
-                    value: '选项1',
-                    label: '全部'
-                }, {
-                    value: '选项2',
-                    label: '预警_常规_通用'
-                }, {
-                    value: '选项3',
-                    label: '预警_波动_通用'
-                }, {
-                    value: '选项4',
-                    label: '预警_常规_酒类'
-                },{
-                    value: '选项5',
-                    label: '预警_波动_酒类'
-                }],
-                tableData: [{
-                    dataName:'数据集名称',
-                    correlation:'分析名称',
-                    type:'分析类型',
-                    vision:'版本信息',
-                    time:'运行时间'
-                },{
-                    dataName:'数据集名称',
-                    correlation:'分析名称',
-                    type:'分析类型',
-                    vision:'版本信息',
-                    time:'运行时间'
-                },{
-                    dataName:'数据集名称',
-                    correlation:'分析名称',
-                    type:'分析类型',
-                    vision:'版本信息',
-                    time:'运行时间'
-                }],
-                columnData: {
-                    dataName:'商品名称',
-                    correlation:'模型名称',
-                    type:'预测类型',
-                    vision:'版本信息',
-                    time:'偏差时间'
-                }
-            }
+  import jtable from '_c/Jtable'
+  import {queryDataSourcesList,deleteDataSources} from '@/api/manager'
+  export default {
+    data() {
+      return {
+        dataName:'',
+        dataType:'',
+        checked:false,
+        dialogFormVisible: false,
+        form: {
+          name: '',
+          region: '',
+          date1: '',
+          date2: '',
+          delivery: false,
+          type: [],
+          resource: '',
+          desc: ''
         },
-        components: {
-            jtable
-        },
-        methods:{
-            handleAdd(){
-                this.dialogFormVisible = true
-            }
+        formLabelWidth: '120px',
+        dataTypeOptions: [],
+        tableData: [],
+        columnData: {
+          dataName:'数据源名称',
+          dataType:'数据源类型',
+          exampleName:'实例名',
+          dataRemark:'数据源描述',
+          accessStateGo:'接入状态'
         }
+      }
+    },
+    components: {
+      jtable
+    },
+    methods:{
+      hanleDelete(row){
+        console.log(row)
+        let data = {
+          dataId : row.dataId
+        }
+        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteDataSources(data).then(res => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+            this.handleSearch()
+          })
+        })
+      },
+      handleAdd(){
+        this.dialogFormVisible = true
+      },
+      handleSearch(){
+        let data = {
+          pageIndex: 1,
+          pageSize: 10,
+        }
+        queryDataSourcesList(data).then(res=>{
+          console.log(res)
+          this.tableData = res.page.list
+          this.tableData.forEach(item=>{
+            item.accessStateGo = item.accessState ?'接入失败' : '接入成功'
+          })
+        })
+      }
     }
+  }
 </script>
 
 <style scoped>

@@ -1,5 +1,5 @@
 <template>
-  <div class="analyse-page" style="overflow-x: hidden">
+  <div class="analyse-page" style="overflow: hidden">
 
     <div style="height: 50px;line-height: 50px;background-color: #ffffff;border-radius: 3px;font-size: 22px;">
       <div style="margin-left: 15px;display: flex;align-items: center">
@@ -28,13 +28,12 @@
                 </div>
               </div>
               <div style="line-height: 60px;font-size: 20px;font-weight: bold;">
-                {{item[0].indexVal}}{{item[0].indexUnit}}
+                {{item[0].value}}{{item[0].unit}}
               </div>
             </div>
           </div>
         </div>
       </div>
-
       <div style="display: flex;justify-content: flex-end;margin-bottom: 12px;">
         <el-radio-group v-model="radio" size="medium" @change="chooseItem">
           <el-radio-button v-for="(item, index) in radioOptions"  :key="index" :label="item.commId">
@@ -44,14 +43,14 @@
       </div>
       <div style="display: flex;justify-content: space-between;">
 
-        <div style="width: 33%;margin-right: 10px;">
+        <div style="width: 33%;margin-right: 5px">
           <div style="height: 168px;background-color: #ffffff;padding: 4px 10px 24px;">
 
             <div style="height: 35px;line-height: 35px;border-bottom: 1px solid #eeeeee;font-size: 16px;letter-spacing: 1px">
               {{this.pageName}}价格分析
             </div>
 
-            <div style="display: flex;height: calc(100% - 35px);flex-wrap: wrap">
+            <div style="display: flex;height: calc(100% - 35px);justify-content: space-between">
               <div v-for="(item, index) in currPrice" :key="index" style="width: 45%;height: 100%;margin-top: 25px;display: flex;justify-content: space-around;">
                 <div>
                   <div style="color: #b5b5b5;margin-bottom: 10px">{{item.indexName}}</div>
@@ -67,12 +66,21 @@
                     同比<i class="el-icon-caret-bottom" style="color: green"></i>
                     {{item.tongBi}}
                   </div>
+                  <div v-if="parseInt(item.huanBi) > 0 || parseInt(item.huanBi) === 0">
+                    环比<i class="el-icon-caret-top" style="color: red"></i>
+                    {{item.huanBi}}
+                  </div>
+                  <div v-else>
+                    环比<i class="el-icon-caret-bottom" style="color: green"></i>
+                    {{item.huanBi}}
+                  </div>
                 </div>
               </div>
+              <div id="manyanalysebar" style="width: 45%;height: 100%;margin-top: 20px;margin-right: 10px"></div>
             </div>
           </div>
 
-          <div style="margin-top: 10px;height: 248px;background-color: #ffffff;padding: 4px 10px 24px;">
+          <div style="margin-top: 5px;height: 248px;background-color: #ffffff;padding: 4px 10px 24px;">
             <div style="height: 35px;line-height: 35px;border-bottom: 1px solid #eeeeee;font-size: 16px;letter-spacing: 1px">
               进出口额趋势分析
             </div>
@@ -80,58 +88,85 @@
           </div>
         </div>
 
-        <div style="width: 33%;margin-right: 10px;height: 426px;background-color: #ffffff;padding: 4px 10px 32px;">
+        <div style="width: 33%;margin-right: 5px;height: 421px;background-color: #ffffff;padding: 4px 10px 32px;">
           <div style="height: 35px;line-height: 35px;border-bottom: 1px solid #eeeeee;font-size: 16px;letter-spacing: 1px">
             各地{{this.pageName}}价格趋势分布
           </div>
-          <div style="width: 100%;height: 375px" id="analysemap"></div>
+          <div style="height: 375px" id="analysemap"></div>
         </div>
 
         <div style="width: 33%;">
           <div style="height: 168px;background-color: #ffffff;padding: 4px 10px 24px;">
             <div style="height: 35px;line-height: 35px;border-bottom: 1px solid #eeeeee;font-size: 16px;letter-spacing: 1px">
-              {{this.pageName}}价格分析
+              {{this.pageName}}舆情TOP10
             </div>
-            <div style="display: flex;height: calc(100% - 35px)">
-
-              <div style="width: 50%;height: 100%" id="analysepieone"></div>
-
-              <div style="width: 50%;height: 100%" id="analysepietwo"></div>
-
-            </div>
+            <el-scrollbar style="height: 132px;width: 100%" v-loading="yuqingLoading">
+              <div class="opinion-body" v-if="urlInfo.length > 0">
+                <div class="opinion-item" style="overflow: hidden">
+                  <div class="opinion-index">
+                    <div class="hot hot-red">
+                      <span>1</span>
+                    </div>&nbsp;&nbsp;
+                    <div style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;width: 80%;">
+                      <span style="cursor: pointer" @click="targetPage(urlInfo[0].url)">{{ this.urlInfo[0].title }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="opinion-item" style="overflow: hidden">
+                  <div class="opinion-index">
+                    <div class="hot hot-orange">
+                      <span>2</span>
+                    </div>&nbsp;&nbsp;
+                    <div style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;width: 80%;">
+                      <span style="cursor: pointer" @click="targetPage(urlInfo[1].url)">{{ this.urlInfo[1].title }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="opinion-item" style="overflow: hidden">
+                  <div class="opinion-index">
+                    <div class="hot hot-yellow">
+                      <span>3</span>
+                    </div>&nbsp;&nbsp;
+                    <div style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;width: 80%;">
+                      <span style="cursor: pointer" @click="targetPage(urlInfo[2].url)">{{ this.urlInfo[2].title }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="opinion-item" v-for="(item, index) in top10" :key="index" style="overflow: hidden">
+                  <div class="opinion-index">
+                    <div class="hot hot-gray">
+                      <span>{{ index+4 }}</span>
+                    </div>&nbsp;&nbsp;
+                    <div style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;width: 80%;">
+                      <span style="cursor: pointer" @click="targetPage(item.url)">{{ item.title }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </el-scrollbar>
           </div>
 
-          <div style="margin-top: 10px;height: 248px;background-color: #ffffff;padding: 4px 10px 24px;">
+          <div style="margin-top: 5px;height: 248px;background-color: #ffffff;padding: 4px 10px 24px;">
             <div style="height: 35px;line-height: 35px;border-bottom: 1px solid #eeeeee;font-size: 16px;letter-spacing: 1px">
-              {{this.pageName}}指数分析
+              {{this.pageName}}报告
             </div>
-            <div style="height: 210px;width: 100%">
-              <el-scrollbar style="height: calc(100% - 30px)">
+            <div style="height: 200px;">
+              <el-scrollbar style="height: 100%">
                 <div class="opinion-body">
-
                   <div class="opinion-item">
-
                     <div class="opinion-index">
-                      <div class="hot hot-red">
+                      <div class="hot hot-orange">
                         <span style="color: #ffffff">1</span>
                       </div>&nbsp;&nbsp;
                       <div>
-                        <span>希拉里</span>
+                        <span>希拉里访问印度,减少进口伊朗石油</span>
                       </div>
                     </div>
-
-                    <div>
-                      <el-progress :percentage="50"></el-progress>
+                    <div class="fire">
+                      <img src="../../assets/img/热度.png">&nbsp;
+                      <span>2345</span>
                     </div>
-
-                    <!--                    <div>-->
-                    <!--                      <span>2345</span>-->
-                    <!--                    </div>-->
-
                   </div>
-
-
-
                   <div class="opinion-item">
                     <div class="opinion-index">
                       <div class="hot hot-orange">
@@ -146,7 +181,6 @@
                       <span>2345</span>
                     </div>
                   </div>
-
                   <div class="opinion-item">
                     <div class="opinion-index">
                       <div class="hot hot-yellow">
@@ -161,8 +195,6 @@
                       <span>2345</span>
                     </div>
                   </div>
-
-
                   <div class="opinion-item" v-for="item in 15">
                     <div class="opinion-index">
                       <div class="hot hot-gray">
@@ -177,7 +209,6 @@
                       <span>2345</span>
                     </div>
                   </div>
-
                 </div>
               </el-scrollbar>
             </div>
@@ -185,12 +216,6 @@
         </div>
 
       </div>
-      <div style="display:flex;">
-
-        <el-progress :text-inside="true" :stroke-width="26" :percentage="70"></el-progress>
-      </div>
-
-
     </div>
   </div>
 </template>
@@ -202,6 +227,8 @@
   export default {
     data(){
       return {
+        yuqingLoading:true,
+        urlInfo:'',
         currPrice: [],
         lineData: [],
         mapData:[],
@@ -218,6 +245,10 @@
       ])
     },
     methods:{
+      targetPage(url) {
+        let newUrl = `https://${url}`
+        window.open(newUrl,'_blank')
+      },
       chooseItem() {
         let data = this.radio
         this.currPrice = []
@@ -242,30 +273,7 @@
           }
         }
         this.drawMap(this.mapData)
-      },
-      personScroll() {
-        // 默认有六个li子元素，每个子元素的宽度为120px
-        let width = 7 * 470;
-        this.$refs.personTab.style.width = width + "px";
-        // this.$nextTick 是一个异步函数，为了确保 DOM 已经渲染
-        this.$nextTick(() => {
-          if (!this.scroll) {
-            this.scroll = new BScroll(this.$refs.personWrap, {
-              click: true,
-              scrollX: true,
-              scrollY: false,
-              momentum: false,
-              snap: true,
-              snapLoop: true,
-              snapThreshold: 0,
-              snapSpeed: 400,
-              startX: 0,
-              eventPassthrough: "vertical"
-            });
-          } else {
-            this.scroll.refresh();
-          }
-        });
+        this.drawBar(this.currPrice)
       },
       personScroll() {
         // 默认有六个li子元素，每个子元素的宽度为120px
@@ -293,7 +301,8 @@
       },
       ...mapActions([
         'detailV2',
-        'getSubCommByCommId'
+        'getSubCommByCommId',
+        'getHeatTop'
       ]),
       handleClick(tab, event) {
         console.log(tab, event);
@@ -318,10 +327,25 @@
           },
           grid: {
             left: '3%',
-            right: '4%',
-            bottom: '3%',
+            right: '1%',
+            bottom: '16%',
+            top:'6%',
             containLabel: true
           },
+          dataZoom: [
+            {
+              show: true,
+              realtime: true,
+              start: 40,
+              end: 60
+            },
+            {
+              type: 'inside',
+              realtime: true,
+              start: 40,
+              end: 60
+            }
+          ],
           xAxis : [
             {
               type : 'category',
@@ -348,6 +372,31 @@
               data:yData
             }
           ]
+        };
+        myChart.setOption(option);
+      },
+      drawBar(data) {
+
+        let myChart = this.$echarts.init(document.getElementById('manyanalysebar'));
+        let option = {
+          xAxis: {
+            type: 'category',
+            data: ['同比','环比']
+          },
+          yAxis: {
+            type: 'value'
+          },
+          grid: {
+            left: '0',
+            right: '0',
+            bottom: '0',
+            top:'6%',
+            containLabel: true
+          },
+          series: [{
+            data: [parseInt(data[0].tongBi), parseInt(data[0].huanBi)],
+            type: 'bar'
+          }]
         };
         myChart.setOption(option);
       },
@@ -433,85 +482,8 @@
         };
         myChart.setOption(option);
       },
-      drawPieOne() {
-        // 基于准备好的dom，初始化echarts实例
-        var myChart = this.$echarts.init(document.getElementById('analysepieone'));
-
-        // 指定图表的配置项和数据
-
-        var option = {
-          series : [
-            {
-              name: '访问来源',
-              type: 'pie',
-              radius : '55%',
-              center: ['50%', '60%'],
-              data:[
-                {value:335, name:'直接访问'},
-                {value:310, name:'邮件营销'},
-                {value:234, name:'联盟广告'},
-              ],
-              itemStyle: {
-                emphasis: {
-                  shadowBlur: 10,
-                  shadowOffsetX: 0,
-                  shadowColor: 'rgba(0, 0, 0, 0.5)'
-                },
-                normal:{
-                  color:function(params) {
-                    let colorList = [ '#2c83fc', '#3aceff', '#3965b4' ];
-                    return colorList[params.dataIndex]
-                  }
-                }
-              },
-            }
-          ]
-        };
-
-        // 使用刚指定的配置项和数据显示图表。
-        myChart.setOption(option);
-      },
-      drawPieTwo() {
-        // 基于准备好的dom，初始化echarts实例
-        var myChart = this.$echarts.init(document.getElementById('analysepietwo'));
-
-        // 指定图表的配置项和数据
-        var option = {
-          series : [
-            {
-              name: '访问来源',
-              type: 'pie',
-              radius : '55%',
-              center: ['50%', '60%'],
-              data:[
-                {value:234, name:'联盟广告'},
-                {value:335, name:'直接访问'},
-                {value:310, name:'邮件营销'},
-              ],
-              itemStyle: {
-                emphasis: {
-                  shadowBlur: 10,
-                  shadowOffsetX: 0,
-                  shadowColor: 'rgba(0, 0, 0, 0.5)'
-                },
-                normal:{
-                  color:function(params) {
-                    let colorList = [ '#2c83fc', '#3aceff', '#3965b4' ];
-                    return colorList[params.dataIndex]
-                  }
-                }
-              }
-            }
-          ]
-        };
-
-        // 使用刚指定的配置项和数据显示图表。
-        myChart.setOption(option);
-      },
     },
     mounted() {
-      this.drawPieOne();
-      this.drawPieTwo();
       this.personScroll()
     },
     created() {
@@ -524,6 +496,14 @@
           this.chooseItem(this.radio)
         })
       })
+      this.getHeatTop(this.pageValue.commId).then(res => {
+        this.urlInfo = res.data.top_url
+        this.infoCopy = this.urlInfo.slice(3)
+        this.top10 = this.infoCopy.slice(0,7)
+        this.yuqingLoading = false
+      }).catch(()=>{
+        this.urlInfo = []
+      })
     }
   }
 </script>
@@ -532,9 +512,10 @@
 
   .analyse-page {
     .el-scrollbar__wrap {
-      overflow-x: hidden;
+      overflow-x: hidden !important;
     }
     .opinion-body {
+      box-sizing: border-box;
       padding: 10px 16px 0;
       /*height: calc(100% - 156px);*/
 

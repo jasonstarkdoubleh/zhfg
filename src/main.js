@@ -1,11 +1,13 @@
+import '@babel/polyfill'
 import Vue from 'vue'
-
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
-
+import Antd from 'ant-design-vue';
+import 'ant-design-vue/dist/antd.css';
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 // import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
+import Vuelidate from 'vuelidate'
 import '@/styles/index.scss' // global css
 import echarts from 'echarts'
 import App from './App'
@@ -30,6 +32,8 @@ import { mockXHR } from '../mock'
 // }
 
 // set ElementUI lang to EN
+Vue.use(Antd);
+Vue.use(Vuelidate)
 Vue.use(ElementUI, { zhLocale })
 
 Vue.config.productionTip = false

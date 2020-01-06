@@ -30,47 +30,6 @@ import Layout from '@/layout'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-// let system = 'priceSystem'
-// let priceSystem = true        //价格监测
-// let analysisSystem = true     //分析
-// let lyricalSystem = true      //舆情
-// let onlineSystem = true       //在线调研
-// let modelSystem = true        //模型管理
-// let dataSystem = true         //数据
-// let adminSystem = true        //管理
-
-let priceSystem = false        //价格监测
-let analysisSystem = false     //分析
-let lyricalSystem = false      //舆情
-let onlineSystem = false       //在线调研
-let modelSystem = false        //模型管理
-let dataSystem = false         //数据
-let adminSystem = false        //管理
-
-
-// switch(system){
-//   case "priceSystem":
-//     priceSystem = false
-//     break
-//   case "analysisSystem":
-//     analysisSystem = false
-//     break
-//   case "lyricalSystem":
-//     lyricalSystem = false
-//     break
-//   case "onlineSystem":
-//     onlineSystem = false
-//     break
-//   case "modelSystem":
-//     modelSystem = false
-//     break
-//   case "dataSystem":
-//     dataSystem = false
-//     break
-//   case "adminSystem":
-//     adminSystem = false
-//     break
-// }
 
 export const constantRoutes = [
   {
@@ -148,7 +107,6 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/pricewatch/pricewarning',
     meta: { title: '价格分析', icon: 'dashboard' },
-    hidden: priceSystem,
     children: [
       //价格预警
       {
@@ -156,7 +114,6 @@ export const constantRoutes = [
         component: () => import('@/views/pricewarning'),
         redirect: '/pricewarning/pricewarningconfig',
         meta: { title: '价格预警' },
-        hidden: priceSystem,
         children: [
           {
             path: 'pricewarningconfig',
@@ -192,7 +149,6 @@ export const constantRoutes = [
         component: () => import('@/views/priceanalyse'),
         redirect: '/priceanalyse/censusanalyse',
         meta: { title: '价格分析' },
-        hidden: priceSystem,
         children: [
           {
             path: 'censusanalyse',
@@ -236,19 +192,10 @@ export const constantRoutes = [
 
       //价格预测
       {
-        path: 'forecasting',
-        component: () => import('@/views/forecasting'),
-        redirect: '/forecasting/resultshow',
+        path: 'resultshow',
+        name: 'Resultshow',
+        component: () => import('@/views/forecasting/resultshow'),
         meta: { title: '价格预测' },
-        hidden: priceSystem,
-        children: [
-          {
-            path: 'resultshow',
-            name: 'Resultshow',
-            component: () => import('@/views/forecasting/resultshow'),
-            meta: { title: '价格预测' },
-          }
-        ]
       },
     ]
   },
@@ -268,9 +215,9 @@ export const constantRoutes = [
 
   //在线调研
   {
-    path: '/online',
+    path: '/onlineSurveySystem',
     component: Layout,
-    redirect: '/online/index',
+    redirect: '/onlineSurveySystem/index',
     children: [{
       path:'index',
       component: () => import('@/views/onlineSurveySystem'),
@@ -280,57 +227,37 @@ export const constantRoutes = [
 
   //分析报告
   {
-    path: '/report',
+    path: '/analysereportconfig',
     component: Layout,
-    redirect: '/analysereportconfig',
+    redirect: '/analysereportconfig/reportproduceconfig',
     meta: { title: '分析报告', icon: 'eye-open' },
-    hidden: analysisSystem,
     children: [
       //分析报告配置
       {
-        path: 'analysereportconfig',
-        component: () => import('@/views/analysereportconfig'),
-        redirect: '/analysereportconfig/reportproduceconfig',
-        meta: { },
-        hidden: analysisSystem,
-        children: [
-          {
-            path: 'reportproduceconfig',
-            name: 'Reportproduceconfig',
-            component: () => import('@/views/analysereportconfig/reportproduceconfig'),
-            meta: { title: '报告生成配置' },
-          }
-        ]
+        path: 'reportproduceconfig',
+        name: 'Reportproduceconfig',
+        component: () => import('@/views/analysereportconfig/reportproduceconfig'),
+        meta: { title: '报告生成配置' },
       },
 
       //分析报告查看
       {
-        path: 'manualanalysisreportsearch',
-        component: () => import('@/views/manualanalysisreportsearch'),
-        redirect: '/manualanalysisreportsearch/reporttaskwatch',
-        meta: { },
-        hidden: analysisSystem,
-        children: [
-          {
-            path: 'reportsearch',
-            name: 'Reportsearch',
-            component: () => import('@/views/manualanalysisreportsearch/reportsearch'),
-            meta: { title: '报告查询' },
-          }
-        ]
+        path: 'reportsearch',
+        name: 'Reportsearch',
+        component: () => import('@/views/manualanalysisreportsearch/reportsearch'),
+        meta: { title: '报告查询' },
       }
     ]
   },
 
 
 
-  //模型管理
+  //模型设计
   {
     path: '/modeladmin',
     component: Layout,
     redirect: '/modeladmin/datapretreatment',
-    meta: { title: '模型管理', icon: 'form' },
-    hidden: modelSystem,
+    meta: { title: '模型设计', icon: 'form' },
     children: [
       {
         path: 'datapretreatment',
@@ -342,7 +269,7 @@ export const constantRoutes = [
         path: 'modelcreate',
         name: 'Modelcreate',
         component: () => import('@/views/modeladmin/modelcreate'),
-        meta: { title: '模型创建' },
+        meta: { title: '模型管理' },
       }
     ]
   },
@@ -353,7 +280,6 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/datasourcemanagement/index',
     meta: { title: '数据源管理', icon: 'nested' },
-    hidden: dataSystem,
     children: [
       {
         path: 'index',
@@ -380,25 +306,25 @@ export const constantRoutes = [
     children: [
       {
         path: 'usersconfig',
-        component: () => import('@/views/sysconfig/usersconfig/list.vue'),
+        component: () => import('@/views/sysconfig/usersconfig'),
         meta: { title: '用户管理' }
       },
       {
         path: 'depconfig',
         name: 'DepManager',
-        component: () => import('@/views/sysconfig/depconfig/list.vue'),
+        component: () => import('@/views/sysconfig/depconfig'),
         meta: { title: '部门管理' }
       },
       {
         path: 'roleconfig',
         name: 'RoleManager',
-        component: () => import('@/views/sysconfig/roleconfig/list.vue'),
+        component: () => import('@/views/sysconfig/roleconfig'),
         meta: { title: '角色管理' }
       },
       {
         path: 'menuconfig',
         name: 'MenuManager',
-        component: () => import('@/views/sysconfig/menuconfig/list.vue'),
+        component: () => import('@/views/sysconfig/menuconfig'),
         meta: { title: '菜单管理' }
       },
 
@@ -542,7 +468,7 @@ export const constantRoutes = [
 ]
 
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
+  mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })

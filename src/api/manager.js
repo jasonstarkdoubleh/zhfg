@@ -101,14 +101,6 @@ export function macTree() {
   })
 }
 
-//宏观指标名称
-export function pssrptconf() {
-  return request({
-    url: `report/pssrptconf/list?rptType=0&rptFreq=D&rcshId=1`,
-    method: 'get'
-  })
-}
-
 //预警展示
 export function indexIdConf(data1,data2) {
   return request({
@@ -174,16 +166,288 @@ export function pssdatasetinfoUpdate(data) {
   })
 }
 
-//数据集修改
-export function queryComm(data1,data2,data3,data4,data5) {
+//预测分析
+export function queryComm(data) {
   return request({
-    url: `/price/psspricerelt/query/comm?commId=${data1}&dateFrom=${data2}&dateTo=${data3}&pageIndex=${data4}&pageSize=${data5}`,
+    url: `/price/psspricerelt/secondpage/comm?commId=${data}`,
     method: 'get',
   })
 }
 
+//宏观指标类型查询
+export function queryIndexType() {
+  return request({
+    url: `/analyse/macro/queryIndexType`,
+    method: 'get',
+  })
+}
+
+//宏观指标趋势图
+export function queryValByIndexType(data) {
+  return request({
+    url: `/analyse/macro/queryValByIndexType?indexType=${data}`,
+    method: 'get',
+  })
+}
+
+//宏观指标趋势图
+export function getHeatTop(data) {
+  return request({
+    url: `/tengxun/analyze/getHeatTop/${data}`,
+    method: 'post',
+  })
+}
+
+//报告配置信息查询
+export function pssrptconf(params) {
+  return request({
+    url: `/report/pssrptconf/list`,
+    method: 'get',
+    params
+  })
+}
+
+//舆情趋势
+export function yuqingInfo(data) {
+  return request({
+    url: `yuqing/info/${data}`,
+    method: 'get',
+  })
+}
+
+//价格预测查看详情
+export function psspricereltDetail(data) {
+  return request({
+    url: `/price/psspricerelt/detail/${data}`,
+    method: 'get',
+  })
+}
+
+//价格预测修正价格
+export function psspricereltUpdate(data) {
+  return request({
+    url: `/price/psspricerelt/update`,
+    method: 'post',
+    data
+  })
+}
+
+//价格预测修正价格
+export function linecharts(params) {
+  return request({
+    url: `/price/psspricerelt/secondpage/linecharts`,
+    method: 'get',
+    params
+  })
+}
+
+//报告生成配置保存 -- 自动
+export function pssrptconfSave(data) {
+  return request({
+    url: `/report/pssrptconf/save`,
+    method: 'post',
+    data
+  })
+}
+
+//报告生成配置保存 -- 修改
+export function pssrptconfUpdate(data) {
+  return request({
+    url: `/report/pssrptinfo/update`,
+    method: 'post',
+    data
+  })
+}
+
+//调度名称查询
+export function queryRschList() {
+  return request({
+    url: `/job/pssrschconf/queryRschList`,
+    method: 'get'
+  })
+}
+
+//删除分析记录
+export function deleteAnalyId(data) {
+  return request({
+    url: `/price/pssanalyrelt/delete/${data}`,
+    method: 'get'
+  })
+}
+
+//分析记录详情
+export function pssanalyreltDetail(data) {
+  return request({
+    url: `/price/pssanalyrelt/detail/${data}`,
+    method: 'get'
+  })
+}
+
+//获取报告模板
+export function queryRptTemplate(data) {
+  return request({
+    url: `/report/rptTemplate/queryRptTemplate`,
+    method: 'get'
+  })
+}
+
+//查询模型预处理
+export function queryDataSet(params) {
+  return request({
+    url: `/moxing/queryDataSet`,
+    method: 'get',
+    params
+  })
+}
+
+//模型管理测试接口
+export function get_algorithm_list() {
+  return request({
+    url: `/model/model/get_algorithm_list`,
+    method: 'post'
+  })
+}
+
+//获取报告模板
+export function pssrptinfoList(params) {
+  return request({
+    url: `/report/pssrptinfo/list`,
+    method: 'get',
+    params
+  })
+}
 
 
+//获取算法
+export function getAlgorithmNames() {
+  return request({
+    url: `/model/getAlgorithmNames`,
+    method: 'get'
+  })
+}
 
+//模型管理查询
+export function queryModel(params) {
+  return request({
+    url: `/model/queryModel`,
+    method: 'get',
+    params
+  })
+}
 
+//预处理
+export function get_summary(data) {
+  return request({
+    url: `/model/dataset/get_summary`,
+    method: 'post',
+    data
+  })
+}
 
+//报告查询预览,下载
+export function preview(params) {
+  return request({
+    url: `/report/pssrptinfo/preview?fileType=docx&infoId=4`,
+    method: 'get',
+    params
+  })
+}
+
+//绘制趋势图 -日期选择
+export function get_columns(data) {
+  return request({
+    url: `/model/dataset/get_columns`,
+    method: 'post',
+    data
+  })
+}
+
+//绘制趋势图
+export function line_chart(data) {
+  return request({
+    url: `/model/dataset/line_chart`,
+    method: 'post',
+    data
+  })
+}
+
+//绘制相关性矩阵
+export function corr_matrix(data) {
+  return request({
+    url: `/model/dataset/corr_matrix`,
+    method: 'post',
+    data
+  })
+}
+
+//数据切分
+export function split(data) {
+  return request({
+    url: `/model/dataset/split`,
+    method: 'post',
+    data
+  })
+}
+
+//数据过滤
+export function filter(data) {
+  return request({
+    url: `/model/dataset/filter`,
+    method: 'post',
+    data
+  })
+}
+
+//数据填补
+export function dataset_fill(data) {
+  return request({
+    url: `/model/dataset/dataset_fill`,
+    method: 'post',
+    data
+  })
+}
+
+//数据填补
+export function add_data_feature(data) {
+  return request({
+    url: `/model/dataset/add_data_feature`,
+    method: 'post',
+    data
+  })
+}
+
+//滞后性
+export function lag_data(data) {
+  return request({
+    url: `/model/dataset/lag_data`,
+    method: 'post',
+    data
+  })
+}
+
+//数据源管理-查询
+export function queryDataSourcesList(params) {
+  return request({
+    url: `/dataAccess/dataSources/queryDataSourcesList`,
+    method: 'get',
+    params
+  })
+}
+
+//数据源管理-删除
+export function deleteDataSources(data) {
+  return request({
+    url: `/dataAccess/dataSources/deleteDataSources`,
+    method: 'post',
+    data
+  })
+}
+
+//数据源管理-删除
+export function queryRptName(params) {
+  return request({
+    url: `/report/pssrptinfo/queryRptName`,
+    method: 'get',
+    params
+  })
+}

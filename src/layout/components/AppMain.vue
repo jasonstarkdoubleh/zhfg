@@ -1,6 +1,6 @@
 <template>
 
-    <section class="app-main" :style="{'background': mainBgc ? '#f0f2f6':'#f0f2f6'}">
+    <section class="app-main">
       <!--    <div style="height: 56px;background: rgb(48, 65, 86);">-->
       <!--      <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />-->
       <!--      <breadcrumb class="breadcrumb-container" />-->
@@ -22,13 +22,8 @@ export default {
     name: 'AppMain',
     data() {
       return {
-          mainBgc: false,
+
       }
-    },
-    watch: {
-        $route: function(to, from) {
-            this.mainBgc = this.$route.path !== '/secondpage/index';
-        }
     },
     computed: {
       ...mapGetters([
@@ -46,19 +41,16 @@ export default {
       toggleSideBar() {
         this.$store.dispatch('app/toggleSideBar')
       }
-    },
-    created() {
-        this.mainBgc = this.$route.path !== '/secondpage/index';
     }
 }
 </script>
 
 <style lang="scss" scoped>
 	.app-main {
-		min-height: 100vh;
+		/*min-height: 100vh;*/
 		width: 100%;
-		position: relative;
-		overflow: auto;
+		/*position: relative;*/
+		/*overflow: auto;*/
 
 		.hamburger-container {
 			line-height: 46px;
@@ -79,7 +71,7 @@ export default {
 	}
 
 	.fixed-header+.app-main {
-		padding: 80px 24px 24px;
+		padding: 80px 24px 10px;
 	}
 </style>
 

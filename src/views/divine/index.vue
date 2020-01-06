@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div style="padding: 20px 10px;background: #ffffff">
 
       <div class="bgc flex">
@@ -9,6 +8,7 @@
           <el-date-picker
             v-model="dateValue"
             type="daterange"
+            value-format="yyyy-MM-dd"
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期">
@@ -17,46 +17,38 @@
         <el-button type="primary" @click="handleSearch">提交查询</el-button>
       </div>
 
-      <div style="height: 40px;line-height: 40px;font-weight: bold;margin-left: 10px">说明:伦敦交易所近期收盘价中粒</div>
-      <div style="margin-top: 10px;display: flex;justify-content: space-around">
+      <!--      <div style="height: 40px;line-height: 40px;font-weight: bold;margin-left: 10px">-->
+      <!--        说明:伦敦交易所近期收盘价中粒-->
+      <!--      </div>-->
+      <div style="margin-top: 20px;display: flex;justify-content: space-around">
 
-        <div style="width: 25%;border-right: 1px #cccccc dashed">
+        <div style="width: 33%;border-right: 1px #cccccc dashed">
           <div style="display: flex;justify-content: center">
             <img src="../../assets/img/商品名称.png" alt="">
           </div>
           <div style="display: flex;justify-content: center;letter-spacing: 1px;margin-top: 15px;color: #cccccc">
             <div style="padding-right: 10px;border-right: 1px solid #cccccc">商品名称</div>
-            <div style="padding-left: 10px">小麦</div>
+            <div style="padding-left: 10px">{{this.dataModel.commName}}</div>
           </div>
         </div>
 
-        <div style="width: 25%;border-right: 1px #cccccc dashed">
+        <div style="width: 33%;border-right: 1px #cccccc dashed">
           <div style="display: flex;justify-content: center">
             <img src="../../assets/img/模型名称.png" alt="">
           </div>
           <div style="display: flex;justify-content: center;letter-spacing: 1px;margin-top: 15px;color: #cccccc">
             <div style="padding-right: 10px;border-right: 1px solid #cccccc">模型名称</div>
-            <div style="padding-left: 10px">小麦</div>
+            <div style="padding-left: 10px">{{this.dataModel.modName}}</div>
           </div>
         </div>
 
-        <div style="width: 25%;border-right: 1px #cccccc dashed">
+        <div style="width: 33%;">
           <div style="display: flex;justify-content: center">
             <img src="../../assets/img/算法名称.png" alt="">
           </div>
           <div style="display: flex;justify-content: center;letter-spacing: 1px;margin-top: 15px;color: #cccccc">
             <div style="padding-right: 10px;border-right: 1px solid #cccccc">算法名称</div>
-            <div style="padding-left: 10px">咖啡</div>
-          </div>
-        </div>
-
-        <div style="width: 25%;">
-          <div style="display: flex;justify-content: center">
-            <img src="../../assets/img/单位.png" alt="">
-          </div>
-          <div style="display: flex;justify-content: center;letter-spacing: 1px;margin-top: 15px;color: #cccccc">
-            <div style="padding-right: 10px;border-right: 1px solid #cccccc">单位</div>
-            <div style="padding-left: 10px">美元/吨</div>
+            <div style="padding-left: 10px">{{this.dataModel.algoName}}</div>
           </div>
         </div>
 
@@ -64,21 +56,20 @@
     </div>
 
     <div style="height: 50px;line-height: 50px;color: #cccccc;display: flex;">
-      <div style="margin-right: 10px;width: 140px">咖啡(英) - 日预测</div>
+      <div style="margin-right: 10px;min-width: 140px">{{this.dataModel.modName}}</div>
       <div style="height: 24px;border-bottom: 1px #cccccc solid;width: 100%"></div>
     </div>
 
     <div style="display: flex">
-      <el-card style="width: 55%;margin-right: 8px">
+      <el-card style="width: 100%">
         <div id="divineone" style="height: 300px"></div>
-      </el-card>
-      <el-card style="width: 45%">
-        <div id="divinetwo" style="height: 300px"></div>
       </el-card>
     </div>
 
     <jtable
       style="margin-top: 10px"
+      :total="total"
+      @pageChange="pageChange"
       :tableData="tableData"
       :columnData="columnData">
 
@@ -89,22 +80,21 @@
 <script>
   import jtable from '_c/Jtable'
   import {mapGetters} from 'vuex'
-  import {queryComm} from '@/api/manager'
+  import {queryComm,linecharts} from '@/api/manager'
   export default {
     data() {
       return {
-        dateValue: '',
-        tableData: [{
-          time:'2019.09.25',
-          real:1388,
-          divine:1350,
-          change:'修正',
-        }],
+        total:0,
+        pageIndex:1,
+        pageSize:10,
+        dataModel:{},
+        dateValue: [],
+        tableData: [],
         columnData: {
-          time:'交易时间',
-          real:'报价/单位(实际)',
-          divine:'报价/单位(预测)',
-          change:'异常点修改',
+          dataDate:'交易时间',
+          realPrice:'报价(实际)',
+          forePrice:'报价(预测)',
+          reviPrice:'报价(修正)',
         }
       }
     },
@@ -117,22 +107,57 @@
       ])
     },
     methods: {
-      handleSearch(){
-        queryComm(this.pageValue.commId,'2019-08-12','2019-12-01',1,10).then(res=>{
-          console.log(res)
-        })
-
+      pageChange(size,page) {
+        this.pageSize = size
+        this.pageIndex = page
+        this.handleSearch()
       },
-      drawDivineone(){
-        // 基于准备好的dom，初始化echarts实例
+      handleSearch(){
+        let data = {}
+        if(this.dateValue.length === 2){
+          data = {
+            commId:this.pageValue.commId,
+            pageIndex:this.pageIndex,
+            pageSize:this.pageSize,
+            dateFrom:this.dateValue[0],
+            dateTo:this.dateValue[1]
+          }
+        }else {
+          data = {
+            commId:this.pageValue.commId,
+            pageIndex:this.pageIndex,
+            pageSize:this.pageSize
+          }
+        }
+        linecharts(data).then(res=>{
+          this.tableData = res.page.list
+          this.total = res.page.totalCount
+          this.drawDivineone(res.lineCharts)
+        })
+      },
+      drawDivineone(data){
+        let dateVal = []
+        let series = []
+        let num = 0
+        Object.keys(data.shiJi).forEach(key=>{
+          dateVal.push(data.shiJi[key].date)
+        })
+        for(let key in data){
+          series[num] = {}
+          series[num].name = key
+          series[num].type = 'line'
+          series[num].data = []
+          for(let i in data[key]){
+            series[num].data.push(data[key][i].val)
+          }
+          num++
+        }
+        console.log(data)
+        console.log(series)
         let myChart = this.$echarts.init(document.getElementById('divineone'))
-        // 绘制图表
         let option = {
           tooltip: {
             trigger: 'axis'
-          },
-          legend: {
-            data:['邮件营销','搜索引擎']
           },
           grid: {
             // show:true,
@@ -141,35 +166,17 @@
             y2: '3%',
             containLabel: true,
           },
-          toolbox: {
-            feature: {
-              saveAsImage: {}
-            }
-          },
           xAxis: {
             show:true,
             type: 'category',
             boundaryGap: false,
-            data: ['周一','周二','周三','周四','周五','周六','周日']
+            data: dateVal
           },
           yAxis: {
             show:true,
             type: 'value'
           },
-          series: [
-            {
-              name:'邮件营销',
-              type:'line',
-              stack: '总量',
-              data:[120, 132, 101, 134, 90, 230, 210]
-            },
-            {
-              name:'搜索引擎',
-              type:'line',
-              stack: '总量',
-              data:[820, 932, 901, 934, 1290, 1330, 1320]
-            }
-          ]
+          series:series
         };
         myChart.setOption(option);
       },
@@ -177,12 +184,12 @@
         // 基于准备好的dom，初始化echarts实例
         let myChart = this.$echarts.init(document.getElementById('divinetwo'))
         // 绘制图表
-        var dataAxis = ['点', '击', '柱', '子', '或', '者', '两', '指', '在', '触', '屏', '上', '滑', '动', '能', '够', '自', '动', '缩', '放'];
-        var data = [220, 182, 191, 234, 290, 330, 310, 123, 442, 321, 90, 149, 210, 122, 133, 334, 198, 123, 125, 220];
-        var yMax = 500;
-        var dataShadow = [];
+        let dataAxis = ['点', '击', '柱', '子', '或', '者', '两', '指', '在', '触', '屏', '上', '滑', '动', '能', '够', '自', '动', '缩', '放'];
+        let data = [220, 182, 191, 234, 290, 330, 310, 123, 442, 321, 90, 149, 210, 122, 133, 334, 198, 123, 125, 220];
+        let yMax = 500;
+        let dataShadow = [];
 
-        for (var i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
           dataShadow.push(yMax);
         }
 
@@ -265,7 +272,7 @@
         };
 
 // Enable data zoom when user click bar.
-        var zoomSize = 6;
+        let zoomSize = 6;
         myChart.on('click', function (params) {
           console.log(dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)]);
           myChart.dispatchAction({
@@ -279,8 +286,24 @@
       },
     },
     mounted() {
-      this.drawDivineone();
+      let data = {
+        commId:this.pageValue.commId,
+        pageIndex:this.pageIndex,
+        pageSize:this.pageSize
+      }
+      linecharts(data).then(res=>{
+        this.tableData = res.page.list
+        this.total = res.page.totalCount
+        this.drawDivineone(res.lineCharts);
+      })
+
       this.drawDivinetwo()
+    },
+    created() {
+      queryComm(this.pageValue.commId).then(res=>{
+        console.log(res)
+        this.dataModel = res.data
+      })
     }
   }
 </script>

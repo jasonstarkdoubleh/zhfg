@@ -142,11 +142,20 @@ export default {
     })
   },
 
-  //相关性查询
-  pssanalyinfoList(data1,data2,data3) {
+  //数据集名称 -2
+  listAllTwo() {
     return request({
-      url: `/price/pssanalyinfo/list?analyway=${data1}&analyname=${data2}&datasetid=${data3}`,
+      url: `/price/pssdatasetinfo/getDataSetList`,
       method: 'get'
+    })
+  },
+
+  //相关性查询
+  pssanalyinfoList(params) {
+    return request({
+      url: `/price/pssanalyinfo/queryPage`,
+      method: 'get',
+      params
     })
   },
 

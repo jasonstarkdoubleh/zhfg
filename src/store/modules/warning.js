@@ -152,6 +152,14 @@ const actions = {
     }
   },
 
+  async listAllTwo({commit}) {
+    try {
+      return await warning.listAllTwo()
+    }catch (e) {
+      console.log(e);
+    }
+  },
+
   async getDataSetList({commit}) {
     try {
       return await warning.getDataSetList()

@@ -1,5 +1,6 @@
 <template>
   <div class="second-page">
+
     <div class="header-layout">
       <div class="header-left">
         <div class="main-bgc" style="cursor: pointer" @click="handleProductionShow('bodyLayoutShow')">
@@ -15,13 +16,15 @@
         </div>
       </div>
     </div>
+
     <div v-if="allShow.bodyLayoutShow" class="body-layout">
       <div class="goods-warning">
         <div class="preview-title">
           <div><img src="../../assets/img/组151.png" style="margin: 1px 6px 0 0"></div>
           <div>{{this.pageValue.commName}}价格区域分布</div>
         </div>
-        <div style="margin-top: 30px;display: flex;justify-content: space-around;padding: 10px 0" class="heng">
+
+        <div class="heng">
           <div style="text-align: center">
             <div>
               {{this.pageValue.commName}}价格
@@ -54,7 +57,8 @@
             </div>
           </div>
         </div>
-        <div v-if="mapShow" id="secondmap" style="height: calc(100% - 150px)" v-loading="mapLoading"></div>
+
+        <div v-if="mapShow" id="secondmap" style="height: calc(100% - 145px)" v-loading="mapLoading"></div>
         <div v-else style="height: calc(100% - 150px);display: flex;justify-content: center;align-items: center">暂无数据</div>
       </div>
       <div class="body-right">
@@ -65,7 +69,7 @@
               <div>规格品价格数据</div>
             </div>
             <div class="goods-table">
-              <el-scrollbar class="scrollbar-table" style="height: calc(100% - 60px)">
+              <el-scrollbar class="scrollbar-table" style="height: 100%">
                 <el-table
                   :data="peopleLife"
                   :header-cell-style="{background:'#ffffff'}"
@@ -85,7 +89,7 @@
                     prop="priToday"
                     label="价格">
                     <template slot-scope="scope">
-                      <span>{{ scope.row.value }}</span>
+                      <span>{{ scope.row.value }}{{scope.row.unit}}</span>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -97,7 +101,12 @@
               <div><img src="../../assets/img/组132.png" style="margin: 1px 6px 0 0"></div>
               <div>生产数据情况</div>
             </div>
-            <div id="secondpie" style="height: 80%"></div>
+            <div>
+              <el-radio-group v-model="proData" size="mini" @change="changeProData" style="margin-top: 5px;margin-left: 10px">
+                <el-radio-button v-for="(item,index) in proDataOptions" :key="index" :label="item.value">{{item.label}}</el-radio-button>
+              </el-radio-group>
+            </div>
+            <div id="secondpie" style="height: calc(100% - 80px)"></div>
           </div>
           <div class="up up-3">
             <div class="preview-title">
@@ -152,29 +161,30 @@
         </div>
         <div class="right-down">
           <div class="down1">
+
             <div class="preview-title">
               <div><img src="../../assets/img/组132拷贝2.png" style="margin: 1px 6px 0 0"></div>
               <div>价格走势</div>
             </div>
-            <div style="margin-top: 10px;margin-left: 20px">
+
+            <div style="padding-top: 10px;padding-left: 20px;height: 90px;box-sizing: border-box">
               <el-radio-group v-model="radio" size="small" @change="changeQushi">
                 <el-radio-button v-for="item in zoushiArray" :key="item" :label="item"></el-radio-button>
               </el-radio-group>
+              <div>
+                <el-radio-group v-model="radioPindu" size="mini" @change="changePindu" style="margin-top: 5px">
+                  <el-radio-button v-for="(item,index) in pindu" :key="index" :label="item.value">{{item.label}}</el-radio-button>
+                </el-radio-group>
+              </div>
             </div>
-
-            <el-radio-group v-model="radioPindu" size="mini" @change="changePindu" style="margin-top: 5px;margin-left: 20px">
-              <el-radio-button v-for="(item,index) in pindu" :key="index" :label="item.value">{{item.label}}</el-radio-button>
-            </el-radio-group>
-
-            <div id="qushiline" style="height: 80%;"></div>
-
+            <div id="qushiline" style="height:calc(100% - 140px)"></div>
           </div>
           <div class="down2">
             <div class="preview-title">
               <div><img src="../../assets/img/组132拷贝.png" style="margin: 1px 6px 0 0"></div>
               <div>各商品分析报告</div>
             </div>
-            <el-scrollbar style="height: calc(100% - 60px)">
+            <el-scrollbar style="height: calc(100% - 50px)">
               <div style="font-size: 16px;">
                 <template v-for="i in 5">
                   <div :key="i" style="height: 110px;border: 1px solid #3F7FFF;margin: 10px 16px 10px;padding: 10px 6px 20px;">
@@ -182,7 +192,7 @@
                     <div style="height: 20px;line-height: 20px">
                       回复内容回复内容回复内容回复内容回复内容回复
                     </div>
-                    <div style="margin-top: 30px;display: flex;justify-content: space-between">
+                    <div style="margin-top: 25px;display: flex;justify-content: space-between">
                       <div>
                         <span>2019-09-23</span>
                       </div>
@@ -197,90 +207,91 @@
       </div>
     </div>
 
-    <div style="padding-top: 10px;">
-      <second v-if="!allShow.bodyLayoutShow && !allShow['舆情']"
-              :tableData="secondValue[chooseData]"
-              :goodsType="chooseData"
-              :goodsName="pageValue.commName"
-              :type4commList="type4commList"
-              :mapShow="chooseData === '价格'"
-              @changeTableData="changeTableData"/>
-      <div v-if="allShow['舆情']">
-        <div style="display: flex;height: calc(100vh - 100px)">
-          <div class="yuqing-warning" style="width: 40%">
-            <div class="preview-title">
-              <div><img src="../../assets/img/组147.png" style="margin: 1px 6px 0 0"></div>
-              <div>热点舆情TOP50</div>
-            </div>
-            <el-scrollbar style="height: calc(100% - 60px)">
-              <div class="opinion-body" v-if="urlInfo.length > 0">
-                <div class="opinion-item">
-                  <div class="opinion-index" style="width: 80%;">
-                    <div class="hot hot-red">
-                      <span>1</span>
-                    </div>&nbsp;&nbsp;
-                    <div style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;width: 80%;">
-                      <span style="cursor: pointer" @click="targetPage(urlInfo[0].url)">{{ this.urlInfo[0].title }}</span>
-                    </div>
-                  </div>
-                  <div class="fire">
-                    <img src="../../assets/img/热度.png">&nbsp;
-                    <span>{{ this.urlInfo[0].heat }}</span>
+    <second v-if="!allShow.bodyLayoutShow && !allShow['舆情']"
+            :tableData="secondValue[chooseData]"
+            :goodsType="chooseData"
+            :goodsName="pageValue.commName"
+            :type4commList="type4commList"
+            :mapShow="chooseData === '价格'"
+            style="margin-top: 10px"
+            @changeTableData="changeTableData"/>
+
+    <div v-if="allShow['舆情']" style="margin-top: 10px">
+      <div style="display: flex;height: calc(100vh - 110px)">
+        <div class="yuqing-warning" style="width: 40%">
+          <div class="preview-title">
+            <div><img src="../../assets/img/组147.png" style="margin: 1px 6px 0 0"></div>
+            <div>热点舆情TOP50</div>
+          </div>
+          <el-scrollbar style="height: calc(100% - 60px)">
+            <div class="opinion-body" v-if="urlInfo.length > 0">
+              <div class="opinion-item">
+                <div class="opinion-index" style="width: 80%;">
+                  <div class="hot hot-red">
+                    <span>1</span>
+                  </div>&nbsp;&nbsp;
+                  <div style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;width: 80%;">
+                    <span style="cursor: pointer" @click="targetPage(urlInfo[0].url)">{{ this.urlInfo[0].title }}</span>
                   </div>
                 </div>
-                <div class="opinion-item">
-                  <div class="opinion-index" style="width: 80%;">
-                    <div class="hot hot-orange">
-                      <span>2</span>
-                    </div>&nbsp;&nbsp;
-                    <div style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;width: 80%;">
-                      <span style="cursor: pointer" @click="targetPage(urlInfo[1].url)">{{ this.urlInfo[1].title }}</span>
-                    </div>
-                  </div>
-                  <div class="fire">
-                    <img src="../../assets/img/热度.png">&nbsp;
-                    <span>{{ this.urlInfo[1].heat }}</span>
-                  </div>
-                </div>
-                <div class="opinion-item">
-                  <div class="opinion-index" style="width: 80%;">
-                    <div class="hot hot-yellow">
-                      <span>3</span>
-                    </div>&nbsp;&nbsp;
-                    <div style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;width: 80%;">
-                      <span style="cursor: pointer" @click="targetPage(urlInfo[2].url)">{{ this.urlInfo[2].title }}</span>
-                    </div>
-                  </div>
-                  <div class="fire">
-                    <img src="../../assets/img/热度.png">&nbsp;
-                    <span>{{ this.urlInfo[2].heat }}</span>
-                  </div>
-                </div>
-                <div class="opinion-item" v-for="(item, index) in infoCopy" :key="index">
-                  <div class="opinion-index" style="width: 80%;">
-                    <div class="hot hot-gray">
-                      <span>{{ index+4 }}</span>
-                    </div>&nbsp;&nbsp;
-                    <div style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;width: 80%;">
-                      <span style="cursor: pointer" @click="targetPage(item.url)">{{ item.title }}</span>
-                    </div>
-                  </div>
-                  <div class="fire">
-                    <img src="../../assets/img/热度.png">&nbsp;
-                    <span>{{ item.heat }}</span>
-                  </div>
+                <div class="fire">
+                  <img src="../../assets/img/热度.png">&nbsp;
+                  <span>{{ this.urlInfo[0].heat }}</span>
                 </div>
               </div>
-            </el-scrollbar>
-          </div>
+              <div class="opinion-item">
+                <div class="opinion-index" style="width: 80%;">
+                  <div class="hot hot-orange">
+                    <span>2</span>
+                  </div>&nbsp;&nbsp;
+                  <div style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;width: 80%;">
+                    <span style="cursor: pointer" @click="targetPage(urlInfo[1].url)">{{ this.urlInfo[1].title }}</span>
+                  </div>
+                </div>
+                <div class="fire">
+                  <img src="../../assets/img/热度.png">&nbsp;
+                  <span>{{ this.urlInfo[1].heat }}</span>
+                </div>
+              </div>
+              <div class="opinion-item">
+                <div class="opinion-index" style="width: 80%;">
+                  <div class="hot hot-yellow">
+                    <span>3</span>
+                  </div>&nbsp;&nbsp;
+                  <div style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;width: 80%;">
+                    <span style="cursor: pointer" @click="targetPage(urlInfo[2].url)">{{ this.urlInfo[2].title }}</span>
+                  </div>
+                </div>
+                <div class="fire">
+                  <img src="../../assets/img/热度.png">&nbsp;
+                  <span>{{ this.urlInfo[2].heat }}</span>
+                </div>
+              </div>
+              <div class="opinion-item" v-for="(item, index) in infoCopy" :key="index">
+                <div class="opinion-index" style="width: 80%;">
+                  <div class="hot hot-gray">
+                    <span>{{ index+4 }}</span>
+                  </div>&nbsp;&nbsp;
+                  <div style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;width: 80%;">
+                    <span style="cursor: pointer" @click="targetPage(item.url)">{{ item.title }}</span>
+                  </div>
+                </div>
+                <div class="fire">
+                  <img src="../../assets/img/热度.png">&nbsp;
+                  <span>{{ item.heat }}</span>
+                </div>
+              </div>
+            </div>
+          </el-scrollbar>
+        </div>
 
-          <div class="body-right" style="width: 60%">
-            <div style="height: 40%;width: 100%;margin-bottom: 4px" id="newspie" class="news-pie"></div>
-            <div style="height: 60%;width: 100%;" id="newsline" class="news-pie"></div>
-          </div>
+        <div class="body-right" style="width: 60%">
+          <div style="height: 40%;width: 100%;margin-bottom: 4px" id="newspie" class="news-pie"></div>
+          <div style="height: 60%;width: 100%;" id="newsline" class="news-pie"></div>
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -289,9 +300,12 @@
   import VueCountUp from 'vue-countupjs'
   import second from '_c/Second'
   import { mapActions, mapGetters }  from 'vuex'
+  import {getHeatTop,yuqingInfo} from '@/api/manager'
   export default {
     data: function () {
       return {
+        proData:'',
+        proDataOptions:[],
         zoushiArray:['全国价格走势','区域价格分布','价格预测情况'],
         quanguo:'',
         quyu:'',
@@ -302,7 +316,7 @@
         itemLoading:true,
         mapValue:[],
         yuqingLoading: true,
-        urlInfo:'',
+        urlInfo:[],
         infoCopy: '',
         top10: '',
         radio: '全国价格走势',
@@ -320,7 +334,8 @@
         peopleLife:[],
         chooseData:'',
         pindu:[],
-        radioPindu:''
+        radioPindu:'',
+        pieData:[]
       }
     },
     components: {
@@ -331,7 +346,7 @@
       bodyLayoutShow(val){
         if(val){
           this.$nextTick(()=>{
-            this.drawMap(this.mapValue)
+            this._secondView()
           })
         }
       },
@@ -349,6 +364,10 @@
       ])
     },
     methods: {
+      changeProData(){
+        console.log(this.proData)
+        this.drawPie(this.proData)
+      },
       changePindu(){
         this.$nextTick(()=>{
           this.drawLine(this.radioPindu)
@@ -393,6 +412,10 @@
             })
           })
           this.pindu[indexPindu].value.push(data)
+          if(this.pindu.length){
+            this.radioPindu = this.pindu[0].value
+            this.changePindu()
+          }
         })
 
       },
@@ -417,12 +440,15 @@
         this.allShow = obj
         if('舆情'===data){
           this.$nextTick(() => {
-            this.drawNewsPie()
-            this.drawNewsLine()
+            console.log(this.pieData);
+            this.drawNewsPie(this.pieData)
+            yuqingInfo(this.pageValue.commId).then(res=>{
+              this.drawNewsLine(res.data)
+            })
+
           })
         }
       },
-
       drawMap(data){
         this.mapLoading = false
         let maxValue = data[0].value
@@ -496,11 +522,19 @@
         };
         myChart.setOption(option);
       },
-      drawPie() {
-        // 基于准备好的dom，初始化echarts实例
-        var myChart = this.$echarts.init(document.getElementById('secondpie'));
-
-        // 指定图表的配置项和数据
+      drawPie(data) {
+        console.log(data)
+        let dateVal = []
+        let series = [{
+          name:data[0].commName,
+          type:'bar',
+          data:[]
+        }]
+        data.forEach(item=>{
+          dateVal.push(item.date)
+          series[0].data.push(item.value)
+        })
+        let myChart = this.$echarts.init(document.getElementById('secondpie'));
         let option = {
           color: ['#3398DB'],
           tooltip : {
@@ -512,14 +546,14 @@
           grid: {
             left: '3%',
             right: '4%',
-            bottom: '10%',
+            bottom: '5%',
             top: '10%',
             containLabel: true
           },
           xAxis : [
             {
               type : 'category',
-              data : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+              data : dateVal,
               axisTick: {
                 alignWithLabel: true
               }
@@ -530,14 +564,7 @@
               type : 'value'
             }
           ],
-          series : [
-            {
-              name:'直接访问',
-              type:'bar',
-              barWidth: '60%',
-              data:[10, 52, 200, 334, 390, 330, 220]
-            }
-          ]
+          series : series
         };
 
         myChart.setOption(option);
@@ -554,7 +581,6 @@
             return {
               name:item.name,
               type:'bar',
-              stack: '总量',
               areaStyle: {},
               data:item.data
             }
@@ -562,7 +588,6 @@
             return {
               name:item.name,
               type:'line',
-              stack: '总量',
               areaStyle: {},
               data:item.data
             }
@@ -579,15 +604,10 @@
               }
             }
           },
-          grid: {
-            left: '3%',
-            right: '4%',
-            containLabel: true
-          },
           xAxis : [
             {
               type : 'category',
-              boundaryGap : false,
+              // boundaryGap : false,
               data : data[0].date
             }
           ],
@@ -596,25 +616,32 @@
               type : 'value'
             }
           ],
-          // dataZoom: [
-          //   {
-          //     show: true,
-          //     realtime: true,
-          //     start: 65,
-          //     end: 85
-          //   },
-          //   {
-          //     type: 'inside',
-          //     realtime: true,
-          //     start: 65,
-          //     end: 85
-          //   }
-          // ],
+          grid: {
+            left: '3%',
+            right: '1%',
+            bottom: '16%',
+            top:'6%',
+            containLabel: true
+          },
+          dataZoom: [
+            {
+              show: true,
+              realtime: true,
+              start: 40,
+              end: 60
+            },
+            {
+              type: 'inside',
+              realtime: true,
+              start: 40,
+              end: 60
+            }
+          ],
           series : series
         };
         myChart.setOption(option);
       },
-      drawNewsPie() {
+      drawNewsPie(data) {
         // 基于准备好的dom，初始化echarts实例
         let myChart = this.$echarts.init(document.getElementById('newspie'));
 
@@ -633,20 +660,18 @@
             orient: 'vertical',
             left: 'left',
             top:'20%',
-            data: ['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
+            data: ['正面','负面','中立']
           },
           series : [
             {
-              name: '访问来源',
+              name: '舆情分析',
               type: 'pie',
               radius : '55%',
               center: ['50%', '60%'],
               data:[
-                {value:335, name:'直接访问'},
-                {value:310, name:'邮件营销'},
-                {value:234, name:'联盟广告'},
-                {value:135, name:'视频广告'},
-                {value:1548, name:'搜索引擎'}
+                {value:data[0], name:'正面'},
+                {value:data[1], name:'中立'},
+                {value:data[2], name:'负面'},
               ],
               itemStyle: {
                 emphasis: {
@@ -668,13 +693,28 @@
         // 使用刚指定的配置项和数据显示图表。
         myChart.setOption(option);
       },
-      drawNewsLine() {
-        // 基于准备好的dom，初始化echarts实例
-        var myChart = this.$echarts.init(document.getElementById('newsline'));
+      drawNewsLine(data) {
+        let dateVal = []
+        for(let i in data.fuMian){
+          dateVal.push(data.fuMian[i].date)
+        }
+        let series = []
+        let num = 0
+        for(let key in data){
+          series[num] = {}
+          series[num].name = key
+          series[num].type = 'line'
+          series[num].areaStyle = {}
+          series[num].data = []
+          for(let i in data[key]){
+            series[num].data.push(data[key][i].val)
+          }
+          num++
+        }
 
-        // 指定图表的配置项和数据
-        var option = {
-          tooltip : {
+        let myChart = this.$echarts.init(document.getElementById('newsline'));
+        let option = {
+          tooltip: {
             trigger: 'axis',
             axisPointer: {
               type: 'cross',
@@ -683,23 +723,31 @@
               }
             }
           },
-          // legend: {
-          //     data:['邮件营销','联盟广告','视频广告'],
-          //     textStyle: {
-          //         color: '#ffffff'
-          //     }
-          // },
           grid: {
             left: '3%',
             right: '4%',
-            bottom: '3%',
+            bottom: '10%',
             containLabel: true
           },
-          xAxis : [
+          dataZoom: [
             {
-              type : 'category',
-              boundaryGap : false,
-              data : ['周一','周二','周三','周四','周五','周六','周日'],
+              show: true,
+              realtime: true,
+              start: 40,
+              end: 60
+            },
+            {
+              type: 'inside',
+              realtime: true,
+              start: 40,
+              end: 60
+            }
+          ],
+          xAxis: [
+            {
+              type: 'category',
+              boundaryGap: false,
+              data: dateVal,
               axisLabel: {
                 show: true,
                 textStyle: {
@@ -709,10 +757,10 @@
 
             }
           ],
-          yAxis : [
+          yAxis: [
             {
-              type : 'value',
-              axisLabel : {
+              type: 'value',
+              axisLabel: {
                 formatter: '{value}',
                 textStyle: {
                   color: '#ccc'
@@ -720,85 +768,83 @@
               }
             }
           ],
-          series : [
-            {
-              name:'邮件营销',
-              type:'line',
-              stack: '总量',
-              areaStyle: {},
-              data:[120, 132, 101, 134, 90, 230, 210]
-            },
-            {
-              name:'联盟广告',
-              type:'line',
-              stack: '总量',
-              areaStyle: {},
-              data:[220, 182, 191, 234, 290, 330, 310]
-            },
-            {
-              name:'视频广告',
-              type:'line',
-              stack: '总量',
-              areaStyle: {},
-              data:[150, 232, 201, 154, 190, 330, 410]
-            }
-          ]
-        };
-
-        // 使用刚指定的配置项和数据显示图表。
-        myChart.setOption(option);
+          series: series
+        }
+          // 使用刚指定的配置项和数据显示图表。
+          myChart.setOption(option);
       },
+      _secondView(){
+        this.secondView(this.pageValue.commId).then(res => {
+          this.secondValue = res.data
+          this.quanguo = res.data.quanGuoJiaGeZouShi
+          this.quyu = res.data.quYuJiaGeFengBu
+          this.jiageyuce = res.data.jiaGeYuCe
+          this.priToday = this.secondValue.price
+          this.priCompany = this.secondValue.unit
+          this.peopleLife = this.secondValue.priceList
+          this.tongBi = parseInt(this.secondValue.tongBi)
+          this.huanBi = parseInt(this.secondValue.huanBi)
+          this.type4commList = res.type4commList
+          this.itemLoading = false
+          if(this.secondValue.provinceMap.length) {
+            this.mapShow = true
+            this.mapValue = []
+            for(let i in this.secondValue.provinceMap) {
+              this.mapValue[i] = {}
+              this.mapValue[i].name = this.secondValue.provinceMap[i].areaName.slice(0,2)
+              this.mapValue[i].value = this.secondValue.provinceMap[i].value
+              this.mapValue[i].unit = this.secondValue.provinceMap[i].unit
+            }
+            this.$nextTick(() => {
+              this.drawMap(this.mapValue)
+            })
+          }else {
+            this.mapShow = false
+          }
+          this.changeQushi()
+          this.proDataOptions = []
+          Object.keys(res.data.prodData).forEach((key,i)=>{
+            this.proDataOptions[i] = {}
+            this.proDataOptions[i].label = key
+            this.proDataOptions[i].value = res.data.prodData[key]
+          })
+          let keys = Object.keys(res.data.prodData)
+          this.drawPie(res.data.prodData[keys[0]])
+        })
+      }
     },
     mounted() {
-      this.drawPie()
+      //跳转舆情
       if(this.$route.query.num) {
         this.handleProductionShow(this.$route.query.num)
       }
+      this._secondView()
     },
     created() {
       this.allShowArray.forEach((item,index) =>{
         this.allShow[item] = false
       })
-      this.secondView(this.pageValue.commId).then(res => {
-        this.secondValue = res.data
-        this.quanguo = res.data.quanGuoJiaGeZouShi
-        this.quyu = res.data.quYuJiaGeFengBu
-        this.jiageyuce = res.data.jiaGeYuCe
-        this.priToday = this.secondValue.price
-        this.priCompany = this.secondValue.unit
-        this.peopleLife = this.secondValue.priceList
-        this.tongBi = parseInt(this.secondValue.tongBi)
-        this.huanBi = parseInt(this.secondValue.huanBi)
-        this.type4commList = res.type4commList
-        this.itemLoading = false
-        if(this.secondValue.provinceMap.length) {
-          this.mapShow = true
-          this.mapValue = []
-          for(let i in this.secondValue.provinceMap) {
-            this.mapValue[i] = {}
-            this.mapValue[i].name = this.secondValue.provinceMap[i].areaName.slice(0,2)
-            this.mapValue[i].value = this.secondValue.provinceMap[i].value
-            this.mapValue[i].unit = this.secondValue.provinceMap[i].unit
-          }
-          this.$nextTick(() => {
-            this.drawMap(this.mapValue)
-          })
-        }else {
-          this.mapShow = false
-        }
-        this.changeQushi()
-        console.log(this.pindu[0].value[0])
-        this.radioPindu = this.pindu[0].value
-        this.changePindu()
-      })
       this.getHeatTop(this.pageValue.commId).then(res => {
         this.urlInfo = res.data.top_url
         this.infoCopy = this.urlInfo.slice(3)
         this.top10 = this.infoCopy.slice(0,7)
-        // this.yuqingLoading = false
-        this.yuqingLoading = true
-      }).catch(()=>{
-        this.urlInfo = []
+        this.yuqingLoading = false
+        // this.yuqingLoading = true
+      })
+      getHeatTop(this.pageValue.commId).then(res=>{
+        let data = [0,0,0]
+        res.data.top_url.forEach(item=>{
+          if(item.sentiment === '正面'){
+            data[0] += 1
+          }
+          if(item.sentiment === '中立'){
+            data[1] += 1
+          }
+          if(item.sentiment === '负面'){
+            data[2] += 1
+          }
+        })
+        this.pieData = data
       })
     }
   }
@@ -806,7 +852,7 @@
 
 <style lang="scss">
   .second-page {
-    height: calc(100vh - 100px);
+    /*height: calc(100vh - 100px);*/
     color: #787878;
 
     .opinion-body {
@@ -867,9 +913,17 @@
       background-image: url("../../assets/img/heng.png");
       background-repeat:no-repeat;
       background-size:100% 100%;
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      height: 75px;
+      box-sizing: border-box;
     }
 
     .preview-title {
+      height: 50px;
+      box-sizing: border-box;
       display: flex;
       align-items: center;
       padding: 16px 0 0 16px;
@@ -915,7 +969,6 @@
 
       .header-left {
         display: flex;
-
 
         .main-bgc {
           width: 120px;
@@ -985,14 +1038,14 @@
     }
 
     .body-layout {
-      height: 100%;
+      height: calc(100vh - 100px);
       display: flex;
       padding-top: 10px;
     }
 
     .goods-warning {
       width: 40%;
-      height: 101%;
+      height: 100%;
       border-radius: 6px;
       background: #ffffff;
       background-image: url("../../assets/img/价格子系统2.png");
@@ -1033,8 +1086,9 @@
 
           .goods-table {
             width: calc(100% - 16px);
-            height: 100%;
+            height: calc(100% - 60px);
             padding: 10px 0 0 16px;
+            box-sizing: border-box;
           }
         }
 
@@ -1058,7 +1112,7 @@
       }
 
       .right-down {
-        height: 65%;
+        height: calc(65% - 5px);
         display: flex;
         margin-top: 5px;
 
@@ -1072,7 +1126,7 @@
         }
 
         .down2 {
-          width: 40%;
+          width: calc(40% - 5px);
           background: #ffffff;
           /*background-image: url("../../assets/img/down2.png");*/
           background-repeat:no-repeat;

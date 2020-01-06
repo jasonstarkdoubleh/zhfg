@@ -11,9 +11,9 @@
         <div style="width: 25%;min-height: 500px;margin-right: 10px">
           <div style="height: 30px;line-height: 30px;text-align: center">数据集名</div>
           <div style="height: 470px;overflow: scroll;border: 1px solid #cccccc;overflow-x: hidden;padding: 10px">
-            <div v-for="(item, index) in dataName" :key="index" style="padding: 5px">
-              <el-radio v-model="radioValue" :label="item" @change="handleGetTable">
-                  {{ item.dataSetName }}
+            <div style="padding: 5px" v-for="(item, index) in dataName" :key="index">
+              <el-radio v-model="radioValue" :label="item" @change="handleGetTable" >
+                {{ item.dataSetName }}
               </el-radio>
             </div>
           </div>
@@ -33,7 +33,7 @@
       </div>
     </div>
 
-    <el-card v-if="create">
+    <el-card v-show="create">
       <div>
         <el-form ref="form" :model="form" label-width="120px">
           <el-form-item label="数据集名称">
@@ -341,21 +341,16 @@
           this.createNum -= 1
         }
       },
-      handleResult() {
-
-      },
       ...mapActions([
         'getDataSetList',
         'getCommType'
       ]),
       handleGetTable() {
-        let data = this.radioValue
-        this.updata = data
-        getIndexInfoByDataSetId(data.dataSetId).then(res=>{
+        this.updata = this.radioValue
+        getIndexInfoByDataSetId(this.radioValue.dataSetId).then(res=>{
           this.tableData = res.data
           console.log(res)
         })
-        let num = 0
       },
       handleDelete() {
         pssdatasetinfo(this.radioValue.dataSetId).then(res => {
@@ -378,13 +373,12 @@
         this.handleCreate(true)
         this.form.dataSetName = this.updata.dataSetName
         this.form.dataSetType = this.updata.dataSetType
-        if(Object.keys(this.updata.macroIndevalPath)){
+        if(Object.keys(this.updata.macroIndevalPath).length){
           this.macShow = true
           this.macType = this.updata.macroIndevalPath[0][0]
           this.$nextTick(()=>{
             this.macName = this.updata.macroIndevalPath[0][1]
           })
-
         }
         let i = 0
         let key = 0
@@ -439,10 +433,11 @@
           this.form = JSON.parse(JSON.stringify(this.formCopy))
           this.create = false
           this.dataSet = true
-          // this.commLevelCode_0 = ''
           this.disabled = false
           this.macShow = false
           this.macType = []
+          this.radioValue = ''
+          this.tableData = []
           this.handleListAll()
         }
       },

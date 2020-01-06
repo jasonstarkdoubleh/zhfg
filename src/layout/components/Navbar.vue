@@ -78,6 +78,7 @@ export default {
   background-image: url("../../assets/img/header.png");
   background-repeat:no-repeat;
   background-size:100% 100%;
+  z-index: 999999;
   /*background-color: rgb(242, 242, 246);*/
   /*box-shadow: 0 1px 4px rgba(0,21,41,.08);*/
 

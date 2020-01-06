@@ -15,6 +15,9 @@
     "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.7.0",
+    "@riophae/vue-treeselect": "^0.4.0",
+    "ant-design-vue": "^1.4.9",
     "axios": "0.18.1",
     "echarts": "^4.2.1",
     "element-ui": "2.11.1",
@@ -26,6 +29,7 @@
     "vue": "2.6.10",
     "vue-countupjs": "^1.0.0",
     "vue-router": "3.0.6",
+    "vuelidate": "^0.7.4",
     "vuex": "3.1.0"
   },
   "devDependencies": {
@@ -40,6 +44,7 @@
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "10.0.1",
     "babel-jest": "23.6.0",
+    "babel-polyfill": "^6.26.0",
     "better-scroll": "^1.15.2",
     "chalk": "2.4.2",
     "connect": "3.6.6",

@@ -1,6 +1,6 @@
 <template>
-  <div>
-
+  <div style="font-size: 24px">
+    已成功打开在线调研子系统
   </div>
 </template>
 

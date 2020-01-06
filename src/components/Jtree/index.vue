@@ -180,9 +180,9 @@
             forPid(data) {
                 this.pIdArr = []
                 for(let i in data){
-                    if(data[i].pId != 0){
+                    if(data[i].pId !== 0){
                         for (let j in this.newTreeData){
-                            if(this.newTreeData[j].id == data[i].pId){
+                            if(this.newTreeData[j].id === data[i].pId){
                                 this.data2.push(this.newTreeData[j])
                                 this.pIdArr.push(this.newTreeData[j])
                             }

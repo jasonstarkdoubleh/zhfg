@@ -303,16 +303,10 @@
         this.pageIndex = page
         this.handleSearch()
       },
+      //查看详情
       handleConfig(data){
         this.boo = false
         this.sizeForm = data.row
-        console.log(this.sizeForm)
-        console.log(this.warningTypeOptions)
-        for(let i in this.infoOptions) {
-          if(this.infoOptions[i].value === this.sizeForm.rschId ) {
-            this.sizeForm.rschId = this.infoOptions[i].label
-          }
-        }
         this.tableShow = false
         this.warningSearch = true
       },
@@ -336,6 +330,7 @@
                         type: "success"
                       })
                       this.warnTypeJas()
+                      this.handleSearch()
                     }
                   }).catch(() => {
                     this.dialogLoading = false;
@@ -344,7 +339,6 @@
                     this.tableShow = true
                   })
                 }else {
-                  console.log(this.sizeForm)
                   this.confUpdate(this.sizeForm).then((res) => {
                     if(res.code === 0 ) {
                       this.sizeForm = JSON.parse(JSON.stringify(this.sizeFormCopy));
@@ -357,6 +351,7 @@
                         type: "success"
                       })
                       this.warnTypeJas()
+                      this.handleSearch()
                     }
                   }).catch(() => {
                     this.dialogLoading = false;
@@ -369,7 +364,6 @@
               }
             })
           } else {
-            console.log('error submit!!');
             return false;
           }
         });

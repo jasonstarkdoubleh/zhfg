@@ -1,28 +1,27 @@
 <template>
-
   <div>
-
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="数据展示" name="first">
         <jtable
+          :total="total"
           :tableData="tableData"
           :columnData="columnData"
           :searchShow="true"
-          :statusShow="true"
           :deleteShow="true"
-          @on-detail="handleCause"
-          v-show="tableShow">
+          @pageChange="pageChange"
+          @on-delete="hanleDelete"
+          @on-detail="handleDetail">
 
           <!--      因果分析-->
           <div class="flex bgc">
             <div>
-              分析结果名称:&nbsp;
-              <el-input style="width: 150px;margin-right: 20px" v-model="correlationName"></el-input>
+              分析名称:&nbsp;
+              <el-input style="width: 180px;margin-right: 20px" v-model="cor.analyName"></el-input>
 
-              模型名称:&nbsp;
-              <el-select v-model="warningName" style="margin-right: 20px">
+              分析类型:&nbsp;
+              <el-select v-model="cor.analyWay" style="margin-right: 20px">
                 <el-option
-                  v-for="item in warningNameOptions"
+                  v-for="item in analyWayOptions"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value">
@@ -30,9 +29,9 @@
               </el-select>
 
               数据集名称:&nbsp;
-              <el-select v-model="warningName" style="margin-right: 20px">
+              <el-select v-model="cor.dataSetId"style="margin-right: 20px">
                 <el-option
-                  v-for="item in warningNameOptions"
+                  v-for="item in dataNameOptions"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value">
@@ -40,7 +39,7 @@
               </el-select>
             </div>
             <div>
-              <el-button type="primary" @click="handleCause">查询</el-button>
+              <el-button type="primary" @click="handleSearch">查 询</el-button>
             </div>
           </div>
 
@@ -48,144 +47,148 @@
       </el-tab-pane>
 
       <el-tab-pane label="格兰杰因果检验" name="second">
-
+        <el-card v-show="headShow">
+          <div style="padding: 10px" id="GELANJIE">
+            <div>
+              <h3>格兰杰因果检验</h3>
+              <div class="flex bgc">
+                <div style="margin: 5px 0">
+                  数据集:&nbsp;
+                  <el-select v-model="formInline.dataSetId" style="width: 150px;margin-right: 20px">
+                    <el-option
+                      v-for="(item, index) in dataNameOptions"
+                      :key="index"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </div>
+                <div>
+                  因变量:&nbsp;
+                  <el-select
+                    v-model="formInline.depeVar"
+                    style="width: 150px;margin-right: 20px">
+                    <el-option
+                      v-for="(item, index) in depeVarOptions"
+                      :key="index"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </div>
+                <div>
+                  自变量:&nbsp;
+                  <el-select
+                    v-model="indeVar"
+                    style="width: 150px;margin-right: 20px"
+                    multiple
+                    collapse-tags>
+                    <el-option
+                      v-for="(item, index) in depeVarOptionsCopy"
+                      :key="index"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </div>
+                <div>
+                  分析名称:&nbsp;
+                  <el-input v-model="formInline.analyName" style="width: 150px;margin-right: 20px"></el-input>
+                </div>
+                <div>
+                  分析描述:&nbsp;
+                  <el-input v-model="formInline.remark" style="width: 150px;margin-right: 20px"></el-input>
+                </div>
+              </div>
+              <div style="display: flex;justify-content: flex-end;margin-top: 10px">
+                <el-button type="primary" @click="runTime(true)">运 行</el-button>
+              </div>
+            </div>
+          </div>
+        </el-card>
       </el-tab-pane>
 
       <el-tab-pane label="路径分析" name="third">
-
+        <el-card v-show="headShow">
+          <div style="padding: 10px" id="GELANJIE">
+            <div>
+              <h3>因果分析</h3>
+              <div class="flex bgc">
+                <div>
+                  数据集:&nbsp;
+                  <el-select v-model="formInline.dataSetId" style="width: 150px;margin-right: 20px">
+                    <el-option
+                      v-for="(item, index) in dataNameOptions"
+                      :key="index"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </div>
+                <div>
+                  因变量:&nbsp;
+                  <el-select
+                    v-model="formInline.depeVar"
+                    style="width: 150px;margin-right: 20px">
+                    <el-option
+                      v-for="(item, index) in depeVarOptions"
+                      :key="index"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </div>
+                <div>
+                  自变量:&nbsp;
+                  <el-select
+                    v-model="indeVar"
+                    style="width: 150px;margin-right: 20px"
+                    multiple
+                    collapse-tags>
+                    <el-option
+                      v-for="(item, index) in depeVarOptionsCopy"
+                      :key="index"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </div>
+                <div>
+                  分析名称:&nbsp;
+                  <el-input v-model="formInline.analyName" style="width: 150px;margin-right: 20px"></el-input>
+                </div>
+                <div>
+                  分析描述:&nbsp;
+                  <el-input v-model="formInline.remark" style="width: 150px;margin-right: 20px"></el-input>
+                </div>
+              </div>
+              <div style="display: flex;justify-content: flex-end;margin-top: 10px">
+                <el-button type="primary" @click="runTime(false)">运 行</el-button>
+              </div>
+            </div>
+          </div>
+        </el-card>
       </el-tab-pane>
     </el-tabs>
 
-
-
-    <div v-show="gelanjieShow">
-      <div style="padding: 10px" id="GELANJIE">
-        <div>
-          <h3>格兰杰因果检验</h3>
-          <el-form :inline="true" :model="formInline" class="demo-form-inline" style="margin-top: 10px" label-width="80px">
-            <el-form-item label="分析名称" style="margin-right: 20px">
-              <el-input v-model="formInline.user" placeholder="审批人"></el-input>
-            </el-form-item>
-            <el-form-item label="数据集">
-              <el-select v-model="formInline.region" placeholder="活动区域">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-form>
-          <el-form :inline="true" :model="formInline" class="demo-form-inline" style="margin-top: 10px" label-width="80px">
-            <el-form-item label="分析描述" style="margin-right: 20px">
-              <el-input v-model="formInline.user" placeholder="审批人"></el-input>
-            </el-form-item>
-            <el-form-item label="自变量">
-              <el-select v-model="formInline.region" placeholder="活动区域">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-form>
-          <el-form :inline="true" :model="formInline" class="demo-form-inline" style="margin-top: 10px" label-width="80px">
-            <el-form-item label="版本信息" style="margin-right: 20px">
-              <el-input v-model="formInline.user" placeholder="审批人"></el-input>
-            </el-form-item>
-            <el-form-item label="因变量">
-              <el-select v-model="formInline.region" placeholder="活动区域">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item style="margin-left: 30px">
-              <el-button type="primary">运行</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-
-        <div>
-          <h3>检验结果</h3>
-          <el-form :model="formInline" class="demo-form-inline" style="margin-top: 10px;" label-width="80px">
-            <el-form-item label="检验结果">
-              <el-select v-model="formInline.region" placeholder="活动区域" style="width: 300px">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-form>
-          <div>
-            <el-table :data="dialogTableData" border stripe style="width: 700px" max-height="600">
-              <el-table-column label="" prop="column" align="center" width="200"></el-table-column>
-              <el-table-column label="Pvalue" prop="pvalue" align="center" width="200"></el-table-column>
-              <el-table-column label="是否为格兰杰原因" prop="gelanjie" align="center"></el-table-column>
-            </el-table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div v-show="wayShow">
-      <div class="flex">
-        <h3 style="color: #3a8ee6;padding-right: 5px">因果分析</h3><div style="flex-grow:1;background: #3a8ee6;height: 3px;width: 100px"></div>
-      </div>
-      <div class="flex bgc" style="margin-top: 10px">
-        <div>
-          分析名称:&nbsp;
-          <el-input v-model="formInline.user" style="width: 150px;margin-right: 20px"></el-input>
-
-          数据集:&nbsp;
-          <el-select v-model="formInline.region" style="width: 150px;margin-right: 20px">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
-          </el-select>
-
-          分析描述:&nbsp;
-          <el-input v-model="formInline.user" style="width: 150px;margin-right: 20px"></el-input>
-
-          模型选择:&nbsp;
-          <el-select v-model="formInline.region" style="width: 150px;margin-right: 20px">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
-          </el-select>
-
-          变量选择:&nbsp;
-          <el-select v-model="formInline.region" style="width: 150px;margin-right: 20px">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
-          </el-select>
-        </div>
-
-        <div>
-          <el-button type="primary">运行</el-button>
-        </div>
-      </div>
-      <div class="flex" style="margin-top: 10px">
-        <h3 style="color: #3a8ee6;padding-right: 5px">因果分析结果</h3><div style="flex-grow:1;background: #3a8ee6;height: 3px;width: 100px"></div>
-      </div>
+    <el-card v-show="correShow" style="margin-top: 10px">
+      <h3>{{this.tableColShow ? '检验结果':'因果分析结果'}}</h3>
       <div>
-        因果图结果:&nbsp;
-        <el-select v-model="formInline.region" style="width: 150px">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
-        </el-select>
+        <el-table :data="dialogTableData" border stripe>
+          <el-table-column label="" prop="_row" align="center" ></el-table-column>
+          <el-table-column label="Pvalue" prop="Pvalue" align="center"></el-table-column>
+          <el-table-column :label="tableColShow ? '是否为格兰杰原因':'路径系数'" prop="cause" align="center"></el-table-column>
+        </el-table>
       </div>
+    </el-card>
 
-      <div class="flex" style="margin-top: 10px">
-        <h3 style="color: #3a8ee6;padding-right: 5px">因果图</h3><div style="flex-grow:1;background: #3a8ee6;height: 3px;width: 100px"></div>
-      </div>
-      <div class="flex">
-        <el-card style="width: 50%">
-          <div slot="header">关系图</div>
-          <div id="CAUSE" style="width:100%;height: 500px;margin-top: 10px"></div>
-        </el-card>
-
-        <el-card style="width: 50%;margin-left: 10px">
-          <div slot="header">路径分析表</div>
-          <div style="margin-top: 10px">
-            <el-table :data="dialogTableData" border stripe style="width: 100%;height: 500px">
-              <el-table-column label="" prop="column" align="center"></el-table-column>
-              <el-table-column label="路径系数" prop="gelanjie" align="center"></el-table-column>
-              <el-table-column label="Pvalue" prop="pvalue" align="center"></el-table-column>
-            </el-table>
-          </div>
-        </el-card>
+    <div>
+      <el-card style="margin-top: 10px" v-show="correShow && !tableColShow">
+        <h3>因果图</h3>
+        <div id="causeimg" style="height: 300px"></div>
+      </el-card>
+      <div style="display: flex;justify-content: center;margin-top: 10px" v-show="!headShow">
+        <el-button type="primary" @click="handleReturn">返 回</el-button>
       </div>
     </div>
 
@@ -194,191 +197,282 @@
 
 <script>
   import jtable from '_c/Jtable'
-    export default {
-      data(){
-          return {
-              activeName: 'first',
-              tableShow: true,
-              wayShow:false,
-              formInline: {
-                  user: '',
-                  region: ''
-              },
-              dialogTableData:[{
-                  column:'粮食产量',
-                  pvalue:'0.245',
-                  gelanjie:'否'
-              },{
-                  column:'粮食产量',
-                  pvalue:'0.245',
-                  gelanjie:'否'
-              },{
-                  column:'粮食产量',
-                  pvalue:'0.245',
-                  gelanjie:'是'
-              },{
-                  column:'粮食产量',
-                  pvalue:'0.245',
-                  gelanjie:'否'
-              },{
-                  column:'粮食产量',
-                  pvalue:'0.245',
-                  gelanjie:'否'
-              },{
-                  column:'粮食产量',
-                  pvalue:'0.245',
-                  gelanjie:'是'
-              }],
-              gelanjieShow:false,
-              warningName:'',
-              warningNameOptions:[],
-              correlationName:'',
-              tableData: [{
-                  dataName:'数据集名称',
-                  correlation:'分析名称',
-                  type:'分析类型',
-                  vision:'版本信息',
-                  time:'运行时间'
-              },{
-                  dataName:'数据集名称',
-                  correlation:'分析名称',
-                  type:'分析类型',
-                  vision:'版本信息',
-                  time:'运行时间'
-              },{
-                  dataName:'数据集名称',
-                  correlation:'分析名称',
-                  type:'分析类型',
-                  vision:'版本信息',
-                  time:'运行时间'
-              }],
-              columnData: {
-                  dataName:'数据集名称',
-                  correlation:'分析名称',
-                  type:'分析类型',
-                  vision:'版本信息',
-                  time:'运行时间'
-              }
-          }
-      },
-      components:{
-          jtable
-      },
-      methods:{
-          handleClick(tab, event) {
-              console.log(tab, event);
-          },
-          drawLine(){
-              // 基于准备好的dom，初始化echarts实例
-              let myChart = this.$echarts.init(document.getElementById('CAUSE'))
-              // 绘制图表
-              let option = {
-                  title: {
-                      text: ''
-                  },
-                  tooltip: {},
-                  animationDurationUpdate: 1500,
-                  animationEasingUpdate: 'quinticInOut',
-                  series : [
-                      {
-                          type: 'graph',
-                          layout: 'none',
-                          symbolSize: 50,
-                          roam: false,
-                          label: {
-                              normal: {
-                                  show: true
-                              }
-                          },
-                          edgeSymbol: ['circle', 'arrow'],
-                          edgeSymbolSize: [4, 10],
-                          edgeLabel: {
-                              normal: {
-                                  textStyle: {
-                                      fontSize: 20
-                                  }
-                              }
-                          },
-                          data: [{
-                              name: '节点1',
-                              x: 300,
-                              y: 300
-                          }, {
-                              name: '节点2',
-                              x: 800,
-                              y: 300
-                          }, {
-                              name: '节点3',
-                              x: 550,
-                              y: 100
-                          }, {
-                              name: '节点4',
-                              x: 550,
-                              y: 500
-                          }],
-                          // links: [],
-                          links: [{
-                              source: 0,
-                              target: 1,
-                              symbolSize: [5, 20],
-                              label: {
-                                  normal: {
-                                      show: true
-                                  }
-                              },
-                              lineStyle: {
-                                  normal: {
-                                      width: 5,
-                                      curveness: 0.2
-                                  }
-                              }
-                          }, {
-                              source: '节点2',
-                              target: '节点1',
-                              label: {
-                                  normal: {
-                                      show: true
-                                  }
-                              },
-                              lineStyle: {
-                                  normal: { curveness: 0.2 }
-                              }
-                          }, {
-                              source: '节点1',
-                              target: '节点3'
-                          }, {
-                              source: '节点2',
-                              target: '节点3'
-                          }, {
-                              source: '节点2',
-                              target: '节点4'
-                          }, {
-                              source: '节点1',
-                              target: '节点4'
-                          }],
-                          lineStyle: {
-                              normal: {
-                                  opacity: 0.9,
-                                  width: 2,
-                                  curveness: 0
-                              }
-                          }
-                      }
-                  ]
-              };
-              myChart.setOption(option);
-          },
-          handleCause(){
-              this.tableShow = false
-              this.gelanjieShow = true
-
-              // this.wayShow = true
-              this.$nextTick(() => {
-                  this.drawLine()
-              })
-          }
+  import { mapActions } from 'vuex'
+  import {getAsciiByCode,pssanalyreltDetail,deleteAnalyId} from '@/api/manager'
+  export default {
+    data(){
+      return {
+        total: 0,
+        cor:{
+          analyName:'',
+          analyWay:'',
+          dataSetId:''
+        },
+        analyWayOptions: [],
+        tableColShow:true,
+        correShow:false,
+        indeVar:[],
+        dataNameOptions: [],
+        depeVarOptions:[],
+        depeVarOptionsCopy: [],
+        selcetData:[],
+        formInline: {
+          dataSetId: '',
+          indeVar: [],
+          analyName: '',
+          remark: '',
+          depeVar:''
+        },
+        formInlineCopy:{},
+        activeName: 'first',
+        dialogTableData:[],
+        dataName:'',
+        tableData: [],
+        columnData: {
+          dataSetName:'数据集名称',
+          analyName:'分析名称',
+          analyWay:'分析类型',
+          runTime:'运行时间'
+        },
+        headShow:true,
+        copyData:[],
+        pageIndex: 1,
+        pageSize: 10,
       }
+    },
+    computed: {
+      dataSetId() {
+        return this.formInline.dataSetId
+      },
+      depeVar(){
+        return this.formInline.depeVar
+      }
+    },
+    watch: {
+      activeName(val){
+        if(val === 'first'){
+          this.correShow = false
+          this.headShow = true
+        }
+      },
+      dataSetId(val) {
+        if(val){
+          this.depeVarOptions = []
+          this.depeVarOptionsCopy = []
+          this.indeVar = []
+          this.copyData = val
+          for(let i in this.selcetData) {
+            if ( this.selcetData[i].dataSetId === val) {
+              let comm_table = JSON.parse(this.selcetData[i].indeVar).comm_table
+              let commIndexNames = JSON.parse(this.selcetData[i].indeName).commIndexNames
+              for(let k in comm_table) {
+                this.depeVarOptions[k] = {}
+                this.depeVarOptions[k].label = commIndexNames[k]
+                this.depeVarOptions[k].value = comm_table[k]
+              }
+            }
+          }
+        }
+      },
+      depeVar(val){
+        if(val){
+          this.depeVarOptionsCopy = []
+          this.indeVar = []
+          for(let i in this.selcetData) {
+            if ( this.selcetData[i].dataSetId === this.copyData) {
+              let comm_table = JSON.parse(this.selcetData[i].indeVar).comm_table
+              let commIndexNames = JSON.parse(this.selcetData[i].indeName).commIndexNames
+              for(let k in comm_table) {
+                this.depeVarOptionsCopy[k] = {}
+                this.depeVarOptionsCopy[k].label = commIndexNames[k]
+                this.depeVarOptionsCopy[k].value = comm_table[k]
+              }
+            }
+          }
+          for (let i in this.depeVarOptionsCopy) {
+            if(this.depeVarOptionsCopy[i].value === val){
+              this.depeVarOptionsCopy.splice(i,1)
+            }
+          }
+        }
+      }
+    },
+    components:{
+      jtable
+    },
+    methods:{
+      pageChange(size,page) {
+        this.pageSize = size
+        this.pageIndex = page
+        this.handleSearch()
+      },
+      handleReturn(){
+        this.activeName = "first"
+      },
+      handleDetail(data){
+        pssanalyreltDetail(data.row.analyId).then(res=>{
+          if(data.row.analyWay === "格兰杰"){
+            this.activeName = 'second'
+            this.tableColShow = true
+          }
+          if(data.row.analyWay === "路径分析"){
+            this.activeName = 'third'
+            this.tableColShow = false
+          }
+          if(data.row.analyWay === "格兰杰" || data.row.analyWay === "路径分析"){
+            this.headShow = false
+            this.correShow = true
+            this.dialogTableData = JSON.parse(res.data.pvalue)
+            if(this.tableColShow){
+              this.dialogTableData.forEach(item=>{
+                item.cause = item.Pvalue < 0.05 ? '是':'否'
+              })
+            }
+            else {
+              let coe = JSON.parse(res.data.analyCoe)
+              this.dialogTableData.forEach((item,index)=>{
+                item.cause = coe[index].analy_coe
+              })
+              this.$nextTick(()=>{
+                this.drawCause(this.dialogTableData)
+              })
+            }
+          }
+        })
+      },
+      hanleDelete(data){
+        deleteAnalyId(data.analyId).then(res=>{
+          this.$message({
+            message:'删除成功',
+            type:'success'
+          })
+          this.handleSearch()
+        })
+      },
+      ...mapActions([
+        'listAll',
+        'runGeneral',
+        'pssanalyinfoList',
+        'bussType'
+      ]),
+
+      runTime(data) {
+        if(data){
+          this.formInline.analyWay = "格兰杰"
+        }else {
+          this.formInline.analyWay = "路径分析"
+        }
+        this.formInline.bussType = 2
+        this.formInline.indeVar = [JSON.stringify({'comm_table': this.indeVar})]
+        this.runGeneral(this.formInline).then(res => {
+          this.correShow = true
+          this.dialogTableData = JSON.parse(res.data.pva)
+          if(this.tableColShow){
+            this.dialogTableData.forEach(item=>{
+              item.cause = item.Pvalue < 0.05 ? '是':'否'
+            })
+          }
+          else {
+            let coe = JSON.parse(res.data.coe)
+            this.dialogTableData.forEach((item,index)=>{
+              item.cause = coe[index].analy_coe
+            })
+            this.$nextTick(()=>{
+              this.drawCause(this.dialogTableData)
+            })
+          }
+        })
+      },
+      handleClick(tab, event) {
+        this.headShow = true
+        this.correShow = false
+        this.indeVar = []
+        this.formInline = JSON.parse(JSON.stringify(this.formInlineCopy))
+        this.tableColShow = tab.name === 'second'
+      },
+      drawCause(data){
+        let name = ''
+        for(let i in this.depeVarOptions){
+          if(this.depeVarOptions[i].value === this.formInline.depeVar){
+            name = this.depeVarOptions[i].label
+          }
+        }
+        let dataName = []
+        let dataLink = []
+        dataName[0]={}
+        dataName[0].name = name
+        data.forEach((item,index)=>{
+          dataName[index+1]={}
+          dataName[index+1].name = item._row
+          dataLink[index] = {}
+          dataLink[index].source = 0
+          dataLink[index].target = index+1
+          dataLink[index].lineStyle = {}
+          dataLink[index].lineStyle.width = (Math.abs(item.cause))*5
+          dataLink[index].lineStyle.color = item.cause >0 ? 'red':'green'
+        })
+        let myChart = this.$echarts.init(document.getElementById('causeimg'))
+        let option = {
+          tooltip: {},
+          animationDurationUpdate: 1500,
+          animationEasingUpdate: 'quinticInOut',
+          markLine:{
+            symbol:'none'
+          },
+          series : [
+            {
+              type: 'graph',
+              layout: 'circular',
+              symbolSize: 50,
+              roam: true,
+              label: {
+                normal: {
+                  show: true
+                }
+              },
+              data: dataName,
+              links: dataLink
+            }
+          ]
+        };
+        myChart.setOption(option);
+      },
+      handleSearch() {
+        let data = {}
+        Object.keys(this.cor).forEach(key=>{
+          if(this.cor[key]){
+            data[key] = this.cor[key]
+          }
+        })
+        data.bussType = 2
+        data.pageIndex = this.pageIndex
+        data.pageSize = this.pageSize
+        this.pssanalyinfoList(data).then(res => {
+          this.tableData = res.page.list
+          this.total = res.page.totalCount
+        })
+      },
+    },
+    created() {
+      this.bussType(2).then(res=>{
+        this.analyWayOptions = []
+        for (let i in res.data) {
+          this.analyWayOptions[i] = {}
+          this.analyWayOptions[i].label = res.data[i].analyWay
+          this.analyWayOptions[i].value = res.data[i].analyWay
+        }
+      })
+      this.listAll().then(res => {
+        this.selcetData = res.list
+        this.dataNameOptions = []
+        for(let i in this.selcetData) {
+          this.dataNameOptions[i] = {}
+          this.dataNameOptions[i].label = this.selcetData[i].dataSetName
+          this.dataNameOptions[i].value = this.selcetData[i].dataSetId
+        }
+      })
     }
+  }
 </script>
 
 <style>

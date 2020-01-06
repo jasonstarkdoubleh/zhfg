@@ -8,7 +8,7 @@
       <div class="left-section">
         <div class="live-preview">
           <div class="preview-title">
-            <div><img src="../../assets/img/实时总览.png" style="margin: 1px 6px 0 0"></div>
+            <div><img src="../../assets/img/实时总览.png" style="margin: 0 6px 0 0"></div>
             <div style="color: black">实时预览</div>
           </div>
           <div class="num-details">
@@ -101,7 +101,7 @@
           <div style="color: black">商品预警详情</div>
         </div>
 
-        <div class="goods-thing" style="height: 100%;">
+        <div class="goods-thing" style="height: calc(100% - 60px);">
           <div style="margin: 10px 30px">
             <el-radio-group v-model="radio" size="small">
               <el-radio-button :label="1">大宗商品</el-radio-button>
@@ -181,7 +181,7 @@
           <div class="opinion-details" v-loading="loading">
             <div class="preview-title">
               <div><img src="../../assets/img/舆情情况.png" style="margin: 1px 6px 0 0"></div>
-              <div style="cursor: pointer;color: #2d84fe" @click="handleGolang('/secondpage/index', 'newsShow')">各商品的舆情情况</div>
+              <div style="cursor: pointer;color: #2d84fe" @click="handleGolang('/secondpage/index', '舆情')">各商品的舆情情况</div>
             </div>
 
             <el-scrollbar style="height: calc(100% - 60px)">
@@ -261,63 +261,47 @@
             <el-scrollbar style="height: calc(100% - 60px)">
               <div class="opinion-body">
 
-                <div class="opinion-item">
+                <div class="opinion-item" v-if="rptList.length > 0">
                   <div class="opinion-index">
                     <div class="hot hot-red">
                       <span>1</span>
                     </div>&nbsp;&nbsp;
                     <div>
-                      <span>希拉里访问印度,减少进口伊朗石油</span>
+                      <span>{{this.rptList.length > 0 ? this.rptList[0].rptName:''}}</span>
                     </div>
-                  </div>
-                  <div class="fire">
-                    <img src="../../assets/img/热度.png">&nbsp;
-                    <span>2345</span>
                   </div>
                 </div>
 
-                <div class="opinion-item">
+                <div class="opinion-item" v-if="rptList.length > 1">
                   <div class="opinion-index">
                     <div class="hot hot-orange">
                       <span>2</span>
                     </div>&nbsp;&nbsp;
                     <div>
-                      <span>希拉里访问印度,减少进口伊朗石油</span>
+                      <span>{{this.rptList.length > 1 ? this.rptList[1].rptName:''}}</span>
                     </div>
-                  </div>
-                  <div class="fire">
-                    <img src="../../assets/img/热度.png">&nbsp;
-                    <span>2345</span>
                   </div>
                 </div>
 
-                <div class="opinion-item">
+                <div class="opinion-item" v-if="rptList.length > 2">
                   <div class="opinion-index">
                     <div class="hot hot-yellow">
                       <span>3</span>
                     </div>&nbsp;&nbsp;
                     <div>
-                      <span>希拉里访问印度,减少进口伊朗石油</span>
+                      <span>{{this.rptList.length > 2? this.rptList[2].rptName:''}}</span>
                     </div>
-                  </div>
-                  <div class="fire">
-                    <img src="../../assets/img/热度.png">&nbsp;
-                    <span>2345</span>
                   </div>
                 </div>
 
-                <div class="opinion-item" v-for="item in 15">
-                  <div class="opinion-index">
+                <div class="opinion-item" v-for="(item,index) in rptList">
+                  <div class="opinion-index" v-if="rptList.length > index+3">
                     <div class="hot hot-gray">
-                      <span>{{ item+3 }}</span>
+                      <span>{{ index + 4 }}</span>
                     </div>&nbsp;&nbsp;
                     <div>
-                      <span>希拉里访问印度,减少进口伊朗石油</span>
+                      <span>{{this.rptList[index+3].rptName}}</span>
                     </div>
-                  </div>
-                  <div class="fire">
-                    <img src="../../assets/img/热度.png">&nbsp;
-                    <span>2345</span>
                   </div>
                 </div>
               </div>
@@ -333,10 +317,12 @@
   import { mapGetters, mapActions } from 'vuex'
   import { Navbar } from '@/layout/components'
   import VueCountUp from 'vue-countupjs'
+  import {queryRptName} from '@/api/manager'
   export default {
     name: 'Dashboard',
     data() {
       return {
+        rptList:[],
         qiuLoading: true,
         loading: true,
         num: 0,
@@ -440,11 +426,22 @@
         let seriesData = []
         let num = 0
         for(let i in data) {
+          if(i==='绿色预警'){
+            num=0
+          }
+          if(i==='黄色预警'){
+            num=1
+          }
+          if(i==='橙色预警'){
+            num=2
+          }
+          if(i==='红色预警'){
+            num=3
+          }
           legendData[num] = i
           seriesData[num] = {}
           seriesData[num].value = parseInt(data[i])
           seriesData[num].name = i
-          num++
         }
         let option = {
           tooltip : {
@@ -464,6 +461,9 @@
               radius : '55%',
               center: ['50%', '60%'],
               data: seriesData,
+              label:{
+                show:false
+              },
               itemStyle: {
                 emphasis: {
                   shadowBlur: 10,
@@ -623,11 +623,15 @@
       },1000)
     },
     created() {
+      queryRptName().then(res=>{
+        this.rptList = res.page
+        console.log(this.rptList)
+      })
       this.getTopUrlInfo().then(res => {
         this.urlInfo = res.data
         this.infoCopy = this.urlInfo.slice(3)
-        // this.loading = false
-        this.loading = true
+        this.loading = false
+        // this.loading = true
       }).catch(()=>{
         this.urlInfo = []
       })
@@ -638,7 +642,7 @@
 <style lang="scss">
   .dashboard-container{
     height: 100vh;
-    overflow: hidden;
+    /*overflow: hidden;*/
     color: #ffffff;
 
     .goods-thing {
@@ -702,10 +706,13 @@
       display: flex;
       justify-content: space-between;
       height: 100%;
+      box-sizing: border-box;
       padding: 84px 14px 8px;
       background: #f0f2f6;
 
       .preview-title {
+        height: 50px;
+        box-sizing: border-box;
         display: flex;
         align-items: center;
         padding: 16px 0 0 16px;
@@ -803,7 +810,7 @@
         }
 
         .goods-details {
-          height: calc(100% - 135px);
+          height: calc(100% - 139px);
           margin-top: 4px;
           background: #ffffff;
           /*background-image: url("../../assets/img/dashboard1-2.png");*/
@@ -844,7 +851,7 @@
           /*padding: 0;*/
 
           .opinion-details {
-            height: 50%;
+            height: calc(50% - 2px);
             /*margin-right: 4px;*/
             background: #ffffff;
             color: #666666;
@@ -854,9 +861,8 @@
           }
 
           .report-details {
-            height: 50%;
-            margin-top: 5px;
-            margin-bottom: -4px;
+            height: calc(50% - 2px);
+            margin-top: 4px;
             background: #ffffff;
             color: #666666;
             /*background-image: url("../../assets/img/dashboard2-3.png");*/

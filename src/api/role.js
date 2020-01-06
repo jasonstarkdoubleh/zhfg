@@ -24,9 +24,19 @@ export function addRole(data) {
 }
 
 //菜单信息
-export function rolePerm() {
+export function rolePerm(data) {
   return request({
-    url: '/sys/role/rolePerm',
+    url: `/sys/role/rolePerm?roleId=${data}`,
     method: 'GET'
   })
 }
+
+//保存菜单信息
+export function authority(data) {
+  return request({
+    url: `/sys/role/authority`,
+    method: 'post',
+    data
+  })
+}
+

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-justify second" style="height: calc(100vh - 100px)">
+  <div class="flex-justify second" style="height: calc(100vh - 110px)">
     <div class="left-production" style="width: 45%;margin-right: 10px;height: 100%">
       <div class="preview-title">
         <div><img src="../../assets/img/shu.png" style="margin: 1px 6px 0 0"></div>
@@ -8,9 +8,9 @@
         </div>
       </div>
 
-      <div style="padding: 10px 0 0 16px;width: calc(100% - 16px);height: 100%">
+      <div style="padding: 10px 0 0 16px;box-sizing: border-box;height: calc(100% - 50px)">
 
-        <div style="display: flex;align-items: center;justify-content: space-between">
+        <div style="display: flex;align-items: center;justify-content: space-around;height: 50px;margin-bottom: 20px">
           <div>
             <span style="margin-right: 10px;font-size: 16px">时间</span>
             <el-date-picker
@@ -23,96 +23,91 @@
               end-placeholder="结束日期">
             </el-date-picker>
           </div>
-
-          <el-button type="primary" style="margin-left: 20px" @click="_byDate">查 询</el-button>
+          <el-button type="primary" @click="_byDate">查 询</el-button>
         </div>
 
-        <el-scrollbar class="scrollbar-table" :style="{'height':(mapShow ? '25%' : '100%'), 'marginTop': '20px'}">
-
-          <el-table
-            :data="tableData"
-            :header-cell-style="{background:'#ffffff'}"
-            stripe
-            style="width: 100%;margin-top: 10px;">
-
-            <el-table-column
-              show-overflow-tooltip
-              prop="indexName"
-              label="指标名称">
-              <template slot-scope="scope">
-                <el-link @click="_lineChart(scope.row)">{{ scope.row.indexName }}</el-link>
-              </template>
-            </el-table-column>
-
-            <el-table-column
-              prop="value"
-              label="取值">
-              <template slot-scope="scope">
-                {{ scope.row.value }}
-              </template>
-            </el-table-column>
-
-            <el-table-column
-              prop="unit"
-              label="单位">
-              <template slot-scope="scope">
-                {{ scope.row.unit }}
-              </template>
-            </el-table-column>
-
-          </el-table>
-
-          <!--    分页-->
-          <div style="display: flex;justify-content: flex-end;margin-top: 14px">
-            <el-pagination
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page="currentPage"
-              :page-sizes="[10, 20, 30, 40]"
-              :page-size="10"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="total">
-            </el-pagination>
+        <div style="height: calc(100% - 70px)">
+          <el-scrollbar class="scrollbar-table" :style="{'height':(mapShow ? '25%' : '100%')}">
+            <el-table
+              :data="tableData"
+              :header-cell-style="{background:'#ffffff'}"
+              stripe
+              style="width: 100%;margin-top: 10px;">
+              <el-table-column
+                show-overflow-tooltip
+                prop="indexName"
+                label="指标名称">
+                <template slot-scope="scope">
+                  <el-link @click="_lineChart(scope.row)">{{ scope.row.indexName }}</el-link>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="value"
+                label="取值">
+                <template slot-scope="scope">
+                  {{ scope.row.value }}
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="unit"
+                label="单位">
+                <template slot-scope="scope">
+                  {{ scope.row.unit }}
+                </template>
+              </el-table-column>
+            </el-table>
+            <!--    分页-->
+            <div style="display: flex;justify-content: flex-end;margin-top: 14px">
+              <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                :page-sizes="[10, 20, 30, 40]"
+                :page-size="10"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total">
+              </el-pagination>
+            </div>
+          </el-scrollbar>
+          <div v-if="mapShow" style="height: 1px;background-color: #ccc"></div>
+          <div v-if="mapShow" style='position: absolute;z-index: 9;margin-top: 30px'>
+            <el-dropdown @command="_provinceMap">
+            <span class="el-dropdown-link">
+              {{this.commond||'指标选项'}}<i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item v-for="(item,index) in type4commList" :key="index" :command="item">
+                  {{item.commName}}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </div>
-
-        </el-scrollbar>
-        <div v-if="mapShow" style="height: 1px;background-color: #ccc"></div>
-
-        <div v-if="mapShow" style='position: absolute;z-index: 9;margin-top: 30px'>
-          <el-radio-group v-model="radio" size="mini" @change="_provinceMap" >
-            <el-radio-button v-for="(item,index) in type4commList" :key="index" :label="item.commId" style="display: block;margin-bottom: 5px">
-              {{item.commName}}
-            </el-radio-button>
-          </el-radio-group>
+          <div v-if="mapShow" id="seconditemmap" style="height: 75%"></div>
         </div>
-
-        <div v-if="mapShow" id="seconditemmap" style="height: 60%;width: 100%"></div>
       </div>
     </div>
 
-    <div class="left-production" style="width: 55%">
+    <div class="left-production" style="width: calc(55% - 10px);height: 100%">
       <div class="preview-title">
         <div><img src="../../assets/img/shu.png" style="margin: 1px 6px 0 0"></div>
         <div>{{this.goodsName}}趋势</div>
       </div>
 
-      <div v-if="mapShow" style="margin-top: 10px;margin-left: 15px;display: flex;justify-content: space-between">
-        <div>
-          <el-radio-group v-model="radioPindu" size="mini" @change="changePindu">
+      <div style="margin: 10px 15px 20px;height: 30px;display: flex;justify-content: space-between">
+          <el-radio-group v-model="radioPindu" size="mini" @change="changePindu(false)">
             <el-radio-button v-for="(item,index) in pindu" :key="index" :label="item.value">
               {{item.label}}
             </el-radio-button>
           </el-radio-group>
-        </div>
-        <div style="margin-right: 15px">
-          <el-radio v-model="testData" label="1" @click.native="handleDraw(true)">折线柱状图</el-radio>
-          <el-radio v-model="testData" label="2" @click.native="handleDraw(false)">散点K线图</el-radio>
+        <div>
+          <el-radio v-model="testData" label="1" @change="changePindu(false)">折线柱状图</el-radio>
+          <el-radio v-model="testData" label="2" @change="changePindu(true)">散点K线图</el-radio>
         </div>
       </div>
 
-      <div v-show="typeShow">
-        <div :id="secondLine" style="width: 100%;height: 500px;margin-top: 20px" v-if="lineShow"></div>
-        <div :id="secondPoint" style="width: 100%;height: 500px;margin-top: 20px" v-if="!lineShow"></div>
+      <div v-show="typeShow" style="height: calc(100% - 110px)">
+        <div :id="secondLine" style="height: 100%" v-if="lineShow"></div>
+        <div :id="secondPoint" style="height: 100%" v-if="!lineShow"></div>
       </div>
 
     </div>
@@ -137,7 +132,8 @@
         pageSize: 10,
         total:0,
         pindu:[],
-        radioPindu:''
+        radioPindu:'',
+        commond:''
       }
     },
     props: {
@@ -180,23 +176,35 @@
       ])
     },
     watch:{
+      mapShow(val){
+        if(val){
+          if(this.type4commList.length){
+            this.commond = this.type4commList[0].commName
+            this._provinceMap(this.type4commList[0])
+          }
+        }
+      },
       goodsType(val){
         this.typeShow = false
+        this.testData = '1'
         this.pindu = []
+        if(this.tableData.length){
+          this._lineChart(this.tableData[0])
+        }
       }
     },
     methods: {
-      changePindu(){
+      changePindu(boo){
         this.typeShow = true;
         this.$nextTick(()=>{
-          this.drawLine(this.radioPindu)
+          this.drawLine(this.radioPindu,boo)
         })
       },
       _lineChart(row){
         this.typeShow = false
         this.pindu = []
         this.radioPindu = ''
-        lineChart(row.commId,row.indexId,'价格',this.lastDate,this.nowDate).then(res=>{
+        lineChart(row.commId,row.indexId,this.goodsType,this.lastDate,this.nowDate).then(res=>{
           let pindu = Object.keys(res.data)     //[日]
           let data
           this.pindu = []
@@ -216,11 +224,15 @@
             })
             this.pindu[indexPindu].value.push(data)
           })
-          console.log(this.pindu)
+          if(this.pindu.length){
+            this.radioPindu = this.pindu[0].value
+            this.changePindu(false)
+          }
         })
       },
-      _provinceMap(){
-        provinceMap(this.radio,'价格').then(res=>{
+      _provinceMap(commond){
+        this.commond = commond.commName
+        provinceMap(commond.commId,'价格').then(res=>{
           this.mapValue = []
           for(let i in res.data) {
             this.mapValue[i] = {}
@@ -329,35 +341,35 @@
         };
         myChart.setOption(option);
       },
-      handleDraw(data) {
-        if (data) {
-          this.lineShow = true
-          this.$nextTick(() => {
-            this.drawLine()
-          })
-        }else {
-          this.lineShow = false
-          this.$nextTick(() => {
-            this.drawPoint()
-          })
-        }
-      },
-      drawLine(data){
+      drawLine(data,boo){
+        console.log(boo)
+        let series = []
         if(!data.length){
           data[0] = {}
           data[0].name = ''
           data[0].data = []
           data[0].date = []
         }
-        let series = data.map(item=>{
-          return {
-            name:item.name,
-            type:'line',
-            stack: '总量',
-            areaStyle: {},
-            data:item.data
-          }
-        })
+        if(boo){
+          series = data.map(item=>{
+            return {
+              name:item.name,
+              type:'scatter',
+              areaStyle: {},
+              data:item.data
+            }
+          })
+        }else {
+          series = data.map(item=>{
+            return {
+              name:item.name,
+              type:'line',
+              areaStyle: {},
+              data:item.data
+            }
+          })
+        }
+
         let myChart = this.$echarts.init(document.getElementById(this.secondLine))
         let option = {
           tooltip : {
@@ -369,12 +381,12 @@
               }
             }
           },
-          grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '10%',
-            containLabel: true
-          },
+          // grid: {
+          //   left: '3%',
+          //   right: '4%',
+          //   bottom: '10%',
+          //   containLabel: true
+          // },
           xAxis : [
             {
               type : 'category',
@@ -391,14 +403,14 @@
             {
               show: true,
               realtime: true,
-              start: 65,
-              end: 85
+              start: 40,
+              end: 60
             },
             {
               type: 'inside',
               realtime: true,
-              start: 65,
-              end: 85
+              start: 40,
+              end: 60
             }
           ],
           series : series
@@ -410,13 +422,13 @@
         let myChart = this.$echarts.init(document.getElementById(this.secondPoint))
         // 绘制图表
         function random(){
-          var r = Math.round(Math.random() * 100);
+          let r = Math.round(Math.random() * 100);
           return (r * (r % 2 == 0 ? 1 : -1));
         }
 
         function randomDataArray() {
-          var d = [];
-          var len = 100;
+          let d = [];
+          let len = 100;
           while (len--) {
             d.push([
               random(),
@@ -468,11 +480,11 @@
     created() {
       let date = new Date();
       let nowYear = date.getFullYear();
-      let lastYear = nowYear
+      let lastYear = nowYear;
       let nowMonth = date.getMonth() + 1;
-      let lastMonth = 0
+      let lastMonth = 0;
       if(nowMonth === 1) {
-        lastMonth = 12
+        lastMonth = 12;
         lastYear -= 1
       }else {
         lastMonth = nowMonth - 1
@@ -490,14 +502,30 @@
       }
       let nowDate = nowYear + seperator + nowMonth + seperator + strDate;
       let lastDate = lastYear + seperator + lastMonth + seperator + strDate;
-      this.nowDate = nowDate
-      this.lastDate = lastDate
+      this.nowDate = nowDate;
+      this.lastDate = lastDate;
+      if(this.mapShow){
+        if(this.type4commList.length){
+          this.commond = this.type4commList[0].commName;
+          this._provinceMap(this.type4commList[0])
+        }
+      }
+      if(this.tableData.length){
+        this._lineChart(this.tableData[0])
+      }
     }
   }
 </script>
 
 <style lang="scss">
   .second {
+    .el-dropdown-link {
+      cursor: pointer;
+      color: #409EFF;
+    }
+    .el-icon-arrow-down {
+      font-size: 12px;
+    }
     .left-production {
       border-radius: 6px;
       background: #ffffff;
@@ -510,6 +538,8 @@
       }
     }
     .preview-title {
+      height: 50px;
+      box-sizing: border-box;
       display: flex;
       align-items: center;
       padding: 16px 0 0 16px;

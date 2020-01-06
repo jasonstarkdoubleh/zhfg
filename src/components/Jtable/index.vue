@@ -63,7 +63,7 @@
             v-if="searchShow"
             prop="status"
             :width="tableWidth"
-            label="查看详情">
+            :label="preview ? preview : '查看详情'">
             <template slot-scope="scope">
               <el-button type="primary" plain icon="el-icon-search" circle size="mini" @click="handleDetail(scope)" ></el-button>
             </template>
@@ -76,7 +76,7 @@
             :width="tableWidth"
             label="下载">
             <template slot-scope="scope">
-              <el-button type="success" icon="el-icon-download" circle size="mini" plain></el-button>
+              <el-button type="success" icon="el-icon-download" circle size="mini" plain @click="handleDownload(scope.row)"></el-button>
             </template>
           </el-table-column>
 
@@ -132,6 +132,10 @@
       }
     },
     props:{
+      preview: {
+        type: String,
+        default: '',
+      },
       //分页显示
       pageShow: {
         type: Boolean,
@@ -216,6 +220,9 @@
       },
       hanleDelete(row){
         this.$emit('on-delete',row)                     //删除
+      },
+      handleDownload(row){
+        this.$emit('on-download',row)
       },
       handleConfig(data){                                     //修改
         this.$emit('on-config',data)

@@ -53,12 +53,12 @@ service.interceptors.response.use(
     // console.log(res)
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 0) {
-      Message({
-        message:  `错误信息:${res.msg},错误代码:${res.code}` || '响应内容无效',
-        type: 'error',
-        duration: 5 * 1000
-      })
-
+      // Message({
+      //   message:  `错误信息:${res.msg},错误代码:${res.code}` || '响应内容无效',
+      //   type: 'error',
+      //   duration: 5 * 1000
+      // })
+      console.log(`错误信息:${res.msg},错误代码:${res.code}` || '响应内容无效')
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
         // to re-login
@@ -79,12 +79,11 @@ service.interceptors.response.use(
   },
   error => {
     console.log('err' + error) // for debug
-    Message({
-      // message: error.message,
-      message: "无响应",
-      type: 'error',
-      duration: 5 * 1000
-    })
+    // Message({
+    //   message: "无响应",
+    //   type: 'error',
+    //   duration: 5 * 1000
+    // })
     return Promise.reject(error)
   }
 )

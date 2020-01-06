@@ -8,8 +8,9 @@ function resolve(dir) {
 
 const name = defaultSettings.title || '智慧发改' // page title
 
+// process.env.VUE_APP_BASE_API = 'http://10.1.1.137:8081/fagaiwei_api/'
 process.env.VUE_APP_BASE_API = 'http://10.1.0.139:8081/fagaiwei_api/'
-// process.env.VUE_APP_BASE_API = 'http://172.20.10.13:8081/fagaiwei_api/'
+// process.env.VUE_APP_BASE_API = 'https://172.20.10.13:443/fagaiwei_api/'
 // process.env.VUE_APP_BASE_API = 'http://10.1.1.140:8081/fagaiwei_api/'
 
 
@@ -47,8 +48,9 @@ module.exports = {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
         // target: `http://127.0.0.1:${port}/mock`,
+        // target: `http://10.1.1.137:8081/fagaiwei_api/`,
         target: `http://10.1.0.139:8081/fagaiwei_api/`,
-        // target: `http://172.20.10.13:8081/fagaiwei_api/`,
+        // target: `https://172.20.10.13:443/fagaiwei_api/`,
         // target: `http://10.1.1.140:8081/fagaiwei_api/`,
         changeOrigin: true,
         pathRewrite: {
@@ -56,18 +58,6 @@ module.exports = {
         }
       }
     },
-
-    // proxy: {
-    //   '/api':{
-    //     target: "http://172.20.10.13:8081/fagaiwei_api",      //线上
-    //     // target: "http://192.168.0.153:8610",    //本地
-    //     changeOrigin:true,
-    //     pathRewrite:{
-    //       '^/api':'/api' //线上
-    //       // '^/api':''  //本地
-    //     },
-    //   }
-    // },
 
     after: require('./mock/mock-server.js')
   },
@@ -85,7 +75,7 @@ module.exports = {
   chainWebpack(config) {
     config.plugins.delete('preload') // TODO: need test
     config.plugins.delete('prefetch') // TODO: need test
-
+    config => { config .entry('polyfill').add('@babel/polyfill')}
     // set svg-sprite-loader
     config.module
       .rule('svg')
@@ -127,34 +117,34 @@ module.exports = {
             .plugin('ScriptExtHtmlWebpackPlugin')
             .after('html')
             .use('script-ext-html-webpack-plugin', [{
-            // `runtime` must same as runtimeChunk name. default is `runtime`
+              // `runtime` must same as runtimeChunk name. default is `runtime`
               inline: /runtime\..*\.js$/
             }])
             .end()
           config
             .optimization.splitChunks({
-              chunks: 'all',
-              cacheGroups: {
-                libs: {
-                  name: 'chunk-libs',
-                  test: /[\\/]node_modules[\\/]/,
-                  priority: 10,
-                  chunks: 'initial' // only package third parties that are initially dependent
-                },
-                elementUI: {
-                  name: 'chunk-elementUI', // split elementUI into a single package
-                  priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
-                  test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
-                },
-                commons: {
-                  name: 'chunk-commons',
-                  test: resolve('src/components'), // can customize your rules
-                  minChunks: 3, //  minimum common number
-                  priority: 5,
-                  reuseExistingChunk: true
-                }
+            chunks: 'all',
+            cacheGroups: {
+              libs: {
+                name: 'chunk-libs',
+                test: /[\\/]node_modules[\\/]/,
+                priority: 10,
+                chunks: 'initial' // only package third parties that are initially dependent
+              },
+              elementUI: {
+                name: 'chunk-elementUI', // split elementUI into a single package
+                priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
+                test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
+              },
+              commons: {
+                name: 'chunk-commons',
+                test: resolve('src/components'), // can customize your rules
+                minChunks: 3, //  minimum common number
+                priority: 5,
+                reuseExistingChunk: true
               }
-            })
+            }
+          })
           config.optimization.runtimeChunk('single')
         }
       )
