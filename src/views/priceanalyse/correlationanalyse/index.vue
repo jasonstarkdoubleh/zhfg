@@ -28,7 +28,7 @@
               </el-select>
 
               数据集名称:&nbsp;
-              <el-select v-model="cor.dataSetId"style="margin-right: 20px">
+              <el-select v-model="cor.dataSetId" style="margin-right: 20px">
                 <el-option
                   v-for="item in dataNameOptions"
                   :key="item.value"
