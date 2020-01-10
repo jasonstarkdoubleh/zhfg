@@ -29,7 +29,7 @@
               </el-select>
 
               数据集名称:&nbsp;
-              <el-select v-model="cor.dataSetId"style="margin-right: 20px">
+              <el-select v-model="cor.datasetId"style="margin-right: 20px">
                 <el-option
                   v-for="item in dataNameOptions"
                   :key="item.value"
@@ -206,7 +206,7 @@
         cor:{
           analyName:'',
           analyWay:'',
-          dataSetId:''
+          datasetId:''
         },
         analyWayOptions: [],
         tableColShow:true,
@@ -341,12 +341,18 @@
         })
       },
       hanleDelete(data){
-        deleteAnalyId(data.analyId).then(res=>{
-          this.$message({
-            message:'删除成功',
-            type:'success'
+        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteAnalyId(data.analyId).then(res=>{
+            this.$message({
+              message:'删除成功',
+              type:'success'
+            })
+            this.handleSearch()
           })
-          this.handleSearch()
         })
       },
       ...mapActions([
@@ -439,11 +445,7 @@
       },
       handleSearch() {
         let data = {}
-        Object.keys(this.cor).forEach(key=>{
-          if(this.cor[key]){
-            data[key] = this.cor[key]
-          }
-        })
+        data = Object.assign({},this.cor)
         data.bussType = 2
         data.pageIndex = this.pageIndex
         data.pageSize = this.pageSize

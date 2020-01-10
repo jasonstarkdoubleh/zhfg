@@ -8,6 +8,8 @@
       :statusShow="true"
       :searchShow="true"
       :downloadShow="true"
+      :deleteShow="true"
+      @on-delete="hanleDelete"
       @on-download="handleDownload"
       @on-detail="handleDetail"
       @pageChange="pageChange">
@@ -101,7 +103,7 @@
 
 <script>
   import jtable from '_c/Jtable'
-  import {pssrptinfoList,preview} from '@/api/manager'
+  import {pssrptinfoList,preview,pssrptconfDelete} from '@/api/manager'
   export default {
     data() {
       return {
@@ -173,12 +175,27 @@
       jtable
     },
     methods:{
+      hanleDelete(row){
+        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          pssrptconfDelete([row.rptId]).then(res=>{
+            this.$message({
+              message:'删除成功',
+              type:'success'
+            })
+            this.handleSearch()
+          })
+        })
+      },
       handleDownload(row){
-        let newUrl = `http://10.1.0.139:8081/fagaiwei_api/report/pssrptinfo/preview?fileType=docx&infoId=${row.rptId}`
+        let newUrl = `http://10.1.1.134:8081/fagaiwei_api/report/pssrptinfo/preview?fileType=docx&infoId=${row.rptId}`
         window.open(newUrl,'_blank')
       },
       handleDetail(val){
-        let newUrl = `http://10.1.0.139:8081/fagaiwei_api/report/pssrptinfo/preview?fileType=pdf&infoId=${val.row.rptId}`
+        let newUrl = `http://10.1.1.134:8081/fagaiwei_api/report/pssrptinfo/preview?fileType=pdf&infoId=${val.row.rptId}`
         window.open(newUrl,'_blank')
       },
       pageChange(size,page) {
@@ -197,7 +214,7 @@
           this.tableData = res.page.list
           this.tableData.forEach(item=>{
             item.status = item.rptStatus
-            if(item.rptType === 0){
+            if(item.rptType === '0'){
               item.rptTypeName = '自动'
             }else {
               item.rptTypeName = '手动'

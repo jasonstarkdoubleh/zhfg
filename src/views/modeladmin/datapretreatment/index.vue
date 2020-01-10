@@ -66,18 +66,18 @@
                 align="center"
                 title="更新时间">
               </a-table-column>
-              <a-table-column
-                width="15%"
-                align="center"
-                title="操作">
-                <template slot-scope="text,record">
-                  <a @click="seeDataPreprocess(record)">查看</a>
-                  <span>|</span>
-                  <a @click="delRows(record)">删除</a>
-                  <span>|</span>
-                  <a @click="exportTable(record)">导出</a>
-                </template>
-              </a-table-column>
+<!--              <a-table-column-->
+<!--                width="15%"-->
+<!--                align="center"-->
+<!--                title="操作">-->
+<!--                <template slot-scope="text,record">-->
+<!--                  <a @click="seeDataPreprocess(record)">查看</a>-->
+<!--                  <span>|</span>-->
+<!--                  <a @click="delRows(record)">删除</a>-->
+<!--                  <span>|</span>-->
+<!--                  <a @click="exportTable(record)">导出</a>-->
+<!--                </template>-->
+<!--              </a-table-column>-->
             </a-table>
           </a-col>
         </a-row>
@@ -159,7 +159,7 @@
           current: 1,
           total: 1,
           pageSize: 5,
-          showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
+          showTotal: total => `共 ${total} 条记录`
         },
         showdates: [],
         inParameter: {},
@@ -203,24 +203,18 @@
         this.datasetName = '';
         this.getTableData();
       },
-      getQueryParm(pageNum, query = {}) {
-        let params = Object.assign({}, query)
-        if (pageNum == null || pageNum == '')
-          pageNum = this.pager.current;
-        else if (typeof(pageNum) == 'object') {
-          this.pager = pageNum;
-        }
-        params.currPage = this.pager.current;
-        params.pageSize = this.pager.pageSize;
-        return params;
-      },
-      getTableData: function (pageNum) {
+      getTableData (pagination) {
         const $this = this;
-        let data = {}
-        data.pageIndex = 1
-        data.pageSize = 10
-        data.dataSetName = this.datasetName
         $this.loading = true;
+        let data = {}
+        data.dataSetName = this.datasetName
+        if(pagination){
+          data.pageIndex = this.pager.current = pagination.current
+          data.pageSize = this.pager.pageSize = pagination.pageSize
+        }else {
+          data.pageIndex = this.pager.current = 1
+          data.pageSize = this.pager.pageSize = 10
+        }
         queryDataSet(data).then(response => {
           $this.showdates = response.page.list;
           $this.pager.total = response.page.totalCount;

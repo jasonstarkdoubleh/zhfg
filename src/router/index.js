@@ -270,6 +270,18 @@ export const constantRoutes = [
         name: 'Modelcreate',
         component: () => import('@/views/modeladmin/modelcreate'),
         meta: { title: '模型管理' },
+      },
+      {
+        name: 'createModel',
+        path: '/modelDesign/createModel',
+        component: () => import('@/models/modelDesign/modelManage/createModel'),
+        hidden: true
+      },
+      {
+        name: 'modelMapping',
+        path: '/modelDesign/modelMapping',
+        component: () => import('@/models/modelDesign/modelManage/modelMapping'),
+        hidden: true
       }
     ]
   },

@@ -72,18 +72,19 @@ service.interceptors.response.use(
           })
         })
       }
-      return Promise.reject(new Error(res.message || 'Error'))
+      // return Promise.reject(new Error(res.message || 'Error'))
+      return res
     } else {
       return res
     }
   },
   error => {
     console.log('err' + error) // for debug
-    // Message({
-    //   message: "无响应",
-    //   type: 'error',
-    //   duration: 5 * 1000
-    // })
+    Message({
+      message: "服务器没档期了,请稍后再试~",
+      type: 'warning',
+      duration: 1000
+    })
     return Promise.reject(error)
   }
 )

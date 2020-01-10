@@ -73,13 +73,6 @@
           </a-select-option>
         </a-select>
         <el-button class="left10" @click="drawY">绘图</el-button>
-<!--        <span class="left30">X 项：</span>-->
-<!--        <a-select v-model="valueX" style="width:120px;" :dropdownMatchSelectWidth="false">-->
-<!--          <a-select-option :key="index" v-for="(value,index) in optData"-->
-<!--                           :value="value">{{ value }}-->
-<!--          </a-select-option>-->
-<!--        </a-select>-->
-<!--        <a-button class="left10" @click="drawX">绘图</a-button>-->
       </div>
       <div v-if="drawYFlag">
         <div id="YEcharts" style="height:270px;width: 700px"></div>
@@ -274,21 +267,20 @@
         this.matrixDate = dateString;
       },
       drawMatrix() {
-        // if (this.dataset_id === '') {
-        //   this.Notify.error({
-        //     message: '请选择数据集',
-        //     style: 'font-size:15px;color:red;font-weight: bold',
-        //   })
-        //   return
-        // }
-        // if (this.matrixDate.length === 0 || this.matrixDataSelected.length === 0 || this.matrixStatistics === '') {
-        //   this.Notify.error({
-        //     message: '以下参数不允许为空',
-        //     style: 'font-size:15px;color:red;font-weight: bold',
-        //     description: '时间周期、开始日期、结束日期、数据项'
-        //   })
-        //   return
-        // }
+        if (this.dataset_id === '') {
+          this.$message({
+            message:'请选择数据集',
+            type:'warning'
+          })
+          return
+        }
+        if (this.matrixDate.length === 0 || this.matrixDataSelected.length === 0 || this.matrixStatistics === '') {
+          this.$message({
+            message:'时间周期、开始日期、结束日期、数据项不允许为空',
+            type:'warning'
+          })
+          return
+        }
         this.matrixFlag = true;
         let data= {
           dataset_id: this.dataset_id,
@@ -305,21 +297,20 @@
         })
       },
       drawY() {
-        // if (this.dataset_id === '') {
-        //   this.Notify.error({
-        //     message: '请选择数据集',
-        //     style: 'font-size:15px;color:red;font-weight: bold',
-        //   })
-        //   return
-        // }
-        // if (this.drawDate.length === 0 || this.valueY === '' || this.drawStatistics === '') {
-        //   this.Notify.error({
-        //     message: '以下参数不允许为空',
-        //     style: 'font-size:15px;color:red;font-weight: bold',
-        //     description: '时间周期、开始日期、结束日期、Y项'
-        //   })
-        //   return
-        // }
+        if (this.dataset_id === '') {
+          this.$message({
+            message:'请选择数据集',
+            type:'warning'
+          })
+          return
+        }
+        if (this.drawDate.length === 0 || this.valueY === '' || this.drawStatistics === '') {
+          this.$message({
+            message:'时间周期、开始日期、结束日期、Y项不允许为空',
+            type:'warning'
+          })
+          return
+        }
         this.drawYFlag = true;
         let data = {
           dataset_id: this.dataset_id,
@@ -334,47 +325,6 @@
             YEcharts.setOption(this.YCharts);
         })
       },
-      drawX() {
-        // if (this.dataset_id === '') {
-        //   this.Notify.error({
-        //     message: '请选择数据集',
-        //     style: 'font-size:15px;color:red;font-weight: bold',
-        //   })
-        //   return
-        // }
-        // if (this.drawDate.length === 0 || this.valueX === '' || this.drawStatistics === '') {
-        //   this.Notify.error({
-        //     message: '以下参数不允许为空',
-        //     style: 'font-size:15px;color:red;font-weight: bold',
-        //     description: '时间周期、开始日期、结束日期、X项'
-        //   })
-        //   return
-        // }
-        this.drawXFlag = true;
-        this.Request({
-          url: 'dataset/line_chart',
-          method: 'post',
-          data: {
-            dataset_id: this.dataset_id,
-            daytime: JSON.stringify(this.drawDate),
-            column: this.valueX,
-            date_index: this.drawStatistics
-          }
-        }).then(response => {
-          if (response.code) {
-            this.$warning({
-              title: response.msg,
-              content: response.log,
-            });
-          } else {
-            let myXCharts = echarts.init(document.getElementById('XEcharts'));
-            this.XCharts.xAxis.data = response.line_chart.index;
-            this.XCharts.series.data = response.line_chart.data;
-            myXCharts.setOption(this.XCharts);
-          }
-        })
-      },
-
       selectOption() {
         console.log(1)
         let data = {dataset_id:this.dataset_id}

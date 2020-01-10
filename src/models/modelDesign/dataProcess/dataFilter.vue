@@ -187,9 +187,9 @@
       saveDataFilter() {
         let flag = true;
         if (this.dataset_id === '') {
-          this.Notify.error({
-            message: '请选择数据集',
-            style: 'font-size:15px;color:red;font-weight: bold',
+          this.$message({
+            message:'请选择数据集',
+            type:'warning'
           })
           return
         }
@@ -197,17 +197,16 @@
           const that = this;
           this.guiYiDynamicParam.forEach(function (item) {
             if (Object.keys(item).length === 2 || Object.keys(item).length === 1) {
-              that.Notify.error({
-                message: '最小值、最大值不允许为空',
-                style: 'font-size:15px;color:red;font-weight: bold',
+              this.$message({
+                message:'最小值、最大值不允许为空',
+                type:'warning'
               })
               flag = false;
             } else {
               if (isNaN(item.min) || isNaN(item.max)) {
-                that.Notify.error({
-                  message: '以下参数格式不正确',
-                  style: 'font-size:15px;color:red;font-weight: bold',
-                  description: '最小值、最大值'
+                this.$message({
+                  message:'最小值、最大值格式不正确',
+                  type:'warning'
                 })
                 flag = false;
               }
@@ -218,9 +217,9 @@
           const that = this;
           this.transforDynamicParam.forEach(function (item) {
             if (Object.keys(item).length === 1) {
-              that.Notify.error({
-                message: '数据变换所选各项为必选项目',
-                style: 'font-size:15px;color:red;font-weight: bold',
+              this.$message({
+                message:'数据变换所选各项为必选项目',
+                type:'warning'
               })
               flag = false;
             }
@@ -265,10 +264,9 @@
       checkInputNull() {
         const checkResult = this.$v.$invalid
         if (checkResult) {
-          this.Notify.error({
-            message: '以下参数不允许为空',
-            style: 'font-size:15px;color:red;font-weight: bold',
-            description: '数据集名称、说明'
+          this.$message({
+            message:'数据集名称、说明不允许为空',
+            type:'warning'
           })
         }
         return checkResult

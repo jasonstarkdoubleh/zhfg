@@ -255,55 +255,56 @@
           <div class="report-details">
             <div class="preview-title">
               <div><img src="../../assets/img/分析报告.png" style="margin: 1px 6px 0 0"></div>
-              <div style="cursor: pointer;color: #2d84fe" @click="handleGolang('/report/analysereportconfig/reportproduceconfig')">各商品的分析报告</div>
+              <div style="cursor: pointer;color: #2d84fe">各商品的分析报告</div>
             </div>
 
             <el-scrollbar style="height: calc(100% - 60px)">
               <div class="opinion-body">
 
                 <div class="opinion-item" v-if="rptList.length > 0">
-                  <div class="opinion-index">
+                  <div class="opinion-index" @click="handleGolang(rptList[0].rptPath)">
                     <div class="hot hot-red">
                       <span>1</span>
                     </div>&nbsp;&nbsp;
                     <div>
-                      <span>{{this.rptList.length > 0 ? this.rptList[0].rptName:''}}</span>
+                      <span>{{this.rptList[0].rptName}}</span>
                     </div>
                   </div>
                 </div>
 
                 <div class="opinion-item" v-if="rptList.length > 1">
-                  <div class="opinion-index">
+                  <div class="opinion-index" @click="handleGolang(rptList[1].rptPath)">
                     <div class="hot hot-orange">
                       <span>2</span>
                     </div>&nbsp;&nbsp;
                     <div>
-                      <span>{{this.rptList.length > 1 ? this.rptList[1].rptName:''}}</span>
+                      <span>{{this.rptList[1].rptName}}</span>
                     </div>
                   </div>
                 </div>
 
                 <div class="opinion-item" v-if="rptList.length > 2">
-                  <div class="opinion-index">
+                  <div class="opinion-index" @click="handleGolang(rptList[2].rptPath)">
                     <div class="hot hot-yellow">
                       <span>3</span>
                     </div>&nbsp;&nbsp;
                     <div>
-                      <span>{{this.rptList.length > 2? this.rptList[2].rptName:''}}</span>
+                      <span>{{this.rptList[2].rptName}}</span>
                     </div>
                   </div>
                 </div>
 
-                <div class="opinion-item" v-for="(item,index) in rptList">
-                  <div class="opinion-index" v-if="rptList.length > index+3">
+                <div class="opinion-item" v-for="(item,index) in rptListCopy">
+                  <div class="opinion-index" @click="handleGolang(item.rptPath)">
                     <div class="hot hot-gray">
                       <span>{{ index + 4 }}</span>
                     </div>&nbsp;&nbsp;
                     <div>
-                      <span>{{this.rptList[index+3].rptName}}</span>
+                      <span>{{item.rptName}}</span>
                     </div>
                   </div>
                 </div>
+
               </div>
             </el-scrollbar>
           </div>
@@ -323,6 +324,7 @@
     data() {
       return {
         rptList:[],
+        rptListCopy:[],
         qiuLoading: true,
         loading: true,
         num: 0,
@@ -397,8 +399,9 @@
           this.goodsAll = data.slice(this.num, this.num+8)
         },10000)
       },
-      handleGolang(url, query) {
-        this.$router.push({ path:url, query:{num: query}})
+      handleGolang(path) {
+        let newUrl = `http://10.1.1.134:8081${path}`
+        window.open(newUrl,'_blank')
       },
       handleChange(index, item, boo) {
         for(let i in this.allShow) {
@@ -625,7 +628,9 @@
     created() {
       queryRptName().then(res=>{
         this.rptList = res.page
-        console.log(this.rptList)
+        if(this.rptList.length > 3) {
+          this.rptListCopy = this.rptList.slice(3)
+        }
       })
       this.getTopUrlInfo().then(res => {
         this.urlInfo = res.data

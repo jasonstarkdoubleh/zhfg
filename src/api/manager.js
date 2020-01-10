@@ -300,7 +300,7 @@ export function queryDataSet(params) {
   })
 }
 
-//模型管理测试接口
+//创建模型-算法接口
 export function get_algorithm_list() {
   return request({
     url: `/model/model/get_algorithm_list`,
@@ -321,7 +321,7 @@ export function pssrptinfoList(params) {
 //获取算法
 export function getAlgorithmNames() {
   return request({
-    url: `/model/getAlgorithmNames`,
+    url: `/moxing/getAlgorithmNames`,
     method: 'get'
   })
 }
@@ -329,7 +329,7 @@ export function getAlgorithmNames() {
 //模型管理查询
 export function queryModel(params) {
   return request({
-    url: `/model/queryModel`,
+    url: `/moxing/queryModel`,
     method: 'get',
     params
   })
@@ -353,7 +353,7 @@ export function preview(params) {
   })
 }
 
-//绘制趋势图 -日期选择
+//数据集列名
 export function get_columns(data) {
   return request({
     url: `/model/dataset/get_columns`,
@@ -449,5 +449,86 @@ export function queryRptName(params) {
     url: `/report/pssrptinfo/queryRptName`,
     method: 'get',
     params
+  })
+}
+
+//创建模型 -训练
+export function model_train(data) {
+  return request({
+    url: `/model/model/model_train`,
+    method: 'post',
+    data
+  })
+}
+
+//算法参数
+export function get_parameter_list(data) {
+  return request({
+    url: `/model/model/get_parameter_list`,
+    method: 'post',
+    data
+  })
+}
+
+//创建模型 -保存
+export function model_save(data) {
+  return request({
+    url: `/model/model/model_save`,
+    method: 'post',
+    data
+  })
+}
+
+//创建模型 -保存
+export function model_release(data) {
+  return request({
+    url: `/model/model/model_release`,
+    method: 'post',
+    data
+  })
+}
+
+//数据源管理 -新增
+export function saveDataSources(data) {
+  return request({
+    url: `/dataAccess/dataSources/saveDataSources`,
+    method: 'post',
+    data
+  })
+}
+
+//数据源管理 -修改
+export function updateDataSources(data) {
+  return request({
+    url: `/dataAccess/dataSources/updateDataSources`,
+    method: 'post',
+    data
+  })
+}
+
+//数据源管理 -删除
+export function pssrptconfDelete(data) {
+  return request({
+    url: `/report/pssrptinfo/delete`,
+    method: 'post',
+    data
+  })
+}
+
+//模型创建 -导出
+export function model_export(data) {
+  return request({
+    url: `/model/model/model_export`,
+    method: 'post',
+    data
+  })
+}
+
+//模型创建 -删除
+export function model_delete(data) {
+  return request({
+    url: `/model/model/model_delete`,
+    method: 'post',
+    data
   })
 }

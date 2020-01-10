@@ -323,11 +323,11 @@
         return treeNode;
       },
       handleDetail(data){
-        console.log(data)
         let code = ''
         this.dialogFormVisible = true
         this.zidongShow = true
         this.update = true
+        this.tempId = data.row.tempId
         this.form = JSON.parse(JSON.stringify(data.row))
         this.commLevelCode_2.forEach(item=>{
           if(item.commId === this.form.commId){
@@ -429,7 +429,6 @@
     },
     created() {
       queryRptTemplate().then(res=>{
-        console.log(res)
         let data = res.page
         this.modelChooseOptions = []
         for(let i in data) {

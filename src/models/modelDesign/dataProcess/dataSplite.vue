@@ -32,18 +32,12 @@
       </div>
       <a-button @click="saveSplite" type="primary" class="left20 inlineBlock">保存</a-button>
       <div v-if="selectFlag=='date'" class="top10" style="margin-left: 28px">
-        <!--        <span>时间周期：</span>-->
-        <!--        <a-select v-model='split_column' style="width:150px;" :dropdownMatchSelectWidth="false">-->
-        <!--          <a-select-option :key="index" v-for="(value,index) in optData "-->
-        <!--                           :value="value">{{ value }}-->
-        <!--          </a-select-option>-->
-        <!--        </a-select>-->
       </div>
       <!--内容填写-->
       <div class="top20">
         <div style="margin-left: 8px">
           <span>数据集名称1：</span>
-          <a-input v-model="dataset_name1" style="width: 405px"></a-input>
+          <a-input v-model="dataset_name1" style="width: 405px" placeholder="只支持英文命名"></a-input>
           <a-icon style="margin-left: 10px" type="edit"/>
         </div>
         <div class="top20" style="margin-left: 50px">
@@ -52,7 +46,7 @@
         </div>
         <div class="top20" style="margin-left: 8px">
           <span>数据集名称2：</span>
-          <a-input v-model="dataset_name2" style="width: 405px"></a-input>
+          <a-input v-model="dataset_name2" style="width: 405px" placeholder="只支持英文命名"></a-input>
           <a-icon style="margin-left: 10px" type="edit"/>
         </div>
         <div class="top20" style="margin-left: 50px">
@@ -96,13 +90,11 @@
         description1: '',//描述1
         description2: '',//描述2
         optData: [],
-        split_column: null,
       }
     },
     props: ['selectParam'],
     watch: {
       selectParam(val) {
-        this.split_column = null;
         this.row_num = val.shape;
         this.dataset_name1 = val.dataSetName + '_01';
         this.dataset_name2 = val.dataSetName + '_02';
@@ -126,7 +118,6 @@
     },
     methods: {
       changeVal(val) {
-        this.split_column = null;
         this.split_value = '';
         this.selectFlag = val;
         this.split_type = val;
@@ -152,10 +143,9 @@
         let submitFlag = true;
         this.sameDatasetName = false;
         if (JSON.stringify(this.selectParam) === '{}') {
-          this.Notify.error({
-            message: '提示',
-            style: 'font-size:15px;color:red;font-weight: bold',
-            description: '请选择要切分的数据'
+          this.$message({
+            message:'请选择要切分的数据',
+            type:'warning'
           })
           submitFlag = false;
           return
@@ -165,28 +155,18 @@
         }
         if (this.split_type === 'index') {
           if (!(/(^[1-9]\d*$)/.test(this.split_value)) || this.split_value > this.row_num || this.split_value < 0) {
-            this.Notify.error({
-              message: '提示',
-              style: 'font-size:15px;color:red;font-weight: bold',
-              description: '请输入大于0小于' + this.row_num + '的正整数'
+            this.$message({
+              message:'请输入大于0小于' + this.row_num + '的正整数',
+              type:'warning'
             })
             submitFlag = false;
             return
           }
         }
         if (this.dataset_name1 === this.dataset_name2) {
-          this.Notify.error({
-            message: '名称重复',
-            style: 'font-size:15px;color:red;font-weight: bold',
-            description: '数据集名称不能相同'
-          })
-          submitFlag = false;
-          return
-        }
-        if (this.split_type === 'date' && this.split_column === null) {
-          this.Notify.error({
-            message: '时间周期为必选项',
-            style: 'font-size:15px;color:red;font-weight: bold',
+          this.$message({
+            message:'数据集名称不能相同',
+            type:'warning'
           })
           submitFlag = false;
           return
@@ -200,16 +180,17 @@
             "dataset_name2": this.dataset_name2,
             "description1": this.description1,
             "description2": this.description2,
-            "split_column": this.split_column,
           }
           split(data).then(response => {
             if (response.code === 0) {
-              this.Message.success('提交成功');
+              this.$message({
+                message:'提交成功',
+                type:'success'
+              })
               this.$emit('refreshData');//刷新列表
             } else {
               this.$warning({
-                title: response.msg,
-                content: response.log,
+                title: '提交失败'
               });
             }
           })
@@ -218,10 +199,9 @@
       checkInputNull() {
         const checkResult = this.$v.$invalid
         if (checkResult) {
-          this.Notify.error({
-            message: '以下参数不允许为空',
-            style: 'font-size:15px;color:red;font-weight: bold',
-            description: '数据集名称、切分值'
+          this.$message({
+            message:'数据集名称、切分值',
+            type:'warning'
           })
         }
         return checkResult
