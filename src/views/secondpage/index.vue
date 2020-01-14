@@ -182,21 +182,21 @@
           <div class="down2">
             <div class="preview-title">
               <div><img src="../../assets/img/组132拷贝.png" style="margin: 1px 6px 0 0"></div>
-              <div>各商品分析报告</div>
+              <div @click="handleGo('/analysereportconfig/reportsearch')" style="cursor: pointer">各商品分析报告</div>
             </div>
             <el-scrollbar style="height: calc(100% - 50px)">
               <div style="font-size: 16px;">
-                <template v-for="i in 5">
-                  <div :key="i" style="height: 110px;border: 1px solid #3F7FFF;margin: 10px 16px 10px;padding: 10px 6px 20px;">
-                    <div style="color: black;border-bottom: #1E90FF 1px dashed;padding-bottom: 2px;margin-bottom: 5px">NO.{{i}} 路透社报料伊朗削减</div>
+                <template v-for="(item,index) in rptList" >
+                  <div :key="index" style="height: 110px;border: 1px solid #3F7FFF;margin: 10px 16px 10px;padding: 10px 6px 20px;">
+                    <div style="color: black;border-bottom: #1E90FF 1px dashed;padding-bottom: 2px;margin-bottom: 5px">NO.{{index + 1}} {{item.rptName}}</div>
                     <div style="height: 20px;line-height: 20px">
-                      回复内容回复内容回复内容回复内容回复内容回复
+                      {{item.areaCode}}
                     </div>
                     <div style="margin-top: 25px;display: flex;justify-content: space-between">
                       <div>
-                        <span>2019-09-23</span>
+                        <span>{{item.crteTime}}</span>
                       </div>
-                      <div style="color: #2d84fe;cursor: pointer">详情 ></div>
+                      <div style="color: #2d84fe;cursor: pointer" @click="handleGolang(item.rptId)">详情 ></div>
                     </div>
                   </div>
                 </template>
@@ -300,10 +300,12 @@
   import VueCountUp from 'vue-countupjs'
   import second from '_c/Second'
   import { mapActions, mapGetters }  from 'vuex'
-  import {getHeatTop,yuqingInfo} from '@/api/manager'
+  import {getHeatTop,yuqingInfo,queryRptName} from '@/api/manager'
   export default {
     data: function () {
       return {
+        rptList:[],
+        rptListCopy:[],
         proData:'',
         proDataOptions:[],
         zoushiArray:['全国价格走势','区域价格分布','价格预测情况'],
@@ -364,6 +366,18 @@
       ])
     },
     methods: {
+      handleGo(path, num){
+        this.$router.push({
+          path,
+          query: {
+            num
+          }
+        })
+      },
+      handleGolang(rptId) {
+        let newUrl = `http://10.1.1.134:8081/fagaiwei_api/report/pssrptinfo/preview?fileType=pdf&infoId=${rptId}`
+        window.open(newUrl,'_blank')
+      },
       changeProData(){
         console.log(this.proData)
         this.drawPie(this.proData)
@@ -821,6 +835,15 @@
       this._secondView()
     },
     created() {
+      let queryRpt = {
+        commId: this.pageValue.commId
+      }
+      queryRptName(queryRpt).then(res=>{
+        this.rptList = res.page
+        if(this.rptList.length > 3) {
+          this.rptListCopy = this.rptList.slice(3)
+        }
+      })
       this.allShowArray.forEach((item,index) =>{
         this.allShow[item] = false
       })
@@ -829,7 +852,6 @@
         this.infoCopy = this.urlInfo.slice(3)
         this.top10 = this.infoCopy.slice(0,7)
         this.yuqingLoading = false
-        // this.yuqingLoading = true
       })
       getHeatTop(this.pageValue.commId).then(res=>{
         let data = [0,0,0]

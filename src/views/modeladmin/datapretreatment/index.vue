@@ -29,7 +29,7 @@
               rowKey="dataset_id"
               style="width: 100%">
               <a-table-column
-                width="5%"
+                width="100"
                 align="center"
                 title="序号">
                 <template slot-scope="text,record,index">
@@ -37,31 +37,31 @@
                 </template>
               </a-table-column>
               <a-table-column
-                width="15%"
+                width="18%"
                 dataIndex="dataSetName"
                 align="center"
                 title="数据集名称">
               </a-table-column>
               <a-table-column
-                width="14%"
+                width="18%"
                 dataIndex="dataSetTypeName"
                 align="center"
                 title="类型">
               </a-table-column>
               <a-table-column
-                width="10%"
+                width="18%"
                 dataIndex="shape"
                 align="center"
                 title="记录条数">
               </a-table-column>
               <a-table-column
-                width="8%"
+                width="18%"
                 dataIndex="userRealName"
                 align="center"
                 title="创建人">
               </a-table-column>
               <a-table-column
-                width="15%"
+                width="18%"
                 dataIndex="dataTime"
                 align="center"
                 title="更新时间">

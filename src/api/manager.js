@@ -443,7 +443,7 @@ export function deleteDataSources(data) {
   })
 }
 
-//数据源管理-删除
+//报告查询
 export function queryRptName(params) {
   return request({
     url: `/report/pssrptinfo/queryRptName`,

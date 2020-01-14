@@ -181,7 +181,7 @@
           <div class="opinion-details" v-loading="loading">
             <div class="preview-title">
               <div><img src="../../assets/img/舆情情况.png" style="margin: 1px 6px 0 0"></div>
-              <div style="cursor: pointer;color: #2d84fe" @click="handleGolang('/secondpage/index', '舆情')">各商品的舆情情况</div>
+              <div style="color: #2d84fe">各商品的舆情情况</div>
             </div>
 
             <el-scrollbar style="height: calc(100% - 60px)">
@@ -255,14 +255,14 @@
           <div class="report-details">
             <div class="preview-title">
               <div><img src="../../assets/img/分析报告.png" style="margin: 1px 6px 0 0"></div>
-              <div style="cursor: pointer;color: #2d84fe">各商品的分析报告</div>
+              <div style="cursor: pointer;color: #2d84fe" @click="handleGo('/analysereportconfig/reportsearch')">各商品的分析报告</div>
             </div>
 
             <el-scrollbar style="height: calc(100% - 60px)">
               <div class="opinion-body">
 
                 <div class="opinion-item" v-if="rptList.length > 0">
-                  <div class="opinion-index" @click="handleGolang(rptList[0].rptPath)">
+                  <div class="opinion-index" @click="handleGolang(rptList[0].rptId)" style="cursor: pointer">
                     <div class="hot hot-red">
                       <span>1</span>
                     </div>&nbsp;&nbsp;
@@ -273,7 +273,7 @@
                 </div>
 
                 <div class="opinion-item" v-if="rptList.length > 1">
-                  <div class="opinion-index" @click="handleGolang(rptList[1].rptPath)">
+                  <div class="opinion-index" @click="handleGolang(rptList[1].rptId)" style="cursor: pointer">
                     <div class="hot hot-orange">
                       <span>2</span>
                     </div>&nbsp;&nbsp;
@@ -284,7 +284,7 @@
                 </div>
 
                 <div class="opinion-item" v-if="rptList.length > 2">
-                  <div class="opinion-index" @click="handleGolang(rptList[2].rptPath)">
+                  <div class="opinion-index" @click="handleGolang(rptList[2].rptId)" style="cursor: pointer">
                     <div class="hot hot-yellow">
                       <span>3</span>
                     </div>&nbsp;&nbsp;
@@ -294,8 +294,8 @@
                   </div>
                 </div>
 
-                <div class="opinion-item" v-for="(item,index) in rptListCopy">
-                  <div class="opinion-index" @click="handleGolang(item.rptPath)">
+                <div class="opinion-item" v-for="(item,index) in rptListCopy" :key="index">
+                  <div class="opinion-index" @click="handleGolang(item.rptId)" style="cursor: pointer">
                     <div class="hot hot-gray">
                       <span>{{ index + 4 }}</span>
                     </div>&nbsp;&nbsp;
@@ -399,8 +399,16 @@
           this.goodsAll = data.slice(this.num, this.num+8)
         },10000)
       },
-      handleGolang(path) {
-        let newUrl = `http://10.1.1.134:8081${path}`
+      handleGo(path, num){
+        this.$router.push({
+          path,
+          query: {
+            num
+          }
+        })
+      },
+      handleGolang(rptId) {
+        let newUrl = `http://10.1.1.134:8081/fagaiwei_api/report/pssrptinfo/preview?fileType=pdf&infoId=${rptId}`
         window.open(newUrl,'_blank')
       },
       handleChange(index, item, boo) {

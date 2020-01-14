@@ -281,7 +281,13 @@
               this.dataNameOptionsCopy[k].label = commIndexNames[k]
               this.dataNameOptionsCopy[k].value = comm_table[k]
             }
-            return
+            if(this.selcetData[i].dateFeature) {
+              let arr = this.selcetData[i].dateFeature.split(',')
+              arr.forEach(item => {
+                this.dataNameOptionsCopy.push({label:item,value:item})
+              })
+            }
+            break
           }
         }
       }

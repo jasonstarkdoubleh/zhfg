@@ -4,7 +4,9 @@ const getters = {
   token: state => state.user.token,
   avatar: state => state.user.avatar,
   name: state => state.user.name,
+  menu:state => state.user.menu,
   loadingEdit: state => state.warning.loadingEdit,
-  pageValue: state => state.warning.pageValue
+  pageValue: state => state.warning.pageValue,
+  routes: state => state.user.routes,
 }
 export default getters

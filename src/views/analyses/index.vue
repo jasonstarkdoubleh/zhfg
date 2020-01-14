@@ -153,62 +153,51 @@
             <div style="height: 200px;">
               <el-scrollbar style="height: 100%">
                 <div class="opinion-body">
-                  <div class="opinion-item">
-                    <div class="opinion-index">
-                      <div class="hot hot-orange">
-                        <span style="color: #ffffff">1</span>
+
+                  <div class="opinion-item" v-if="rptList.length > 0">
+                    <div class="opinion-index" @click="handleGolang(rptList[0].rptId)" style="cursor: pointer">
+                      <div class="hot hot-red">
+                        <span>1</span>
                       </div>&nbsp;&nbsp;
                       <div>
-                        <span>希拉里访问印度,减少进口伊朗石油</span>
+                        <span>{{this.rptList[0].rptName}}</span>
                       </div>
                     </div>
-                    <div class="fire">
-                      <img src="../../assets/img/热度.png">&nbsp;
-                      <span>2345</span>
-                    </div>
                   </div>
-                  <div class="opinion-item">
-                    <div class="opinion-index">
+
+                  <div class="opinion-item" v-if="rptList.length > 1">
+                    <div class="opinion-index" @click="handleGolang(rptList[1].rptId)" style="cursor: pointer">
                       <div class="hot hot-orange">
-                        <span style="color: #ffffff">2</span>
+                        <span>2</span>
                       </div>&nbsp;&nbsp;
                       <div>
-                        <span>希拉里访问印度,减少进口伊朗石油</span>
+                        <span>{{this.rptList[1].rptName}}</span>
                       </div>
                     </div>
-                    <div class="fire">
-                      <img src="../../assets/img/热度.png">&nbsp;
-                      <span>2345</span>
-                    </div>
                   </div>
-                  <div class="opinion-item">
-                    <div class="opinion-index">
+
+                  <div class="opinion-item" v-if="rptList.length > 2">
+                    <div class="opinion-index" @click="handleGolang(rptList[2].rptId)" style="cursor: pointer">
                       <div class="hot hot-yellow">
-                        <span style="color: #ffffff">3</span>
+                        <span>3</span>
                       </div>&nbsp;&nbsp;
                       <div>
-                        <span>希拉里访问印度,减少进口伊朗石油</span>
+                        <span>{{this.rptList[2].rptName}}</span>
                       </div>
                     </div>
-                    <div class="fire">
-                      <img src="../../assets/img/热度.png">&nbsp;
-                      <span>2345</span>
-                    </div>
                   </div>
-                  <div class="opinion-item" v-for="item in 15">
-                    <div class="opinion-index">
+
+                  <div class="opinion-item" v-for="(item,index) in rptListCopy" :key="index">
+                    <div class="opinion-index" @click="handleGolang(item.rptId)" style="cursor: pointer">
                       <div class="hot hot-gray">
-                        <span style="color: #ffffff">{{ item+3 }}</span>
+                        <span>{{ index + 4 }}</span>
                       </div>&nbsp;&nbsp;
                       <div>
-                        <span>希拉里访问印度,减少进口伊朗石油</span>
+                        <span>{{item.rptName}}</span>
                       </div>
                     </div>
-                    <div class="fire">
-                      <img src="../../assets/img/热度.png">&nbsp;
-                      <span>2345</span>
-                    </div>
                   </div>
+
                 </div>
               </el-scrollbar>
             </div>
@@ -221,12 +210,15 @@
 </template>
 
 <script>
+  import {queryRptName} from '@/api/manager'
   import 'echarts/map/js/china'
   import { mapGetters, mapActions } from 'vuex'
   import BScroll from 'better-scroll'
   export default {
     data(){
       return {
+        rptList:[],
+        rptListCopy:[],
         yuqingLoading:true,
         urlInfo:'',
         currPrice: [],
@@ -245,6 +237,10 @@
       ])
     },
     methods:{
+      handleGolang(rptId) {
+        let newUrl = `http://10.1.1.134:8081/fagaiwei_api/report/pssrptinfo/preview?fileType=pdf&infoId=${rptId}`
+        window.open(newUrl,'_blank')
+      },
       targetPage(url) {
         let newUrl = `https://${url}`
         window.open(newUrl,'_blank')
@@ -487,6 +483,12 @@
       this.personScroll()
     },
     created() {
+      queryRptName().then(res=>{
+        this.rptList = res.page
+        if(this.rptList.length > 3) {
+          this.rptListCopy = this.rptList.slice(3)
+        }
+      })
       this.pageName = this.pageValue.commName
       this.detailV2(this.pageValue.commId).then(res => {
         this.allValue = res.data

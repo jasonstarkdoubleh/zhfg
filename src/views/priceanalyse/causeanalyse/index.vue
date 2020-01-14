@@ -270,6 +270,13 @@
                 this.depeVarOptions[k].label = commIndexNames[k]
                 this.depeVarOptions[k].value = comm_table[k]
               }
+              if(this.selcetData[i].dateFeature) {
+                let arr = this.selcetData[i].dateFeature.split(',')
+                arr.forEach(item => {
+                  this.depeVarOptions.push({label:item,value:item})
+                })
+              }
+              break
             }
           }
         }
@@ -287,6 +294,13 @@
                 this.depeVarOptionsCopy[k].label = commIndexNames[k]
                 this.depeVarOptionsCopy[k].value = comm_table[k]
               }
+              if(this.selcetData[i].dateFeature) {
+                let arr = this.selcetData[i].dateFeature.split(',')
+                arr.forEach(item => {
+                  this.depeVarOptionsCopy.push({label:item,value:item})
+                })
+              }
+              break
             }
           }
           for (let i in this.depeVarOptionsCopy) {
