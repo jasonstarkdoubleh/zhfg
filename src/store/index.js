@@ -16,7 +16,7 @@ const store = new Vuex.Store({
     warning
   },
   getters,
-  strict:debug
+  // strict:debug
 })
 
 export default store

@@ -54,7 +54,7 @@ router.beforeEach(async (to, from, next) => {
         next()
       } else {
         store.dispatch('user/getInfo','admin').then(() => {
-          store.dispatch('user/generateRoutes', 'roles').then((data) => { // 生成可访问的路由表
+          store.dispatch('user/generateRoutes').then((data) => { // 生成可访问的路由表
             router.addRoutes(data) // 动态添加可访问路由表
             next({path:"/"})
           })
