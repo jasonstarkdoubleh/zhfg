@@ -7,7 +7,7 @@ Vue.use(Router)
 export const constantRouterMap = [
   {
     path: '/login',
-    component: () => import('@/views/login/index'),
+    component: () => import('@/views/login'),
     hidden: true
   },
 
@@ -263,11 +263,11 @@ export const asyncRouterMap = [
   {
     path: '/datasourcemanagement',
     component: Layout,
-    redirect: '/datasourcemanagement/index',
+    redirect: '/datasourcemanagement/datasourcemanagement',
     meta: { title: '数据源管理', icon: 'nested' },
     children: [
       {
-        path: 'index',
+        path: 'datasourcemanagement',
         name: 'Datasourcemanagement',
         component: () => import('@/views/datasourcemanagement'),
         meta: { title: '数据源管理', breadcrumb: false },
@@ -312,12 +312,11 @@ export const asyncRouterMap = [
         component: () => import('@/views/sysconfig/menuconfig'),
         meta: { title: '菜单管理' }
       },
-
       // 调度管理
       {
         path: 'management',
         name: 'Management',
-        component: () => import('@/views/management/index'),
+        component: () => import('@/views/management'),
         meta: { title: '调度管理' }
       },
     ]

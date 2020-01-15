@@ -70,12 +70,26 @@
                     style="width: 150px;margin-right: 20px"
                     multiple
                     collapse-tags>
-                    <el-option
-                      v-for="(item, index) in dataNameOptionsCopy"
-                      :key="index"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
+
+                    <el-option-group
+                      v-for="group in dataNameOptionsCopy"
+                      :key="group.label"
+                      :label="group.label">
+                      <el-option
+                        v-for="item in group.options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                    </el-option-group>
+
+<!--                    <el-option-->
+<!--                      v-for="(item, index) in dataNameOptionsCopy"-->
+<!--                      :key="index"-->
+<!--                      :label="item.label"-->
+<!--                      :value="item.value">-->
+<!--                    </el-option>-->
+
                   </el-select>
                 </div>
                 <div>
@@ -116,12 +130,17 @@
                   style="width: 150px;margin-right: 20px"
                   multiple
                   collapse-tags>
-                  <el-option
-                    v-for="(item, index) in dataNameOptionsCopy"
-                    :key="index"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
+                  <el-option-group
+                    v-for="group in dataNameOptionsCopy"
+                    :key="group.label"
+                    :label="group.label">
+                    <el-option
+                      v-for="item in group.options"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-option-group>
                 </el-select>
                 分析名称:&nbsp;
                 <el-input v-model="formInline.analyName" style="width: 150px;margin-right: 20px"></el-input>
@@ -224,11 +243,12 @@
         dialogTableData: [],
         formInline: {
           dataSetId: '',
-          indeVar: [],
+          indeVar: {date_feature:[],macro_table:[],comm_table:[]},
           analyName: '',
           remark: ''
         },
         indeVar:[],
+        indeVarOptions:'',
         formInlineCopy:{},
         options: [{
           value: '选项1',
@@ -272,21 +292,33 @@
       dataSetId(val) {
         this.dataNameOptionsCopy = []
         this.indeVar = []
+        let num = 0
         for(let i in this.selcetData) {
           if ( this.selcetData[i].dataSetId === val) {
-            let comm_table = JSON.parse(this.selcetData[i].indeVar).comm_table
-            let commIndexNames = JSON.parse(this.selcetData[i].indeName).commIndexNames
-            for(let k in comm_table) {
-              this.dataNameOptionsCopy[k] = {}
-              this.dataNameOptionsCopy[k].label = commIndexNames[k]
-              this.dataNameOptionsCopy[k].value = comm_table[k]
-            }
-            if(this.selcetData[i].dateFeature) {
-              let arr = this.selcetData[i].dateFeature.split(',')
-              arr.forEach(item => {
-                this.dataNameOptionsCopy.push({label:item,value:item})
-              })
-            }
+            let indeVar = JSON.parse(this.selcetData[i].indeVar)
+            let indeName = JSON.parse(this.selcetData[i].indeName)
+            this.indeVarOptions = indeVar
+            Object.keys(indeVar).forEach(key => {
+              if(key !== "date_feature") {
+                this.dataNameOptionsCopy[num] = {}
+                this.dataNameOptionsCopy[num].label = key
+                this.dataNameOptionsCopy[num].options = []
+                indeVar[key].forEach((item, index) => {
+                  this.dataNameOptionsCopy[num].options[index] = {}
+                  this.dataNameOptionsCopy[num].options[index].label = indeName[key][index]
+                  this.dataNameOptionsCopy[num].options[index].value = item
+                })
+                num++
+              }
+            })
+            this.dataNameOptionsCopy.forEach(item => {
+              if(item.label === "comm_table") {
+                item.label = '基础指标'
+              }
+              if(item.label === "macro_table") {
+                item.label = '宏观指标'
+              }
+            })
             break
           }
         }
@@ -374,7 +406,23 @@
           this.formInline.analyWay = "偏相关性分析"
         }
         this.formInline.bussType = 1
-        this.formInline.indeVar = [JSON.stringify({'comm_table': this.indeVar})]
+        Object.keys(this.formInline.indeVar).forEach(key => {
+          this.formInline.indeVar[key] = []
+        })
+        this.indeVar.forEach(item => {
+          let boo = false
+          this.indeVarOptions.comm_table.forEach(value => {
+            if(item === value) {
+              boo = true
+            }
+          })
+          if(boo) {
+            this.formInline.indeVar.comm_table.push(item)
+          }else {
+            this.formInline.indeVar.macro_table.push(item)
+          }
+        })
+        this.formInline.indeVar = JSON.stringify(this.formInline.indeVar)
         this.runGeneral(this.formInline).then(res => {
           let coe = JSON.parse(res.data.coe)
           let pva = JSON.parse(res.data.pva)
@@ -417,7 +465,6 @@
         data.bussType = 1
         data.pageIndex = this.pageIndex
         data.pageSize = this.pageSize
-        console.log(data)
         this.pssanalyinfoList(data).then(res => {
           this.tableData = res.page.list
           this.total = res.page.totalCount
@@ -452,6 +499,9 @@
         this.headShow = true
         this.correShow = false
         this.formInline = JSON.parse(JSON.stringify(this.formInlineCopy))
+        Object.keys(this.formInline.indeVar).forEach(key => {
+          this.formInline.indeVar[key] = []
+        })
         this.dialogTableData = []
         this.dataObj = []
       },

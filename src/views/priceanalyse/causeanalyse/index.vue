@@ -66,14 +66,19 @@
                 <div>
                   因变量:&nbsp;
                   <el-select
-                    v-model="formInline.depeVar"
+                    v-model="depeVar"
                     style="width: 150px;margin-right: 20px">
-                    <el-option
-                      v-for="(item, index) in depeVarOptions"
-                      :key="index"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
+                    <el-option-group
+                      v-for="group in depeVarOptions"
+                      :key="group.label"
+                      :label="group.label">
+                      <el-option
+                        v-for="item in group.options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                    </el-option-group>
                   </el-select>
                 </div>
                 <div>
@@ -83,12 +88,17 @@
                     style="width: 150px;margin-right: 20px"
                     multiple
                     collapse-tags>
-                    <el-option
-                      v-for="(item, index) in depeVarOptionsCopy"
-                      :key="index"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
+                    <el-option-group
+                      v-for="group in depeVarOptionsCopy"
+                      :key="group.label"
+                      :label="group.label">
+                      <el-option
+                        v-for="item in group.options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                    </el-option-group>
                   </el-select>
                 </div>
                 <div>
@@ -128,14 +138,19 @@
                 <div>
                   因变量:&nbsp;
                   <el-select
-                    v-model="formInline.depeVar"
+                    v-model="depeVar"
                     style="width: 150px;margin-right: 20px">
-                    <el-option
-                      v-for="(item, index) in depeVarOptions"
-                      :key="index"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
+                    <el-option-group
+                      v-for="group in depeVarOptions"
+                      :key="group.label"
+                      :label="group.label">
+                      <el-option
+                        v-for="item in group.options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                    </el-option-group>
                   </el-select>
                 </div>
                 <div>
@@ -145,12 +160,17 @@
                     style="width: 150px;margin-right: 20px"
                     multiple
                     collapse-tags>
-                    <el-option
-                      v-for="(item, index) in depeVarOptionsCopy"
-                      :key="index"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
+                    <el-option-group
+                      v-for="group in depeVarOptionsCopy"
+                      :key="group.label"
+                      :label="group.label">
+                      <el-option
+                        v-for="item in group.options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                    </el-option-group>
                   </el-select>
                 </div>
                 <div>
@@ -211,17 +231,19 @@
         analyWayOptions: [],
         tableColShow:true,
         correShow:false,
-        indeVar:[],
-        dataNameOptions: [],
+        depeVar:'',
         depeVarOptions:[],
+        indeVar:[],
         depeVarOptionsCopy: [],
+        indeVarOptions:'',
+        dataNameOptions: [],
         selcetData:[],
         formInline: {
           dataSetId: '',
-          indeVar: [],
+          indeVar: {date_feature:[],macro_table:[],comm_table:[]},
+          depeVar: {date_feature:[],macro_table:[],comm_table:[]},
           analyName: '',
-          remark: '',
-          depeVar:''
+          remark: ''
         },
         formInlineCopy:{},
         activeName: 'first',
@@ -243,9 +265,6 @@
     computed: {
       dataSetId() {
         return this.formInline.dataSetId
-      },
-      depeVar(){
-        return this.formInline.depeVar
       }
     },
     watch: {
@@ -260,22 +279,35 @@
           this.depeVarOptions = []
           this.depeVarOptionsCopy = []
           this.indeVar = []
+          this.depeVar = ''
           this.copyData = val
+          let num = 0
           for(let i in this.selcetData) {
             if ( this.selcetData[i].dataSetId === val) {
-              let comm_table = JSON.parse(this.selcetData[i].indeVar).comm_table
-              let commIndexNames = JSON.parse(this.selcetData[i].indeName).commIndexNames
-              for(let k in comm_table) {
-                this.depeVarOptions[k] = {}
-                this.depeVarOptions[k].label = commIndexNames[k]
-                this.depeVarOptions[k].value = comm_table[k]
-              }
-              if(this.selcetData[i].dateFeature) {
-                let arr = this.selcetData[i].dateFeature.split(',')
-                arr.forEach(item => {
-                  this.depeVarOptions.push({label:item,value:item})
-                })
-              }
+              let indeVar = JSON.parse(this.selcetData[i].indeVar)
+              let indeName = JSON.parse(this.selcetData[i].indeName)
+              this.indeVarOptions = indeVar
+              Object.keys(indeVar).forEach(key => {
+                if(key !== "date_feature") {
+                  this.depeVarOptions[num] = {}
+                  this.depeVarOptions[num].label = key
+                  this.depeVarOptions[num].options = []
+                  indeVar[key].forEach((item, index) => {
+                    this.depeVarOptions[num].options[index] = {}
+                    this.depeVarOptions[num].options[index].label = indeName[key][index]
+                    this.depeVarOptions[num].options[index].value = item
+                  })
+                  num++
+                }
+              })
+              this.depeVarOptions.forEach(item => {
+                if(item.label === "comm_table") {
+                  item.label = '基础指标'
+                }
+                if(item.label === "macro_table") {
+                  item.label = '宏观指标'
+                }
+              })
               break
             }
           }
@@ -285,29 +317,42 @@
         if(val){
           this.depeVarOptionsCopy = []
           this.indeVar = []
+          let num = 0
           for(let i in this.selcetData) {
             if ( this.selcetData[i].dataSetId === this.copyData) {
-              let comm_table = JSON.parse(this.selcetData[i].indeVar).comm_table
-              let commIndexNames = JSON.parse(this.selcetData[i].indeName).commIndexNames
-              for(let k in comm_table) {
-                this.depeVarOptionsCopy[k] = {}
-                this.depeVarOptionsCopy[k].label = commIndexNames[k]
-                this.depeVarOptionsCopy[k].value = comm_table[k]
-              }
-              if(this.selcetData[i].dateFeature) {
-                let arr = this.selcetData[i].dateFeature.split(',')
-                arr.forEach(item => {
-                  this.depeVarOptionsCopy.push({label:item,value:item})
-                })
-              }
+              let indeVar = JSON.parse(this.selcetData[i].indeVar)
+              let indeName = JSON.parse(this.selcetData[i].indeName)
+              Object.keys(indeVar).forEach(key => {
+                if(key !== "date_feature") {
+                  this.depeVarOptionsCopy[num] = {}
+                  this.depeVarOptionsCopy[num].label = key
+                  this.depeVarOptionsCopy[num].options = []
+                  indeVar[key].forEach((item, index) => {
+                    this.depeVarOptionsCopy[num].options[index] = {}
+                    this.depeVarOptionsCopy[num].options[index].label = indeName[key][index]
+                    this.depeVarOptionsCopy[num].options[index].value = item
+                  })
+                  num++
+                }
+              })
+              this.depeVarOptionsCopy.forEach(item => {
+                if(item.label === "comm_table") {
+                  item.label = '基础指标'
+                }
+                if(item.label === "macro_table") {
+                  item.label = '宏观指标'
+                }
+              })
               break
             }
           }
-          for (let i in this.depeVarOptionsCopy) {
-            if(this.depeVarOptionsCopy[i].value === val){
-              this.depeVarOptionsCopy.splice(i,1)
-            }
-          }
+          this.depeVarOptionsCopy.forEach(item => {
+            item.options.forEach((value, index) => {
+              if(value.value === val) {
+                item.options.splice(index,1)
+              }
+            })
+          })
         }
       }
     },
@@ -383,7 +428,36 @@
           this.formInline.analyWay = "路径分析"
         }
         this.formInline.bussType = 2
-        this.formInline.indeVar = [JSON.stringify({'comm_table': this.indeVar})]
+        Object.keys(this.formInline.depeVar).forEach(key => {
+          this.formInline.depeVar[key] = []
+          this.formInline.indeVar[key] = []
+        })
+        this.indeVar.forEach(item => {
+          let boo = false
+          this.indeVarOptions.comm_table.forEach(value => {
+            if(item === value) {
+              boo = true
+            }
+          })
+          if(boo) {
+            this.formInline.indeVar.comm_table.push(item)
+          }else {
+            this.formInline.indeVar.macro_table.push(item)
+          }
+        })
+        let booCopy = false
+        this.indeVarOptions.comm_table.forEach(value => {
+          if(this.depeVar === value) {
+            booCopy = true
+          }
+        })
+        if(booCopy) {
+          this.formInline.depeVar.comm_table.push(this.depeVar)
+        }else {
+          this.formInline.depeVar.macro_table.push(this.depeVar)
+        }
+        this.formInline.indeVar = JSON.stringify(this.formInline.indeVar)
+        this.formInline.depeVar = JSON.stringify(this.formInline.depeVar)
         this.runGeneral(this.formInline).then(res => {
           this.correShow = true
           this.dialogTableData = JSON.parse(res.data.pva)
@@ -408,6 +482,10 @@
         this.correShow = false
         this.indeVar = []
         this.formInline = JSON.parse(JSON.stringify(this.formInlineCopy))
+        Object.keys(this.formInline.depeVar).forEach(key => {
+          this.formInline.depeVar[key] = []
+          this.formInline.indeVar[key] = []
+        })
         this.tableColShow = tab.name === 'second'
       },
       drawCause(data){
@@ -470,6 +548,7 @@
       },
     },
     created() {
+      this.formInlineCopy = JSON.parse(JSON.stringify(this.formInline))
       this.bussType(2).then(res=>{
         this.analyWayOptions = []
         for (let i in res.data) {

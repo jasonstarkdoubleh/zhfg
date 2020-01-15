@@ -1,23 +1,9 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter,constantRouterMap } from '@/router'
+import { resetRouter,constantRouterMap,asyncRouterMap } from '@/router'
 import Layout from '@/layout'
 
 const _import = require('../../router/_import_' + process.env.NODE_ENV)
-
-const asyncRouterMap = [
-  //商品总览
-  {
-    path: '/secondpage',
-    component: Layout,
-    redirect: '/secondpage/index',
-    children: [{
-      path:'index',
-      component: () => import('@/views/secondpage'),
-      meta: { title: '商品总览', icon: '' },
-    }]
-  },
-]
 
 const test = [{
   path: '/secondpage',
@@ -29,27 +15,6 @@ const test = [{
     meta: { title: '商品总览', icon: '' },
   }]
 }]
-// function hasPermission(roles, route) {
-//   if (route.meta && route.meta.roles) {
-//     return roles.some(role => route.meta.roles.includes(role))
-//   } else {
-//     return true
-//   }
-// }
-//
-// function filterAsyncRoutes(routes, roles) {
-//   const res = [];
-//   routes.forEach(route => {
-//     const tmp = { ...route }
-//     if (hasPermission(roles, tmp)) {
-//       if (tmp.children) {
-//         tmp.children = filterAsyncRoutes(tmp.children, roles)
-//       }
-//       res.push(tmp)
-//     }
-//   })
-//   return res
-// }
 
 function filterAsyncRouter(asyncRouterMap) {
   const accessedRouters = asyncRouterMap.filter(route => {
