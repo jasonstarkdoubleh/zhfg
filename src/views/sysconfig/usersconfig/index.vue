@@ -7,6 +7,8 @@
              :selection="true"
              :statusShow="true"
              :index="true"
+             :configShow = "true"
+             @on-config="updateUserConfig"
             >
 
       <!--      用户管理-->
@@ -38,17 +40,80 @@
         </div>
         <div>
           <el-button type="primary" @click="handleSearch">查 询</el-button>
-          <!--<el-button type="warning" @click="handleAdd">新 增</el-button>-->
+          <el-button type="warning" @click="handleAdd">新 增</el-button>
         </div>
       </div>
 
     </jtable>
+    <el-dialog :visible.sync="updateUserShow" fullscreen>
+
+      <div class="flex-justify" v-loading="dialogLoading">
+        <el-card class="card-width">
+          <div slot="header">
+
+          </div>
+          <div>
+            <el-form ref="form" :model="userForm" label-width="80px">
+              <el-form-item >
+                <el-input v-model="userForm.userId" v-if="false"/>
+              </el-form-item>
+              <el-form-item >
+                <el-input v-model="userForm.depId" v-if="false"/>
+              </el-form-item>
+              <el-form-item label="用户登录名称" style="width:100px">
+                <el-input v-model="userForm.userName"  style="width: 280px"></el-input>
+              </el-form-item>
+              <el-form-item label="用户真实名称">
+                <el-input v-model="userForm.userRealName"  style="width: 280px"></el-input>
+              </el-form-item>
+              <el-form-item label="用户所属部门">
+                <el-select v-model="userForm.depId" placeholder="用户所属部门" filterable  clearable style="width:170px ">
+                  <el-option
+                    v-for="(item, index) in depNameOptions"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="用户手机号码">
+                <el-input v-model="userForm.mblPhoneNo" style="width: 280px"></el-input>
+              </el-form-item>
+              <el-form-item label="用户所属角色">
+                <el-select v-model="userForm.roles" placeholder="用户角色" filterable multiple clearable style="width:170px ">
+                  <el-option
+                    v-for="(item, index) in roleOptions"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="用户邮箱">
+                <el-input v-model="userForm.email" style="width: 280px"></el-input>
+              </el-form-item>
+              <el-form-item label="角色状态">
+                <el-radio-group v-model="userForm.userStatus">
+                  <el-radio  :label="1">启用</el-radio>
+                  <el-radio  :label="0">禁用</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-form>
+          </div>
+        </el-card>
+      </div>
+      <div class="dialog-cancel" style="float: left;padding-left:10px">
+        <el-button type="primary" @click="onSubmit" :disabled="disabled">提 交</el-button>
+        <el-button type="warning" @click="closeUserConfig">关 闭</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-  import { getUserInfo } from  '@/api/user'
+  import { getUserInfo,updateUserInfo,updateUser } from  '@/api/user'
   import { getUserDepInfo } from '@/api/dep'
+  import { getRole } from '@/api/role'
   import jtable from '_c/Jtable'
   import { mapActions } from 'vuex'
   import ElInput from "../../../../node_modules/element-ui/packages/input/src/input";
@@ -62,8 +127,10 @@
         userName: '',
         userStatus:'',
         disabled:false,
+        dialogLoading:false,
         columnData: {  userName: '用户名称', roleName: '角色名称', userRealName: '真实名称',depName:'部门名称' ,crteDate: '创建时间', updDate: '更新时间' },
         tableData: [],
+        updateUserShow: false,
         total:0,
         loading:false,
         depId: '',                              //部门名称
@@ -71,7 +138,19 @@
         userStatusOptions: [
           {label:"启用", value:"1"},
           {label:"禁用", value:"0"},
-        ]
+        ],
+        roleOptions:[],
+        userForm:{
+          userId:'',
+          userName:'',
+          depId:'',
+          email:'',
+          depName:'',
+          userRealName:'',
+          mblPhoneNo:'',
+          userStatus:'',
+          roles:[]
+        },
       }
     },
     methods:{
@@ -116,6 +195,45 @@
 //          this.loading = false
 //        })
       },
+      handleAdd(){
+        getRole().then(res=>{
+          this.roleOptions = res.roles
+        })
+        this.updateUserShow = true
+      },
+      closeUserConfig(){
+        this.userForm={
+          userId:'',
+          userName:'',
+          depId:'',
+          depName:'',
+          userRealName:'',
+          mblPhoneNo:'',
+          userStatus:'',
+          roles:[]
+        }
+        this.updateUserShow = false
+      },
+      updateUserConfig(data){
+        let userId = '';
+        if (data.row.userId) {
+          userId = data.row.userId;
+        }
+        updateUserInfo(userId).then(res => {
+          getRole().then(res=>{
+            this.roleOptions = res.roles
+          })
+          this.userForm.userName = res.user.userName;
+          this.userForm.userId = res.user.userId;
+          this.userForm.depId = res.user.depId;
+          this.userForm.userRealName = res.user.userRealName;
+          this.userForm.mblPhoneNo = res.user.mblPhoneNo;
+          this.userForm.userStatus = res.user.userStatus;
+          this.userForm.roles = res.user.roles;
+          this.userForm.email = res.user.email;
+          this.updateUserShow = true;
+        })
+      },
 //      deleteItem(row){
 //        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
 //          confirmButtonText: '确定',
@@ -148,6 +266,36 @@
 //          this.disabled = false;
 //        })
 //      },
+      onSubmit() {
+        this.dialogLoading = true;
+        this.disabled = true;
+        updateUser(this.userForm).then((res) => {
+          this.dialogLoading = false;
+          this.disabled = false;
+          this.updateUserShow = false;
+          this.userForm={
+            userId:'',
+            userName:'',
+            depId:'',
+            depName:'',
+            userRealName:'',
+            mblPhoneNo:'',
+            userStatus:'',
+            roles:[]
+          }
+          this.$message({
+            message: '用户数据更新完成',
+            type: "success"
+          })
+          this.handleSearch()
+          getUserDepInfo().then((res)=>{
+            this.depNameOptions = res.dep
+          })
+        }).catch(() => {
+          this.dialogLoading = false;
+          this.disabled = false;
+        })
+      },
       ...mapActions([
         'queryPageList',
         'save',

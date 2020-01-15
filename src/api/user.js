@@ -43,3 +43,18 @@ export function goPublic(url) {
     method: 'get'
   })
 }
+
+export function updateUserInfo(userId) {
+  return request({
+    url: `/sys/user/userInfo/${userId}`,
+    method: 'get',
+  })
+}
+
+export function updateUser(data) {
+  return request({
+    url: `/sys/user/update`,
+    method: 'post',
+    data
+  })
+}
