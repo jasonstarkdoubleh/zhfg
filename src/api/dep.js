@@ -31,3 +31,11 @@ export function updateDepInfo(data) {
   })
 }
 
+export function deleteDep(data) {
+  return request({
+    url: '/sys/dep/delete',
+    method: 'POST',
+    data
+  })
+}
+

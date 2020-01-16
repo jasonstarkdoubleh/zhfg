@@ -8,7 +8,9 @@
              :statusShow="true"
              :index="true"
              :configShow = "true"
+             :deleteShow="true"
              @on-config="updateUserConfig"
+             @on-delete="deleteItem"
             >
 
       <!--      用户管理-->
@@ -53,21 +55,21 @@
 
           </div>
           <div>
-            <el-form ref="form" :model="userForm" label-width="80px">
+            <el-form :rules="rules" ref="form" :model="userForm"  >
               <el-form-item >
                 <el-input v-model="userForm.userId" v-if="false"/>
               </el-form-item>
               <el-form-item >
                 <el-input v-model="userForm.depId" v-if="false"/>
               </el-form-item>
-              <el-form-item label="用户登录名称" style="width:100px">
-                <el-input v-model="userForm.userName"  style="width: 280px"></el-input>
+              <el-form-item label="用户登录名称" style="margin-left:11px" prop="userName">
+                <el-input v-model="userForm.userName"  style="width: 280px;margin-left:20px" @blur="checkUserName"></el-input>
               </el-form-item>
-              <el-form-item label="用户真实名称">
-                <el-input v-model="userForm.userRealName"  style="width: 280px"></el-input>
+              <el-form-item label="用户真实名称" prop="userRealName">
+                <el-input v-model="userForm.userRealName"  style="width: 280px;margin-left:20px"></el-input>
               </el-form-item>
-              <el-form-item label="用户所属部门">
-                <el-select v-model="userForm.depId" placeholder="用户所属部门" filterable  clearable style="width:170px ">
+              <el-form-item label="用户所属部门" prop="depId">
+                <el-select v-model="userForm.depId" placeholder="用户所属部门" filterable  clearable  style="width:170px ;margin-left:20px">
                   <el-option
                     v-for="(item, index) in depNameOptions"
                     :key="index"
@@ -76,11 +78,11 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="用户手机号码">
-                <el-input v-model="userForm.mblPhoneNo" style="width: 280px"></el-input>
+              <el-form-item label="用户手机号码" style="margin-left:11px" prop="mblPhoneNo">
+                <el-input v-model="userForm.mblPhoneNo" style="width: 280px;margin-left:20px"></el-input>
               </el-form-item>
-              <el-form-item label="用户所属角色">
-                <el-select v-model="userForm.roles" placeholder="用户角色" filterable multiple clearable style="width:170px ">
+              <el-form-item label="用户所属角色" prop="roles" >
+                <el-select v-model="userForm.roles" placeholder="用户角色" filterable multiple clearable  style="width:170px ;margin-left:20px">
                   <el-option
                     v-for="(item, index) in roleOptions"
                     :key="index"
@@ -89,11 +91,11 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="用户邮箱">
-                <el-input v-model="userForm.email" style="width: 280px"></el-input>
+              <el-form-item label="用户邮箱" style="margin-left:11px" prop="email" >
+                <el-input v-model="userForm.email" style="width: 280px ;margin-left:45px" @blur="checkEmail"></el-input>
               </el-form-item>
-              <el-form-item label="角色状态">
-                <el-radio-group v-model="userForm.userStatus">
+              <el-form-item label="角色状态" prop="userStatus">
+                <el-radio-group v-model="userForm.userStatus" style="margin-left:45px">
                   <el-radio  :label="1">启用</el-radio>
                   <el-radio  :label="0">禁用</el-radio>
                 </el-radio-group>
@@ -111,7 +113,7 @@
 </template>
 
 <script>
-  import { getUserInfo,updateUserInfo,updateUser } from  '@/api/user'
+  import { getUserInfo,updateUserInfo,updateUser,deleteUser } from  '@/api/user'
   import { getUserDepInfo } from '@/api/dep'
   import { getRole } from '@/api/role'
   import jtable from '_c/Jtable'
@@ -151,9 +153,37 @@
           userStatus:'',
           roles:[]
         },
+        rules: {
+          userRealName:[ { required: true, message: '请输入用户真实名称', trigger: 'blur' }],
+          depId:[ { required: true, message: '请选择用户所属部门', trigger: 'change' }],
+          roles:[ { required: true, message: '请给用户分配角色', trigger: 'change' }],
+          userStatus:[ { required: true, message: '请指定用户状态', trigger: 'blur' }]
+        }
       }
     },
     methods:{
+      checkEmail:function(){
+        var regEmail = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/
+
+        if (this.userForm.email != '' && this.userForm.email != null  && !regEmail.test(this.userForm.email)) {
+          this.$message({
+            message: '邮箱格式不正确',
+            type: 'error'
+          })
+          this.userForm.email = ''
+        }
+      },
+      checkUserName:function(){
+        var regName = /^[0-9a-zA-Z]{5,20}$/;
+        if (this.userForm.userName != '' && !regName.test(this.userForm.userName)) {
+          this.$message({
+            message: '用户名称应为5-20位英文字母或数字组合',
+            type: 'error'
+          })
+          this.userForm.userName = ''
+        }
+      },
+
       handleSearch(){
         let userName ='';
         let depId = '';
@@ -234,20 +264,36 @@
           this.updateUserShow = true;
         })
       },
-//      deleteItem(row){
-//        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
-//          confirmButtonText: '确定',
-//          cancelButtonText: '取消',
-//          type: 'warning'
-//        }).then(() => {
-//          this.delete(row.ewarnId).then(res => {
-//            this.$message({
-//              type: 'success',
-//              message: '删除成功!'
-//            });
-//          })
-//        })
-//      },
+      deleteItem(row){
+        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let pm = []
+          pm.push(row.userId)
+          let pmr ={
+            "ids":pm
+          }
+          deleteUser(pmr).then(res => {
+              if(res.code==0){
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+                this.handleSearch()
+                getUserDepInfo().then((res)=>{
+                  this.depNameOptions = res.dep
+                })
+          }else {
+                this.$message({
+                  type: res.msg,
+                  message: 'error'
+                });
+              }
+          })
+        })
+      },
 //      onSubmit() {
 //        console.log(this.sizeForm.beginDate);
 //        this.dialogLoading = true;
@@ -270,6 +316,7 @@
         this.dialogLoading = true;
         this.disabled = true;
         updateUser(this.userForm).then((res) => {
+          if(res.code == 0){
           this.dialogLoading = false;
           this.disabled = false;
           this.updateUserShow = false;
@@ -291,6 +338,14 @@
           getUserDepInfo().then((res)=>{
             this.depNameOptions = res.dep
           })
+          }else {
+            this.dialogLoading = false;
+            this.disabled = false;
+            this.$message({
+              message: res.msg,
+              type: "error"
+            })
+          }
         }).catch(() => {
           this.dialogLoading = false;
           this.disabled = false;
@@ -321,5 +376,14 @@
 </script>
 
 <style scoped>
-
+  .el-form-item__error {
+    color: #F56C6C;
+    font-size: 12px;
+    line-height: 1;
+    padding-top: 4px;
+    position: absolute;
+  }
+  .element.style{
+    width: 400px;
+  }
 </style>

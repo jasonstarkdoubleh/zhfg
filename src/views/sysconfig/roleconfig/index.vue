@@ -17,7 +17,7 @@
              v-show="mainShow"
     >
 
-      <!--      用户管理-->
+      <!--      角色管理-->
       <div class="flex bgc">
         <div>
           角色名称:&nbsp;
@@ -55,15 +55,15 @@
 
           </div>
           <div>
-            <el-form ref="form" :model="roleForm" label-width="80px">
+            <el-form ref="form" :model="roleForm" :rules="rules" >
               <el-form-item >
                 <el-input v-model="roleForm.roleId" v-if="false"/>
               </el-form-item>
-              <el-form-item label="角色名称">
-                <el-input v-model="roleForm.roleName" style="width: 280px"></el-input>
+              <el-form-item label="角色名称" prop="roleName">
+                <el-input v-model="roleForm.roleName"  style="width: 280px"></el-input>
               </el-form-item>
-              <el-form-item label="角色类型">
-                <el-select v-model="roleForm.roleTypeId" style="width: 280px">
+              <el-form-item label="角色类型" prop="roleTypeId" >
+                <el-select v-model="roleForm.roleTypeId" filterable  clearable  style="width: 280px">
                   <el-option
                     v-for="(item, index) in roleTypeOptions"
                     :key="index"
@@ -72,8 +72,8 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="角色状态">
-                <el-radio-group v-model="roleForm.roleState">
+              <el-form-item label="角色状态" prop="roleState">
+                <el-radio-group v-model="roleForm.roleState"   >
                   <el-radio  :label="1">启用</el-radio>
                   <el-radio  :label="0">禁用</el-radio>
                 </el-radio-group>
@@ -164,6 +164,11 @@
           {label:"系统管理员", value:1},
           {label:"平台使用者", value:2},
         ],
+        rules: {
+          roleName:[ { required: true, message: '请输入角色名称', trigger: 'blur' }],
+          roleTypeId:[ { required: true, message: '请选择角色类型', trigger: 'change' }],
+          roleState:[ { required: true, message: '请指定角色的状态', trigger: 'change' }],
+        }
       }
     },
     methods:{
@@ -236,6 +241,7 @@
         this.dialogLoading = true;
         this.disabled = true;
         addRole(this.roleForm).then((res) => {
+          if(res.code == 0){
           this.dialogLoading = false;
           this.disabled = false;
           this.addRoleShow = false;
@@ -253,7 +259,14 @@
           getRole().then((res) =>{
             this.roleNameOptions = res.roles
           })
-        }).catch(() => {
+        }else {
+            this.dialogLoading = true;
+            this.disabled = true;
+            this.$message({
+              message:res.msg,
+              type: "error"
+            })
+          }} ).catch(() => {
           this.dialogLoading = false;
           this.disabled = false;
         })

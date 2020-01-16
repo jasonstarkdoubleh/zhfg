@@ -6,9 +6,10 @@
              :loading="loading"
              :selection="true"
              :statusShow="true"
-             :index="true"
              :configShow = "true"
+             :index="true"
              @on-config="menuConfig"
+
     >
 
       <!--      用户管理-->
@@ -51,15 +52,15 @@
 
           </div>
           <div>
-            <el-form ref="form" :model="menuForm" label-width="80px">
+            <el-form ref="form" :model="menuForm" :rules="rules">
               <el-form-item >
                 <el-input v-model="menuForm.menuId" v-if="false"/>
               </el-form-item>
-              <el-form-item label="菜单名称">
-                <el-input v-model="menuForm.menuName" style="width: 280px"></el-input>
+              <el-form-item label="菜单名称" prop="menuName">
+                <el-input v-model="menuForm.menuName"  style="width: 280px;margin-left:20px"></el-input>
               </el-form-item>
-              <el-form-item label="上级菜单">
-              <el-select v-model="menuForm.pareMenuId" placeholder="一级菜单" filterable  clearable style="width:170px ">
+              <el-form-item label="上级菜单"  prop="pareMenuId">
+              <el-select v-model="menuForm.pareMenuId" placeholder="一级菜单"  filterable  clearable style="width:170px ;margin-left:20px">
                <el-option
                   v-for="(item, index) in menuNameOptions"
                   :key="index"
@@ -68,8 +69,8 @@
                </el-option>
               </el-select>
               </el-form-item>
-              <el-form-item label="菜单类型">
-                <el-select v-model="menuForm.menuType" style="width: 280px">
+              <el-form-item label="菜单类型"  prop="menuType">
+                <el-select v-model="menuForm.menuType" filterable  clearable  style="width: 280px;margin-left:20px">
                   <el-option
                     v-for="(item, index) in menuTypeOptions"
                     :key="index"
@@ -78,23 +79,23 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="菜单状态">
-                <el-radio-group v-model="menuForm.menuState">
+              <el-form-item label="菜单状态"  prop="menuState">
+                <el-radio-group v-model="menuForm.menuState" style="margin-left: 20px" >
                   <el-radio  :label="1">启用</el-radio>
                   <el-radio  :label="0">禁用</el-radio>
                 </el-radio-group>
               </el-form-item>
-              <el-form-item label="菜单排序">
-                <el-input-number v-model="menuForm.menuOrder" :min="1"></el-input-number>
+              <el-form-item label="菜单排序"  prop="menuOrder">
+                <el-input-number v-model="menuForm.menuOrder" :min="1" style="margin-left: 20px"></el-input-number>
               </el-form-item>
-              <el-form-item label="菜单路由">
-                <el-input v-model="menuForm.menuRouter" placeholder="菜单路由" style="width: 280px"></el-input>
+              <el-form-item label="菜单路由"  prop="menuRouter">
+                <el-input v-model="menuForm.menuRouter"  placeholder="菜单路由" style="width: 280px;margin-left:20px"></el-input>
               </el-form-item>
-              <el-form-item label="菜单URL">
-                <el-input v-model="menuForm.menuUrl" placeholder="菜单URL" style="width: 280px"></el-input>
+              <el-form-item label="菜单URL" style="margin-left:11px">
+                <el-input v-model="menuForm.menuUrl" placeholder="菜单URL" style="width: 280px;margin-left:18px"></el-input>
               </el-form-item>
-              <el-form-item label="授权标识">
-                <el-input v-model="menuForm.menuPerm" placeholder="多个用逗号隔开,如: user:list,user:create" style="width: 280px"></el-input>
+              <el-form-item label="授权标识" style="margin-left:11px">
+                <el-input v-model="menuForm.menuPerm" placeholder="多个用逗号隔开,如: user:list,user:create" style="width: 280px;margin-left:18px"></el-input>
               </el-form-item>
               <!--<el-form-item label="图标">-->
                 <!--<el-input v-model="menuForm.menuIconUrl" placeholder="菜单图标" style="width: 280px"></el-input>-->
@@ -161,9 +162,17 @@
 //          {label:"按钮", value:"3"}
 //        ],
         menuTypeOptions: [
-          {label:"目录", value:"1"},
-          {label:"菜单", value:"2"}
+          {label:"目录", value:1},
+          {label:"菜单", value:2}
         ],
+        rules: {
+          menuName:[ { required: true, message: '请输入菜单名称信息', trigger: 'blur' }],
+          pareMenuId:[ { required: true, message: '请选择所属上级菜单', trigger: 'change' }],
+          menuType:[ { required: true, message: '请指定菜单类型', trigger: 'change' }],
+          menuState:[ { required: true, message: '请指定角色的状态', trigger: 'change' }],
+          menuRouter:[ { required: true, message: '请输入菜单路由信息', trigger: 'blur' }],
+          menuOrder:[ { required: true, message: '请指定菜单显示顺序', trigger: 'change' }]
+        }
       }
     },
     methods:{
@@ -171,29 +180,38 @@
         this.dialogLoading = true;
         this.disabled = true;
         saveOrUpdate(this.menuForm).then((res) => {
-          this.dialogLoading = false;
-          this.disabled = false;
-          this.addMenuShow = false;
-          this.menuForm={
-            menuId:'',
-            menuName:'',
-            pareMenuId:'',
-            menuType:'',
-            menuState:'',
-            menuRouter:'',
-            menuUrl:'',
-            menuPerm:'',
-            menuIconUrl:'',
-            menuOrder:''
-          };
-          this.$message({
-            message: '操作完成',
-            type: "success"
-          })
-          this.handleSearch()
-          getMenu().then((res) =>{
-            this.menuNameOptions = res.menu
-          })
+            if(res.code==0) {
+              this.dialogLoading = false;
+              this.disabled = false;
+              this.addMenuShow = false;
+              this.menuForm={
+                menuId:'',
+                menuName:'',
+                pareMenuId:'',
+                menuType:'',
+                menuState:'',
+                menuRouter:'',
+                menuUrl:'',
+                menuPerm:'',
+                menuIconUrl:'',
+                menuOrder:''
+              };
+              this.$message({
+                message: '操作完成',
+                type: "success"
+              })
+              this.handleSearch()
+              getMenu().then((res) =>{
+                this.menuNameOptions = res.menu
+              })
+            }else {
+              this.dialogLoading = false;
+              this.disabled = false;
+              this.$message({
+                message: res.msg,
+                type: "error"
+              })
+            }
         }).catch(() => {
           this.dialogLoading = false;
           this.disabled = false;

@@ -52,8 +52,16 @@ export function updateUserInfo(userId) {
 }
 
 export function updateUser(data) {
+    return request({
+      url: `/sys/user/update`,
+      method: 'post',
+      data
+    })
+}
+
+export function deleteUser(data) {
   return request({
-    url: `/sys/user/update`,
+    url: `/sys/user/delete`,
     method: 'post',
     data
   })
