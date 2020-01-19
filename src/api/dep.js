@@ -14,3 +14,28 @@ export function getDepInfo(data) {
     params:data
   })
 }
+
+export function getInfo(data) {
+  return request({
+    url: '/sys/dep/info',
+    method: 'GET',
+    params:data
+  })
+}
+
+export function updateDepInfo(data) {
+  return request({
+    url: '/sys/dep/save',
+    method: 'POST',
+    data
+  })
+}
+
+export function deleteDep(data) {
+  return request({
+    url: '/sys/dep/delete',
+    method: 'POST',
+    data
+  })
+}
+

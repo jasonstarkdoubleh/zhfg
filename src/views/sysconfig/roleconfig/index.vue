@@ -6,14 +6,18 @@
              :loading="loading"
              :selection="true"
              :statusShow="true"
+             :deleteShow="true"
+             :configShow = "true"
              :index="true"
              :searchShow="true"
              preview="功能权限"
              @on-detail="handleDetail"
+             @on-config="roleConfig"
+             @on-delete="deleteRole"
              v-show="mainShow"
     >
 
-      <!--      用户管理-->
+      <!--      角色管理-->
       <div class="flex bgc">
         <div>
           角色名称:&nbsp;
@@ -38,12 +42,51 @@
         </div>
         <div>
           <el-button type="primary" @click="handleSearch">查 询</el-button>
-          <el-button type="warning" @click="handleAdd(true)">新 增</el-button>
+          <el-button type="warning" @click="handleAddNew(true)">新 增</el-button>
         </div>
       </div>
 
     </jtable>
+    <el-dialog :visible.sync="addRoleShow" fullscreen>
 
+      <div class="flex-justify" v-loading="dialogLoading">
+        <el-card class="card-width">
+          <div slot="header">
+
+          </div>
+          <div>
+            <el-form ref="form" :model="roleForm" :rules="rules" >
+              <el-form-item >
+                <el-input v-model="roleForm.roleId" v-if="false"/>
+              </el-form-item>
+              <el-form-item label="角色名称" prop="roleName">
+                <el-input v-model="roleForm.roleName"  style="width: 280px"></el-input>
+              </el-form-item>
+              <el-form-item label="角色类型" prop="roleTypeId" >
+                <el-select v-model="roleForm.roleTypeId" filterable  clearable  style="width: 280px">
+                  <el-option
+                    v-for="(item, index) in roleTypeOptions"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="角色状态" prop="roleState">
+                <el-radio-group v-model="roleForm.roleState"   >
+                  <el-radio  :label="1">启用</el-radio>
+                  <el-radio  :label="0">禁用</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-form>
+          </div>
+        </el-card>
+      </div>
+      <div class="dialog-cancel" style="float: left;padding-left:10px">
+        <el-button type="primary" @click="onSubmit" :disabled="disabled">提 交</el-button>
+        <el-button type="warning" @click="closeRole">关 闭</el-button>
+      </div>
+    </el-dialog>
     <div v-show="addShow">
       <el-tree
         :data="data"
@@ -78,7 +121,7 @@
 </template>
 
 <script>
-  import { getRoleInfo ,getRole,rolePerm,authority } from '@/api/role'
+  import { getRoleInfo ,getRole,rolePerm,authority,addRole,deleteRoles,getRoleById } from '@/api/role'
   import jtable from '_c/Jtable'
   import { mapActions } from 'vuex'
   export default {
@@ -95,6 +138,7 @@
           label: 'label'
         },
         mainShow: true,
+        addRoleShow: false,
         addShow: false,
         roleState:'',
         disabled:false,
@@ -102,13 +146,29 @@
         tableData: [],
         total:0,
         loading:false,
+        roleForm:{
+          roleId:'',
+          roleName:'',
+          roleState:'',
+          roleTypeId:''
+        },
         roleId: '',                              //角色名称
         chooseRoleId: '',
+        chooseTypeId:'',
         roleNameOptions: [], //角色名称
         roleStateOptions: [
           {label:"启用", value:"1"},
           {label:"禁用", value:"0"},
-        ]
+        ],
+        roleTypeOptions: [
+          {label:"系统管理员", value:1},
+          {label:"平台使用者", value:2},
+        ],
+        rules: {
+          roleName:[ { required: true, message: '请输入角色名称', trigger: 'blur' }],
+          roleTypeId:[ { required: true, message: '请选择角色类型', trigger: 'change' }],
+          roleState:[ { required: true, message: '请指定角色的状态', trigger: 'change' }],
+        }
       }
     },
     methods:{
@@ -155,11 +215,13 @@
         this.mainShow = false
         this.addShow = true
         this.chooseRoleId = data.row.roleId
+        this.chooseTypeId = data.row.roleTypeId
         this.getDataInfoTypeImpl()
       },
       handleSave(){
         let data = {
           "roleId":this.chooseRoleId,
+          "roleTypeId":this.chooseTypeId,
           "menuIdList":this.checkedKeys
         }
         authority(data).then(res=>{
@@ -168,11 +230,97 @@
             type:'success'
           })
           this.handleAdd(false)
+//          this.addShow = false
         })
       },
       handleAdd(data) {
         this.mainShow = !data
         this.addShow = data
+      },
+      onSubmit() {
+        this.dialogLoading = true;
+        this.disabled = true;
+        addRole(this.roleForm).then((res) => {
+          if(res.code == 0){
+          this.dialogLoading = false;
+          this.disabled = false;
+          this.addRoleShow = false;
+          this.roleForm={
+            roleId:'',
+            roleName:'',
+            roleState:'',
+            roleTypeId:''
+          };
+          this.$message({
+            message: '操作完成',
+            type: "success"
+          })
+          this.handleSearch()
+          getRole().then((res) =>{
+            this.roleNameOptions = res.roles
+          })
+        }else {
+            this.dialogLoading = true;
+            this.disabled = true;
+            this.$message({
+              message:res.msg,
+              type: "error"
+            })
+          }} ).catch(() => {
+          this.dialogLoading = false;
+          this.disabled = false;
+        })
+      },
+      roleConfig(data){
+        let roleId = '';
+        if (data.row.roleId) {
+          roleId = data.row.roleId;
+        }
+        let pm ={
+          "roleId":roleId
+        }
+        getRoleById(pm).then(res => {
+          this.roleForm.roleId = res.role.roleId;
+          this.roleForm.roleName = res.role.roleName;
+          this.roleForm.roleState = res.role.roleState;
+          this.roleForm.roleTypeId = res.role.roleTypeId;
+          this.addRoleShow = true;
+        })
+      },
+      closeRole(){
+        this.roleForm = {
+          roleId:'',
+          roleName:'',
+          roleState:'',
+          roleTypeId:''
+        },
+          this.addRoleShow = false;
+      },
+      handleAddNew() {
+        this.addRoleShow = true
+      },
+      deleteRole(data){
+        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let pm = []
+          pm.push(data.roleId)
+          let pmr ={
+            "ids":pm
+          }
+          deleteRoles(pmr).then(res => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+            this.handleSearch()
+            getRole().then((res) =>{
+              this.roleNameOptions = res.roles
+            })
+          })
+        })
       },
       handleSearch(){
         let roleId = '';

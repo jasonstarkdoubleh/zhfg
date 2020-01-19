@@ -7,7 +7,13 @@ export function getRoleInfo(data) {
     params:data
   })
 }
-
+export function getRoleById(data) {
+  return request({
+    url: '/sys/role/roleInf',
+    method: 'GET',
+    params:data
+  })
+}
 export function getRole() {
   return request({
     url: '/sys/role/getRole',
@@ -19,6 +25,14 @@ export function addRole(data) {
   return request({
     url: '/sys/role/info',
     method: 'post',
+    data
+  })
+}
+
+export function deleteRoles(data) {
+  return request({
+    url: '/sys/role/delete',
+    method: 'POST',
     data
   })
 }
