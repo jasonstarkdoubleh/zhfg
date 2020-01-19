@@ -34,15 +34,20 @@
           </div>
         </div>
       </div>
-      <div style="display: flex;justify-content: flex-end;margin-bottom: 12px;">
-        <el-radio-group v-model="radio" size="medium" @change="chooseItem">
-          <el-radio-button v-for="(item, index) in radioOptions"  :key="index" :label="item.commId">
-            {{item.commName}}
-          </el-radio-button>
-        </el-radio-group>
-      </div>
-      <div style="display: flex;justify-content: space-between;">
 
+      <div class="scrow-view">
+        <el-scrollbar style="height: 100%">
+          <el-radio-group v-model="radio" size="medium" @change="chooseItem" style="display: flex">
+            <el-radio-button v-for="(item, index) in radioOptions"  :key="index" :label="item.commId">
+              {{item.commName}}
+            </el-radio-button>
+          </el-radio-group>
+        </el-scrollbar>
+      </div>
+
+
+
+      <div style="display: flex;justify-content: space-between;margin-top: 12px">
         <div style="width: 33%;margin-right: 5px">
           <div style="height: 168px;background-color: #ffffff;padding: 4px 10px 24px;">
 
@@ -95,7 +100,7 @@
           <div style="height: 375px" id="analysemap"></div>
         </div>
 
-        <div style="width: 33%;">
+        <div style="width: 33%;" class="scroll-yes">
           <div style="height: 168px;background-color: #ffffff;padding: 4px 10px 24px;">
             <div style="height: 35px;line-height: 35px;border-bottom: 1px solid #eeeeee;font-size: 16px;letter-spacing: 1px">
               {{this.pageName}}舆情TOP10
@@ -513,8 +518,16 @@
 <style lang="scss">
 
   .analyse-page {
-    .el-scrollbar__wrap {
-      overflow-x: hidden !important;
+    .scrow-view {
+      .el-scrollbar__view {
+        padding-bottom: 10px;
+      }
+    }
+
+    .scroll-yes {
+      .el-scrollbar__wrap {
+        overflow-x: hidden !important;
+      }
     }
     .opinion-body {
       box-sizing: border-box;

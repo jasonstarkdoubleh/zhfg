@@ -12,10 +12,7 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     config.headers['Content-Type'] = "application/json;charset=utf-8";
-    config.headers['token'] = Cookies.get('permission') || '';
-    if (store.getters.token) {
-      config.headers['X-Token'] = getToken()
-    }
+    config.headers['token'] = Cookies.get('TokenKey') || '';
     return config
   },
   error => {

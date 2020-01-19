@@ -1,11 +1,18 @@
 <template>
   <div :class="{'has-logo':showLogo}">
-    <logo v-if="showLogo" :collapse="isCollapse" class="bgimg"/>
-    <div style="height: 43px;background: #54A6FC">
-      <el-button class="backhome" style="border: 0;color: #ffffff;width: 57px;height: 33px;margin-left: 10px;margin-top: 5px" @click="backHome">
+<!--    <logo v-if="showLogo" :collapse="isCollapse" class="bgimg"/>-->
+
+    <div style="height: 43px;background: #31A5FC">
+      <el-button class="backhome" style="border: 0;color: #ffffff;width: 57px;height: 33px;margin-left: 10px;margin-top: 5px" @click="backHome" v-if="!isCollapse">
         <span style="margin-left: 15px">返 回</span>
       </el-button>
+      <el-button style="border: 0;background: #31A5FC;color: #ffffff;width: 57px;height: 33px;margin-left: 10px;margin-top: 5px" @click="backHome" v-if="isCollapse">
+        <span style="margin-left: -20px">
+          <i class="el-icon-back" style="font-size: 20px"></i>
+        </span>
+      </el-button>
     </div>
+
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
         :default-active="activeMenu"

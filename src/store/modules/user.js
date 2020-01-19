@@ -1,20 +1,9 @@
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter,constantRouterMap,asyncRouterMap } from '@/router'
+import { getToken, setToken, removeToken, setRoutes,getRoutes } from '@/utils/auth'
+import { resetRouter,constantRouterMap } from '@/router'
 import Layout from '@/layout'
 
 const _import = require('../../router/_import_' + process.env.NODE_ENV)
-
-const test = [{
-  path: '/secondpage',
-  component: 'Layout',
-  redirect: '/secondpage/index',
-  children: [{
-    path:'index',
-    component: 'secondpage',
-    meta: { title: '商品总览', icon: '' },
-  }]
-}]
 
 function filterAsyncRouter(asyncRouterMap) {
   const accessedRouters = asyncRouterMap.filter(route => {
@@ -34,15 +23,17 @@ function filterAsyncRouter(asyncRouterMap) {
 }
 
 const state = {
-  token: getToken(),
+  token: '',
   name: '',
   avatar: '',
   menu: [],
+  addRoutes: '',
   routes: constantRouterMap
 }
 
 const mutations = {
   SET_ROUTES: (state, routes) => {
+    state.addRoutes = routes
     state.routes = constantRouterMap.concat(routes)
   },
   SET_TOKEN: (state, token) => {
@@ -62,7 +53,7 @@ const mutations = {
 const actions = {
   generateRoutes({ commit, state }) {
     return new Promise(resolve => {
-      const accessedRoutes = filterAsyncRouter(state.menu)
+      const accessedRoutes = filterAsyncRouter(JSON.parse(localStorage.getItem('routes')))
       commit('SET_ROUTES',accessedRoutes)
       resolve(accessedRoutes)
     })
@@ -73,8 +64,9 @@ const actions = {
     return new Promise((resolve, reject) => {
       login(username.trim(), password ).then(response => {
         commit('SET_TOKEN', response.token)
-        commit('SET_MENU',response.menu)
         setToken(response.token)
+        // commit('SET_MENU',response.menu)
+        localStorage.setItem('routes',JSON.stringify(response.menu))
         resolve()
       }).catch(error => {
         reject(error)
@@ -96,6 +88,7 @@ const actions = {
         commit('SET_TOKEN', '')
         removeToken()
         resetRouter()
+        localStorage.removeItem('routes')
         resolve()
       }).catch(error => {
         reject(error)

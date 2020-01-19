@@ -37,29 +37,26 @@ let urlParse = function() {
 }
 
 router.beforeEach(async (to, from, next) => {
+  // if(once){
+  //   once = false
+  //   urlParse()
+  // }
   NProgress.start()
   document.title = getPageTitle(to.meta.title)
   const hasToken = getToken()
-  if(once){
-    once = false
-    // urlParse()
-  }
   if (hasToken) {
-    if (to.path === '/login') {
-      next({ path: '/' })
-      NProgress.done()
-    } else {
-      const hasName = store.getters.name
-      if (hasName) {
-        next()
+    if(store.getters.addRoutes) {
+      if (to.path === '/login') {
+        next({ path: '/' })
+        NProgress.done()
       } else {
-        store.dispatch('user/getInfo','admin').then(() => {
-          store.dispatch('user/generateRoutes').then((data) => { // 生成可访问的路由表
-            router.addRoutes(data) // 动态添加可访问路由表
-            next({path:"/"})
-          })
-        })
+        next()
       }
+    }else {
+      store.dispatch('user/generateRoutes').then(data => {
+        router.addRoutes(data)
+        next({path:"/"})
+      })
     }
   } else {
     if (whiteList.indexOf(to.path) !== -1) {

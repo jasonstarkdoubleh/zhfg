@@ -6,7 +6,7 @@
 
       <div style="width: 70px"></div>
 
-      <div style="color: #ffffff;font-size: 25px;font-weight: bolder;display: flex;align-items: center" @click="toggleSideBar">
+      <div style="color: #ffffff;font-size: 23px;font-weight: bolder;display: flex;align-items: center;cursor: pointer;" @click="toggleSideBar">
         <img style="width: 30px;height: 30px;margin-right: 2px;margin-top: 2px" src="../../assets/img/LOGO.svg" alt="智慧发改•价格大数据应用系统">
         <span style="margin-left: 2px;color: #79f3ea">智慧发改•价格大数据应用系统</span>
       </div>
@@ -14,7 +14,7 @@
       <div class="right-menu">
         <el-dropdown class="avatar-container" trigger="click">
           <div class="avatar-wrapper">
-            <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+            <img :src="imgSrc+'?imageView2/1/w/80/h/80'" class="user-avatar">
             <i class="el-icon-caret-bottom" style="color: #ffffff" />
           </div>
           <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -36,6 +36,11 @@
   // import Hamburger from '@/components/Hamburger'
 
   export default {
+    data() {
+      return {
+        imgSrc: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
+      }
+    },
     components: {
       // Breadcrumb,
       // Hamburger

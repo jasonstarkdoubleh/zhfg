@@ -83,13 +83,6 @@
                       </el-option>
                     </el-option-group>
 
-<!--                    <el-option-->
-<!--                      v-for="(item, index) in dataNameOptionsCopy"-->
-<!--                      :key="index"-->
-<!--                      :label="item.label"-->
-<!--                      :value="item.value">-->
-<!--                    </el-option>-->
-
                   </el-select>
                 </div>
                 <div>
@@ -101,7 +94,6 @@
                   <el-input v-model="formInline.remark" style="width: 150px;margin-right: 20px"></el-input>
                 </div>
                 <el-button type="primary" @click="runTime(true)">运 行</el-button>
-
             </div>
           </div>
         </div>
@@ -124,6 +116,8 @@
                     :value="item.value">
                   </el-option>
                 </el-select>
+                </div>
+              <div>
                 变量选择:&nbsp;
                 <el-select
                   v-model="indeVar"
@@ -142,19 +136,27 @@
                     </el-option>
                   </el-option-group>
                 </el-select>
+              </div>
+              <div>
                 分析名称:&nbsp;
                 <el-input v-model="formInline.analyName" style="width: 150px;margin-right: 20px"></el-input>
+              </div>
+              <div>
                 分析描述:&nbsp;
                 <el-input v-model="formInline.remark" style="width: 150px;margin-right: 20px"></el-input>
               </div>
-              <el-button type="primary" @click="runTime(false)">运 行</el-button>
+              <div>
+                <el-button type="primary" @click="runTime(false)">运 行</el-button>
+                <el-button @click="reSet()">重 置</el-button>
+              </div>
+
             </div>
           </div>
         </div>
       </el-tab-pane>
     </el-tabs>
 
-    <div v-show="correShow">
+    <div v-show="correShow" v-loading="correLoading">
       <div style="margin-top: 10px;background: #ffffff;padding: 10px" >
         <div class="flex">
           <h3 style="color: #3a8ee6;padding-right: 5px">相关性图</h3>
@@ -226,6 +228,7 @@
           datasetId:''
         },
         correShow:false,
+        correLoading:false,
         activeName: 'first',
         dataName: '',
         dataNameOptions: [],
@@ -423,40 +426,50 @@
           }
         })
         this.formInline.indeVar = JSON.stringify(this.formInline.indeVar)
+        this.correShow = true
+        this.correLoading = true
         this.runGeneral(this.formInline).then(res => {
-          let coe = JSON.parse(res.data.coe)
-          let pva = JSON.parse(res.data.pva)
-          this.dialogTableData = []
-          this.dataObj = []
-          coe.forEach((item,index)=>{
-            this.dialogTableData[index] = {}
-            this.dialogTableData[index].row = item._row
-            Object.keys(item).forEach(key=>{
-              if(key!=='_row'){
-                this.dialogTableData[index][`${key}_coe`] = item[key]
+          this.correLoading = false
+          this.formInline.indeVar = JSON.parse(this.formInline.indeVar)
+
+          if(res.data) {
+            let coe = res.data.coe
+            let pva = res.data.pva
+            this.dialogTableData = []
+            this.dataObj = []
+            coe.forEach((item,index)=>{
+              this.dialogTableData[index] = {}
+              this.dialogTableData[index].row = item._row
+              Object.keys(item).forEach(key=>{
+                if(key!=='_row'){
+                  this.dialogTableData[index][`${key}_coe`] = item[key]
+                }
+              })
+            })
+            pva.forEach((item,index)=>{
+              this.dialogTableData.forEach((val,i)=>{
+                if(item._row === val.row){
+                  Object.keys(item).forEach(key=>{
+                    if(key!=='_row'){
+                      this.dialogTableData[i][`${key}_pva`] = item[key]
+                    }
+                  })
+                }
+              })
+            })
+            Object.keys(coe[0]).forEach(key=>{
+              if(key!=='_row') {
+                this.dataObj.push([`${key}_coe`, `${key}_pva`])
               }
             })
-          })
-          pva.forEach((item,index)=>{
-            this.dialogTableData.forEach((val,i)=>{
-              if(item._row === val.row){
-                Object.keys(item).forEach(key=>{
-                  if(key!=='_row'){
-                    this.dialogTableData[i][`${key}_pva`] = item[key]
-                  }
-                })
-              }
+            this.$nextTick(()=>{
+              this.drawCook(coe)
             })
-          })
-          Object.keys(coe[0]).forEach(key=>{
-            if(key!=='_row') {
-              this.dataObj.push([`${key}_coe`, `${key}_pva`])
-            }
-          })
-          this.correShow = true
-          this.$nextTick(()=>{
-            this.drawCook(coe)
-          })
+          }else {
+            this.$nextTick(()=>{
+              this.drawCook([])
+            })
+          }
         })
       },
       handleSearch() {
@@ -498,6 +511,7 @@
       handleClick(tab, event) {
         this.headShow = true
         this.correShow = false
+        this.indeVar = []
         this.formInline = JSON.parse(JSON.stringify(this.formInlineCopy))
         Object.keys(this.formInline.indeVar).forEach(key => {
           this.formInline.indeVar[key] = []

@@ -8,5 +8,6 @@ const getters = {
   loadingEdit: state => state.warning.loadingEdit,
   pageValue: state => state.warning.pageValue,
   routes: state => state.user.routes,
+  addRoutes: state => state.user.addRoutes,
 }
 export default getters

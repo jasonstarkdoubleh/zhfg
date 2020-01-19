@@ -210,7 +210,7 @@ export default {
   //一般相关性分析运行
   runGeneral(data) {
     return request({
-      url: `/price/pssanalyinfo/runGeneral`,
+      url: `/price/pssanalyinfo/execAnaly`,
       method: 'post',
       data
     })

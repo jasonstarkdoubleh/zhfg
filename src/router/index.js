@@ -35,7 +35,7 @@ export const asyncRouterMap = [
     children: [{
       path:'index',
       component: () => import('@/views/secondpage'),
-      meta: { title: '商品总览', icon: '' },
+      meta: { title: '商品总览', icon: 'table' },
     }]
   },
 
@@ -47,7 +47,7 @@ export const asyncRouterMap = [
     children: [{
       path:'index',
       component: () => import('@/views/warningshow'),
-      meta: { title: '预警展示', icon: '' },
+      meta: { title: '预警展示', icon: 'tree' },
     }]
   },
 
@@ -59,7 +59,7 @@ export const asyncRouterMap = [
     children: [{
       path:'index',
       component: () => import('@/views/analyses'),
-      meta: { title: '多维分析', icon: '' },
+      meta: { title: '多维分析', icon: 'eye' },
     }]
   },
 
@@ -71,7 +71,7 @@ export const asyncRouterMap = [
     children: [{
       path:'index',
       component: () => import('@/views/divine'),
-      meta: { title: '预测分析', icon: '' },
+      meta: { title: '预测分析', icon: 'example' },
     }]
   },
 
@@ -83,41 +83,6 @@ export const asyncRouterMap = [
     redirect: '/pricewatch/pricewarning',
     meta: { title: '价格分析', icon: 'dashboard' },
     children: [
-      //价格预警
-      {
-        path: 'pricewarning',
-        component: () => import('@/views/pricewarning'),
-        redirect: '/pricewarning/pricewarningconfig',
-        meta: { title: '价格预警' },
-        children: [
-          {
-            path: 'pricewarningconfig',
-            component: () => import('@/views/pricewarning/pricewarningconfig'),
-            meta: { title: '价格预警配置' },
-            children:[
-              {
-                path: 'warningconfig',
-                name: 'Warningconfig',
-                component: () => import('@/views/pricewarning/pricewarningconfig/warningconfig'),
-                meta: { title: '预警配置' },
-              },
-              {
-                path: 'goodsconfig',
-                name: 'Goodsconfig',
-                component: () => import('@/views/pricewarning/pricewarningconfig/goodsconfig'),
-                meta: { title: '商品配置' }
-              }
-            ]
-          },
-          {
-            path: 'pricewarningresult',
-            name: 'Pricewarningresult',
-            component: () => import('@/views/pricewarning/pricewarningresult'),
-            meta: { title: '价格预警结果' }
-          }
-        ]
-      },
-
       //价格分析
       {
         path: 'priceanalyse',
@@ -172,6 +137,41 @@ export const asyncRouterMap = [
         component: () => import('@/views/forecasting/resultshow'),
         meta: { title: '价格预测' },
       },
+
+      //价格预警
+      {
+        path: 'pricewarning',
+        component: () => import('@/views/pricewarning'),
+        redirect: '/pricewarning/pricewarningconfig',
+        meta: { title: '价格预警' },
+        children: [
+          {
+            path: 'pricewarningconfig',
+            component: () => import('@/views/pricewarning/pricewarningconfig'),
+            meta: { title: '价格预警配置' },
+            children:[
+              {
+                path: 'warningconfig',
+                name: 'Warningconfig',
+                component: () => import('@/views/pricewarning/pricewarningconfig/warningconfig'),
+                meta: { title: '预警配置' },
+              },
+              {
+                path: 'goodsconfig',
+                name: 'Goodsconfig',
+                component: () => import('@/views/pricewarning/pricewarningconfig/goodsconfig'),
+                meta: { title: '商品配置' }
+              }
+            ]
+          },
+          {
+            path: 'pricewarningresult',
+            name: 'Pricewarningresult',
+            component: () => import('@/views/pricewarning/pricewarningresult'),
+            meta: { title: '价格预警结果' }
+          }
+        ]
+      },
     ]
   },
 
@@ -184,7 +184,7 @@ export const asyncRouterMap = [
     children: [{
       path:'index',
       component: () => import('@/views/pubilcsystem'),
-      meta: { title: '舆情系统', icon: 'example' },
+      meta: { title: '舆情系统', icon: 'link' },
     }]
   },
 
@@ -196,7 +196,7 @@ export const asyncRouterMap = [
     children: [{
       path:'index',
       component: () => import('@/views/onlineSurveySystem'),
-      meta: { title: '在线调研', icon: 'eye' },
+      meta: { title: '在线调研', icon: 'password' },
     }]
   },
 

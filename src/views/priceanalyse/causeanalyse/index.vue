@@ -191,7 +191,7 @@
       </el-tab-pane>
     </el-tabs>
 
-    <el-card v-show="correShow" style="margin-top: 10px">
+    <el-card v-show="correShow" style="margin-top: 10px" v-loading="correLoading">
       <h3>{{this.tableColShow ? '检验结果':'因果分析结果'}}</h3>
       <div>
         <el-table :data="dialogTableData" border stripe>
@@ -203,7 +203,7 @@
     </el-card>
 
     <div>
-      <el-card style="margin-top: 10px" v-show="correShow && !tableColShow">
+      <el-card style="margin-top: 10px" v-show="correShow && !tableColShow" v-loading="correLoading">
         <h3>因果图</h3>
         <div id="causeimg" style="height: 300px"></div>
       </el-card>
@@ -231,6 +231,7 @@
         analyWayOptions: [],
         tableColShow:true,
         correShow:false,
+        correLoading:false,
         depeVar:'',
         depeVarOptions:[],
         indeVar:[],
@@ -458,28 +459,37 @@
         }
         this.formInline.indeVar = JSON.stringify(this.formInline.indeVar)
         this.formInline.depeVar = JSON.stringify(this.formInline.depeVar)
+        this.correShow = true
+        this.correLoading = true
         this.runGeneral(this.formInline).then(res => {
-          this.correShow = true
-          this.dialogTableData = JSON.parse(res.data.pva)
-          if(this.tableColShow){
-            this.dialogTableData.forEach(item=>{
-              item.cause = item.Pvalue < 0.05 ? '是':'否'
-            })
+          this.correLoading = false
+          this.formInline.indeVar = JSON.parse(this.formInline.indeVar)
+          this.formInline.depeVar = JSON.parse(this.formInline.depeVar)
+          if(res.data) {
+            this.dialogTableData = res.data.pva
+            if(this.tableColShow){
+              this.dialogTableData.forEach(item=>{
+                item.cause = item.Pvalue < 0.05 ? '是':'否'
+              })
+            }else {
+              let coe = res.data.coe
+              this.dialogTableData.forEach((item,index)=>{
+                item.cause = coe[index].analy_coe
+              })
+              this.$nextTick(()=>{
+                this.drawCause(this.dialogTableData)
+              })
+            }
+          }else {
+            this.drawCause([])
           }
-          else {
-            let coe = JSON.parse(res.data.coe)
-            this.dialogTableData.forEach((item,index)=>{
-              item.cause = coe[index].analy_coe
-            })
-            this.$nextTick(()=>{
-              this.drawCause(this.dialogTableData)
-            })
-          }
+
         })
       },
       handleClick(tab, event) {
         this.headShow = true
         this.correShow = false
+        this.depeVar = ''
         this.indeVar = []
         this.formInline = JSON.parse(JSON.stringify(this.formInlineCopy))
         Object.keys(this.formInline.depeVar).forEach(key => {
