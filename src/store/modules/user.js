@@ -27,13 +27,15 @@ const state = {
   name: '',
   avatar: '',
   menu: [],
-  addRoutes: '',
+  addRoutes: [],
   routes: constantRouterMap
 }
 
 const mutations = {
-  SET_ROUTES: (state, routes) => {
+  SET_ADDROUTES: (state, routes) => {
     state.addRoutes = routes
+  },
+  SET_ROUTES: (state, routes) => {
     state.routes = constantRouterMap.concat(routes)
   },
   SET_TOKEN: (state, token) => {
@@ -55,6 +57,7 @@ const actions = {
     return new Promise(resolve => {
       const accessedRoutes = filterAsyncRouter(JSON.parse(localStorage.getItem('routes')))
       commit('SET_ROUTES',accessedRoutes)
+      commit('SET_ADDROUTES','accessedRoutes')
       resolve(accessedRoutes)
     })
   },
@@ -66,6 +69,7 @@ const actions = {
         commit('SET_TOKEN', response.token)
         setToken(response.token)
         // commit('SET_MENU',response.menu)
+        response.menu.push({ path: '*', redirect: '/404', hidden: true })
         localStorage.setItem('routes',JSON.stringify(response.menu))
         resolve()
       }).catch(error => {
@@ -88,6 +92,8 @@ const actions = {
         commit('SET_TOKEN', '')
         removeToken()
         resetRouter()
+        commit('SET_ROUTES',[])
+        commit('SET_ADDROUTES','')
         localStorage.removeItem('routes')
         resolve()
       }).catch(error => {

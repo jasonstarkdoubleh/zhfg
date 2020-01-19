@@ -55,7 +55,7 @@ router.beforeEach(async (to, from, next) => {
     }else {
       store.dispatch('user/generateRoutes').then(data => {
         router.addRoutes(data)
-        next({path:"/"})
+        next({ ...to, replace: true })
       })
     }
   } else {

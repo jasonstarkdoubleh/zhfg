@@ -379,7 +379,6 @@
         window.open(newUrl,'_blank')
       },
       changeProData(){
-        console.log(this.proData)
         this.drawPie(this.proData)
       },
       changePindu(){
@@ -454,7 +453,6 @@
         this.allShow = obj
         if('舆情'===data){
           this.$nextTick(() => {
-            console.log(this.pieData);
             this.drawNewsPie(this.pieData)
             yuqingInfo(this.pageValue.commId).then(res=>{
               this.drawNewsLine(res.data)
@@ -537,7 +535,6 @@
         myChart.setOption(option);
       },
       drawPie(data) {
-        console.log(data)
         let dateVal = []
         let series = [{
           name:data[0].commName,
