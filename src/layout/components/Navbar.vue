@@ -88,7 +88,7 @@
     }
 
     .breadcrumb-container {
-
+      float: left;
     }
 
     .right-menu {
