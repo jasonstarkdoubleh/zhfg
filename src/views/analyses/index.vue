@@ -488,6 +488,12 @@
       this.personScroll()
     },
     created() {
+      if(!this.pageValue.commId) {
+        this.$message({
+          message:'请选择商品后进行查看',
+          type:'warning'
+        })
+      }
       queryRptName().then(res=>{
         this.rptList = res.page
         if(this.rptList.length > 3) {

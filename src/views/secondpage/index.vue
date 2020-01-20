@@ -832,6 +832,12 @@
       this._secondView()
     },
     created() {
+      if(!this.pageValue.commId) {
+        this.$message({
+          message:'请选择商品后进行查看',
+          type:'warning'
+        })
+      }
       let queryRpt = {
         commId: this.pageValue.commId
       }

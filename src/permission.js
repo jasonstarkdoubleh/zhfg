@@ -28,7 +28,7 @@ let urlParse = function() {
   }
   getPermission(tempArr[1]).then(res => {
     Cookies.set('permission', res.token)
-    store.dispatch('user/login', {username: 'admin', password: '111111'}).then(() => {
+    store.dispatch('user/login', {username: 'fgw', password: '99ec41f1dc48f4c6a018b688411b456d'}).then(() => {
       router.push('/')
     })
   }).catch(() => {

@@ -27,7 +27,7 @@ const state = {
   name: '',
   avatar: '',
   menu: [],
-  addRoutes: [],
+  addRoutes: '',
   routes: constantRouterMap
 }
 

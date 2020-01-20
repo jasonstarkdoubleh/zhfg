@@ -300,6 +300,12 @@
       this.drawDivinetwo()
     },
     created() {
+      if(!this.pageValue.commId) {
+        this.$message({
+          message:'请选择商品后进行查看',
+          type:'warning'
+        })
+      }
       queryComm(this.pageValue.commId).then(res=>{
         console.log(res)
         this.dataModel = res.data
