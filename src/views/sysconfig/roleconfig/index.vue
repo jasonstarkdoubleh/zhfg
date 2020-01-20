@@ -11,6 +11,7 @@
              :index="true"
              :searchShow="true"
              preview="功能权限"
+             @pageChange="pageChange"
              @on-detail="handleDetail"
              @on-config="roleConfig"
              @on-delete="deleteRole"
@@ -137,6 +138,8 @@
           children: 'children',
           label: 'label'
         },
+        pageIndex: 1,
+        pageSize: 10,
         mainShow: true,
         addRoleShow: false,
         addShow: false,
@@ -322,6 +325,11 @@
           })
         })
       },
+      pageChange(size,page) {
+        this.pageSize = size
+        this.pageIndex = page
+        this.handleSearch()
+      },
       handleSearch(){
         let roleId = '';
         let roleState = '';
@@ -338,9 +346,8 @@
         let data = {
           "roleId": roleId,
           "roleState": roleState,
-          "pageIndex": 1,
-          "pageSize": 10,
-          "start": 0
+          "pageIndex": this.pageIndex,
+          "pageSize": this.pageSize
         };
         getRoleInfo(data).then(res => {
           this.tableData = res.page.list

@@ -8,6 +8,7 @@
              :statusShow="true"
              :configShow = "true"
              :index="true"
+             @pageChange="pageChange"
              @on-config="menuConfig"
 
     >
@@ -135,6 +136,8 @@
         dialogLoading:false,
         columnData: {  menuName: '菜单名称',  pareMenuName:'上级菜单',menuTypeName: '菜单类型',menuUrl:'菜单URL',creDate: '创建时间', updDate: '更新时间' },
         tableData: [],
+        pageIndex: 1,
+        pageSize: 10,
         addMenuShow:false,
         total:0,
         loading:false,
@@ -220,6 +223,11 @@
       searchDetail(data){
         this.warningSearch = data
       },
+    pageChange(size,page) {
+      this.pageSize = size
+      this.pageIndex = page
+      this.handleSearch()
+    },
       closeMenu(){
         this.menuForm={
           menuId:'',
@@ -251,9 +259,8 @@
         let data = {
           "menuId": menuId,
           "menuState": menuState,
-          "pageIndex": 1,
-          "pageSize": 10,
-          "start": 0
+          "pageIndex": this.pageIndex,
+          "pageSize": this.pageSize
         };
         getMenuInfo(data).then(res => {
           this.tableData = res.page.list

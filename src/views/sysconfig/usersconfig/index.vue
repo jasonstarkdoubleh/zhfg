@@ -9,6 +9,7 @@
              :index="true"
              :configShow = "true"
              :deleteShow="true"
+             @pageChange="pageChange"
              @on-config="updateUserConfig"
              @on-delete="deleteItem"
             >
@@ -128,6 +129,8 @@
       return {
         userName: '',
         userStatus:'',
+        pageIndex: 1,
+        pageSize: 10,
         disabled:false,
         dialogLoading:false,
         columnData: {  userName: '用户名称', roleName: '角色名称', userRealName: '真实名称',depName:'部门名称' ,crteDate: '创建时间', updDate: '更新时间' },
@@ -158,7 +161,8 @@
           depId:[ { required: true, message: '请选择用户所属部门', trigger: 'change' }],
           roles:[ { required: true, message: '请给用户分配角色', trigger: 'change' }],
           userStatus:[ { required: true, message: '请指定用户状态', trigger: 'blur' }]
-        }
+        },
+
       }
     },
     methods:{
@@ -183,7 +187,11 @@
           this.userForm.userName = ''
         }
       },
-
+      pageChange(size,page) {
+        this.pageSize = size
+        this.pageIndex = page
+        this.handleSearch()
+      },
       handleSearch(){
         let userName ='';
         let depId = '';
@@ -205,13 +213,12 @@
           "depId": depId,
           "userName": userName,
           "userStatus": userStatus,
-          "pageIndex": 1,
-          "pageSize": 10,
-          "start": 0
+          "pageIndex": this.pageIndex,
+          "pageSize": this.pageSize
         };
         getUserInfo(data).then(res => {
           this.tableData= res.page.list
-          this.total = res.page.totalCount;
+          this.total = res.page.totalCount
           this.loading = false
         }).catch(()=>{
             this.loading = false

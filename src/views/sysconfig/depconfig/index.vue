@@ -9,6 +9,7 @@
              :index="true"
              :deleteShow="true"
              :configShow = "true"
+             @pageChange="pageChange"
              @on-config="getDepConfig"
              @on-delete="deleteDeps"
     >
@@ -103,6 +104,8 @@
       return {
         depState:'',
         disabled:false,
+        pageIndex: 1,
+        pageSize: 10,
         columnData: {  depName: '部门名称', superDepName: '上级部门名称' ,creDate: '创建时间', updDate: '更新时间' },
         tableData: [],
         total:0,
@@ -146,9 +149,8 @@
         let data = {
           "depId": depId,
           "depState": depState,
-          "pageIndex": 1,
-          "pageSize": 10,
-          "start": 0
+          "pageIndex": this.pageIndex,
+          "pageSize": this.pageSize
         };
         getDepInfo(data).then(res => {
           this.tableData = res.page.list
@@ -157,6 +159,11 @@
         }).catch(() => {
           this.loading = false
         })
+      },
+      pageChange(size,page) {
+        this.pageSize = size
+        this.pageIndex = page
+        this.handleSearch()
       },
       deleteDeps(data){
         this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
