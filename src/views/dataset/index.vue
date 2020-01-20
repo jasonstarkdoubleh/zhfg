@@ -404,11 +404,9 @@ export default {
       this.updata = this.radioValue;
       getIndexInfoByDataSetId(this.radioValue.dataSetId).then(res => {
         this.tableData = res.data;
-        console.log(res);
       });
     },
     handleDelete() {
-      console.log(123)
       pssdatasetinfo(this.radioValue.dataSetId).then(res => {
         if (!res.code) {
           this.$message({
@@ -552,6 +550,10 @@ export default {
       this.form.commIndevalPath = JSON.stringify(this.form.commIndevalPath);
       this.form.macroIndevalPath = JSON.stringify(this.form.macroIndevalPath);
       if (this.disabled) {
+        this.$message({
+          message:'后台修改中,可以继续其他操作',
+          type:'success'
+        })
         let data = {
           dataSetId: this.updata.dataSetId,
           indeVar: this.form.indeVar,
@@ -559,17 +561,20 @@ export default {
           macroIndevalPath: this.form.macroIndevalPath
         };
         pssdatasetinfoUpdate(data).then(res => {
-          console.log(res);
           this.$message({
-            message: "修改成功",
+            message: "数据集修改成功",
             type: "success"
           });
           this.handleCreate();
         });
       } else {
+        this.$message({
+          message:'后台创建中,可以继续其他操作',
+          type:'success'
+        })
         pssdatasetinfoSave(this.form).then(res => {
           this.$message({
-            message: "创建成功",
+            message: "数据集创建成功",
             type: "success"
           });
           this.handleCreate();
