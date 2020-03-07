@@ -103,7 +103,8 @@
             <el-form-item label="上传模板" :label-width="formLabelWidth" v-show="mubanShow || !zidongShow">
               <el-upload
                 class="upload-demo"
-                action="http://10.1.0.139:8081/fagaiwei_api/file/upload?saveOriName=false&saveSubPath=true&moduleName=0"
+                action="https://sp.ndrc.gov.cn:8099/fagaiwei_api/file/upload?saveOriName=false&saveSubPath=true&moduleName=0"
+                :headers="{'token':getTokenCom}"
                 :before-upload="onBeforeUpload"
                 :on-preview="handlePreview"
                 :on-success="handleAvatarSuccess"
@@ -155,6 +156,7 @@
   import Jtable from '_c/Jtable'
   import {pssrptconf,pssrschconfList,pssrptconfSave,queryRschList,queryRptTemplate,pssrptconfUpdate} from '@/api/manager'
   import {mapActions} from 'vuex'
+  import { getToken } from '@/utils/auth'
   export default {
     data() {
       return {
@@ -425,6 +427,11 @@
           this.total = res.page.totalCount
 
         })
+      }
+    },
+    computed:{
+      getTokenCom() {
+        return getToken() || ''
       }
     },
     created() {

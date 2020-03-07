@@ -103,7 +103,7 @@
 
 <script>
   import jtable from '_c/Jtable'
-  import {pssrptinfoList,preview,pssrptconfDelete} from '@/api/manager'
+  import {pssrptinfoList,preview,pssrptconfDelete,reportPssrptinfo} from '@/api/manager'
   export default {
     data() {
       return {
@@ -191,12 +191,18 @@
         })
       },
       handleDownload(row){
-        let newUrl = `https://sp.ndrc.gov.cn:8080/fagaiwei_api/report/pssrptinfo/preview?fileType=docx&infoId=${row.rptId}`
-        window.open(newUrl,'_blank')
+        reportPssrptinfo('docx',row.rptId).then(res=>{
+          console.log(res)
+        })
+        // let newUrl = `https://sp.ndrc.gov.cn:8080/fagaiwei_api/report/pssrptinfo/preview?fileType=docx&infoId=${row.rptId}`
+        // window.open(newUrl,'_blank')
       },
       handleDetail(val){
-        let newUrl = `https://sp.ndrc.gov.cn:8080/fagaiwei_api/report/pssrptinfo/preview?fileType=pdf&infoId=${val.row.rptId}`
-        window.open(newUrl,'_blank')
+        reportPssrptinfo('pdf',val.row.rptId).then(res=>{
+          console.log(res)
+        })
+        // let newUrl = `https://sp.ndrc.gov.cn:8080/fagaiwei_api/report/pssrptinfo/preview?fileType=pdf&infoId=${val.row.rptId}`
+        // window.open(newUrl,'_blank')
       },
       pageChange(size,page) {
         this.pageSize = size

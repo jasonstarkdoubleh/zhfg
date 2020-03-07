@@ -515,6 +515,14 @@ export function pssrptconfDelete(data) {
   })
 }
 
+//报告 -查看
+export function reportPssrptinfo(data1,data2) {
+  return request({
+    url: `/report/pssrptinfo/preview?fileType=${data1}&infoId=${data2}`,
+    method: 'get'
+  })
+}
+
 //模型创建 -导出
 export function model_export(data) {
   return request({
