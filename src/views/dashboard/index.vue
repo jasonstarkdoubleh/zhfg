@@ -9,7 +9,7 @@
         <div class="live-preview">
           <div class="preview-title">
             <div><img src="../../assets/img/实时总览.png" style="margin: 0 6px 0 0"></div>
-            <div style="color: black">实时预览123</div>
+            <div style="color: black">实时预览</div>
           </div>
           <div class="num-details">
             <div class="details-body">
@@ -408,7 +408,7 @@ export default {
       })
     },
     handleGolang(rptId) {
-      const newUrl = `http://10.1.1.134:8081/fagaiwei_api/report/pssrptinfo/preview?fileType=pdf&infoId=${rptId}`
+      const newUrl = `https://sp.ndrc.gov.cn:8080/fagaiwei_api/report/pssrptinfo/preview?fileType=pdf&infoId=${rptId}`
       window.open(newUrl, '_blank')
     },
     handleChange(index, item, boo) {

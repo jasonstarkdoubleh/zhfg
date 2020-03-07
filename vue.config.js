@@ -9,9 +9,12 @@ function resolve(dir) {
 const name = defaultSettings.title || '智慧发改' // page title
 
 // process.env.VUE_APP_BASE_API = 'http://10.1.1.137:8081/fagaiwei_api/'
-process.env.VUE_APP_BASE_API = 'http://10.1.0.139:8081/fagaiwei_api/'
+// process.env.VUE_APP_BASE_API = 'http://10.1.0.139:8081/fagaiwei_api/'
 // process.env.VUE_APP_BASE_API = 'https://172.20.10.13:8099/fagaiwei_api/'
 // process.env.VUE_APP_BASE_API = 'http://10.1.1.140:8081/fagaiwei_api/'
+// process.env.VUE_APP_BASE_API = 'http://localhost:8082/fagaiwei_api/'
+process.env.VUE_APP_BASE_API = 'https://sp.ndrc.gov.cn:8099/fagaiwei_api/'
+
 
 
 // If your port is set to 80,
@@ -49,9 +52,11 @@ module.exports = {
       [process.env.VUE_APP_BASE_API]: {
         // target: `http://127.0.0.1:${port}/mock`,
         // target: `http://10.1.1.137:8081/fagaiwei_api/`,
-        target: `http://10.1.0.139:8081/fagaiwei_api/`,
+        // target: `http://10.1.0.139:8081/fagaiwei_api/`,
         // target: `https://172.20.10.13:8099/fagaiwei_api/`,
         // target: `http://10.1.1.140:8081/fagaiwei_api/`,
+        // target: `http://localhost:8082/fagaiwei_api/`,
+        target: `https://sp.ndrc.gov.cn:8099/fagaiwei_api/`,
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''

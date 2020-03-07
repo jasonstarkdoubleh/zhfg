@@ -375,7 +375,7 @@
         })
       },
       handleGolang(rptId) {
-        let newUrl = `http://10.1.1.134:8081/fagaiwei_api/report/pssrptinfo/preview?fileType=pdf&infoId=${rptId}`
+        let newUrl = `https://sp.ndrc.gov.cn:8080/fagaiwei_api/report/pssrptinfo/preview?fileType=pdf&infoId=${rptId}`
         window.open(newUrl,'_blank')
       },
       changeProData(){

@@ -191,11 +191,11 @@
         })
       },
       handleDownload(row){
-        let newUrl = `http://10.1.1.134:8081/fagaiwei_api/report/pssrptinfo/preview?fileType=docx&infoId=${row.rptId}`
+        let newUrl = `https://sp.ndrc.gov.cn:8080/fagaiwei_api/report/pssrptinfo/preview?fileType=docx&infoId=${row.rptId}`
         window.open(newUrl,'_blank')
       },
       handleDetail(val){
-        let newUrl = `http://10.1.1.134:8081/fagaiwei_api/report/pssrptinfo/preview?fileType=pdf&infoId=${val.row.rptId}`
+        let newUrl = `https://sp.ndrc.gov.cn:8080/fagaiwei_api/report/pssrptinfo/preview?fileType=pdf&infoId=${val.row.rptId}`
         window.open(newUrl,'_blank')
       },
       pageChange(size,page) {

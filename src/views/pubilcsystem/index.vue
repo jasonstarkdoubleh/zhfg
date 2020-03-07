@@ -8,7 +8,7 @@
   import { goPublic } from '@/api/user'
     export default {
         created() {
-            goPublic('http://10.1.0.139:8087/scyuqing').then(res => {
+            goPublic('https://sp.ndrc.gov.cn:8087/scyuqing').then(res => {
                 window.open(res.url,'_blank')
             })
         }
